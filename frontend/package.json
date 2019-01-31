@@ -1,0 +1,20 @@
+{
+  "name": "tara-catalog",
+  "version": "1.0.0",
+  "description": "A website for keeping track of my various possessions.",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tara Williams",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp-sass": "^4.0.2"
+  },
+  "dependencies": {
+    "angular": "^1.7.6",
+    "angular-cookies": "^1.7.6",
+    "angular-resource": "^1.7.6",
+    "angular-route": "^1.7.6",
+    "gulp": "^4.0.0"
+  }
+}

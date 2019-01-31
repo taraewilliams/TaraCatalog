@@ -1,0 +1,76 @@
+.create-button{
+    border: none;
+    background-color: $dark-red;
+    color: $font-light;
+    width: 200px;
+    height: 50px;
+    font-size: 15px;
+    cursor:pointer;
+    margin:20px;
+}
+
+.create-button:hover{
+  background-color:$light-red;
+}
+
+.books-list{
+  li{
+    height: auto;
+    background-color:$dark-red;
+    margin:15px;
+    border: 5px solid $darker-red;
+    box-sizing: border-box;
+    a{
+      display:block;
+      cursor:pointer;
+
+      img{
+        height:200px;
+        width:auto;
+        vertical-align: middle;
+      }
+      section{
+        display: inline-block;
+        vertical-align: top;
+        color: $font-light;
+        padding: 15px;
+        box-sizing: border-box;
+        width: 100%;
+
+        div{
+          display:inline-block;
+          width:49%;
+          vertical-align:top;
+        }
+
+        p{
+          color: $lighter-red;
+          margin: 5px;
+          box-sizing: border-box;
+        }
+      }
+    }
+  }
+  li:hover{
+    background-color:$medium-red;
+    border: 5px solid $dark-red;
+  }
+}
+
+.pagination {
+  display: inline-block;
+
+  a{
+    color: $darker-red;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  a:hover{
+    color: $light-red;
+  }
+  .selected{
+    color: $light-red;
+  }
+}
