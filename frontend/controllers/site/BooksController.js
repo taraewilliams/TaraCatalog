@@ -1,4 +1,4 @@
-app.controller('BooksController', function($scope, Book, RequestService, CONFIG, $http)
+app.controller('BooksController', function($scope, RequestService, CONFIG, $http)
 {
   $scope.maxPerPage = 25;
 
@@ -28,7 +28,6 @@ app.controller('BooksController', function($scope, Book, RequestService, CONFIG,
         };
         $scope.pages.push(page);
       }
-      console.log($scope.pages);
     });
 
   }

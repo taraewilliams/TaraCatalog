@@ -12,6 +12,11 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     controller: 'BooksController',
     templateUrl: 'views/site/books.html'
   }).
+  /* Book table page */
+  when('/books_table', {
+    controller: 'BooksTableController',
+    templateUrl: 'views/site/books_table.html'
+  }).
   /* Book creation page */
   when('/books_create', {
     controller: 'BooksCreateController',

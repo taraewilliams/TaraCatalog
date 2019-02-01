@@ -1,0 +1,35 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-show="books.length > 0">
+
+  <h1>Books</h1>
+
+  <button ng-click="goToPath('/books')" class="basic-button">Go to List View</button>
+
+  <button ng-click="goToPath('/books_create')" class="basic-button">Create New</button>
+
+  <table class="standard-table">
+    <tr>
+      <th>Title</th>
+      <th>Author</th>
+      <th>Volume</th>
+      <th>ISBN</th>
+      <th>Cover Type</th>
+      <th>Content Type</th>
+      <th>Location</th>
+    </tr>
+    <tr ng-repeat="book in books">
+      <th ng-if="book.isHeader" colspan="7">{{ book.title }}</th>
+      <td ng-if="!book.isHeader">{{book.title}}</td>
+      <td ng-if="!book.isHeader">{{book.author}}</td>
+      <td ng-if="book.volume && !book.isHeader">{{book.volume}}</td>
+      <td ng-if="!book.volume && !book.isHeader"></td>
+      <td ng-if="!book.isHeader">{{book.isbn}}</td>
+      <td ng-if="!book.isHeader">{{book.cover_type}}</td>
+      <td ng-if="!book.isHeader">{{book.content_type}}</td>
+      <td ng-if="!book.isHeader">{{book.location}}</td>
+    </tr>
+  </table>
+
+
+</main>

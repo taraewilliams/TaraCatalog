@@ -1,10 +1,12 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main>
+<main ng-show="books.length > 0">
 
   <h1>Books</h1>
 
-  <button ng-click="goToPath('/books_create')" class="create-button">Create New</button>
+  <button ng-click="goToPath('/books_table')" class="basic-button">Go to Table View</button>
+
+  <button ng-click="goToPath('/books_create')" class="basic-button">Create New</button>
 
   <ul class="books-list">
 
@@ -23,6 +25,11 @@
           <div>
             <p ng-if="book.cover_type">{{book.cover_type}}</p>
             <p ng-if="book.content_type">{{book.content_type}}</p>
+            <div class="location" ng-class="{'location-away': book.location != 'Apartment'}"></div>
+          </div>
+          <div>
+            <button class="books-button">Update</button>
+            <button class="books-button">Delete</button>
           </div>
         </section>
       </a>

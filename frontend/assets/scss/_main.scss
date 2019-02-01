@@ -64,6 +64,17 @@ main{
     }
 }
 
+.basic-button{
+    border: none;
+    background-color: $dark-red;
+    color: $font-light;
+    width: 200px;
+    height: 50px;
+    font-size: 15px;
+    cursor:pointer;
+    margin:20px;
+}
+
 h1, h2, h3, h4, h5, h6{
   padding:10px;
 }

@@ -94,7 +94,7 @@ class Book
      public static function get_all_with_limit($offset = 0, $limit = 50)
      {
        $database = Database::instance();
-       $sql = "SELECT * FROM " . CONFIG::DBTables()->book . " WHERE active = 1 ORDER BY title LIMIT " . $offset . ", " . $limit;
+       $sql = "SELECT * FROM " . CONFIG::DBTables()->book . " WHERE active = 1 ORDER BY title,volume LIMIT " . $offset . ", " . $limit;
        $query = $database->prepare($sql);
        $query->execute();
        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -217,6 +217,15 @@ class Book
 
     private static function sort_books($a, $b)
     {
-        return strcmp($a->title, $b->title);
+        if (strcmp($a->title, $b->title) === 0){
+          if ($a->volume !== 0 && !empty($a->volume) && $b->volume !== 0 && !empty($b->volume)){
+            return $a->volume - $b->volume;
+          }else{
+            return strcmp($a->title, $b->title);
+          }
+        }else{
+          return strcmp($a->title, $b->title);
+        }
     }
+
 }

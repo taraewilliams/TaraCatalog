@@ -1,14 +1,3 @@
-.create-button{
-    border: none;
-    background-color: $dark-red;
-    color: $font-light;
-    width: 200px;
-    height: 50px;
-    font-size: 15px;
-    cursor:pointer;
-    margin:20px;
-}
-
 .create-button:hover{
   background-color:$light-red;
 }
@@ -39,7 +28,7 @@
 
         div{
           display:inline-block;
-          width:49%;
+          width:32%;
           vertical-align:top;
         }
 
@@ -47,6 +36,29 @@
           color: $lighter-red;
           margin: 5px;
           box-sizing: border-box;
+        }
+
+        .location{
+          display: inline-block;
+          width: 25px;
+          height: 25px;
+          background-color: #8CEE7D;
+          border-radius: 50%;
+        }
+        .location-away{
+          background-color:red;
+        }
+
+        .books-button{
+          display: block;
+          width: 75%;
+          height: 30px;
+          background-color: $lighter-red;
+          color: $darker-red;
+          border: none;
+          font-size:15px;
+          cursor:pointer;
+          margin:10px;
         }
       }
     }
@@ -72,5 +84,24 @@
   }
   .selected{
     color: $light-red;
+  }
+}
+
+.standard-table{
+  border-collapse: collapse;
+  width: 100%;
+
+  th{
+    font-weight:bold;
+  }
+
+  td, th{
+    border: 1px solid $lighter-red;
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even){
+    background-color: $lighter-red;
   }
 }
