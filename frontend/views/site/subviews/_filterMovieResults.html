@@ -1,0 +1,35 @@
+<h6 ng-click="toggleFilter()">Filter Results</h6>
+
+<form ng-submit="clearFilter()" ng-if="showFilter">
+
+    <section>
+        <label for="title">Title<br>
+            <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
+        </label>
+
+        <label for="edition">Edition<br>
+            <input type="text" name="edition" id="edition" ng-model="filter.edition" placeholder="Edition...">
+        </label>
+    </section>
+
+    <section>
+        <label for="format">Format<br>
+            <input type="radio" ng-model="filter.format" value="DVD"> DVD<br>
+            <input type="radio" ng-model="filter.format" value="Blu-Ray"> Blu-Ray<br>
+            <input type="radio" ng-model="filter.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
+        </label>
+    </section>
+
+    <section>
+        <label for="content_type">Content Type<br>
+            <input type="radio" ng-model="filter.content_type" value="Live Action"> Live Action<br>
+            <input type="radio" ng-model="filter.content_type" value="Anime"> Anime<br>
+            <input type="radio" ng-model="filter.content_type" value="Animated"> Animated<br>
+        </label>
+    </section>
+
+    <section>
+        <button type="submit">Clear Results</button>
+    </section>
+
+</form>

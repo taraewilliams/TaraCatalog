@@ -1,0 +1,46 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-show="movies.length > 0">
+
+  <h1>Movies</h1>
+
+  <section class="top-buttons">
+    <button ng-click="goToPath('/movies_table')" class="basic-button">Go to Table View</button>
+    <button ng-click="goToPath('/movies_create')" class="basic-button">Create New</button>
+  </section>
+
+  <ul class="books-list">
+
+    <li ng-repeat="movie in movies">
+      <a>
+        <img ng-if="!isEmpty(movie.image)" alt="Movie Cover" ng-src="../backend/public/{{movie.image}}"/>
+        <section class="movie-section">
+          <h6>{{movie.title}}</h6>
+
+          <div>
+            <p ng-if="movie.edition">{{movie.edition}}</p>
+            <p ng-if="movie.format">Format: {{movie.format}}</p>
+            <p ng-if="movie.content_type">{{movie.content_type}}</p>
+          </div>
+          <div class="list-buttons">
+            <button class="books-button" ng-click="goToPath('/movies_update/', movie.id)">Update</button>
+            <button class="books-button" ng-click="deleteMovie(movie.id)">Delete</button>
+          </div>
+        </section>
+      </a>
+    </li>
+
+  </ul>
+
+  <!-- <div class="filter-form" ng-include="'views/site/subviews/_filterBookResults.html'"></div> -->
+
+
+  <div class="pagination">
+    <a ng-click="skipToFinalPage('backward', pages, '/movies/')"><<</a>
+    <a ng-click="skipOnePage('backward', pages, '/movies/')"><</a>
+    <a ng-class="{ 'selected': page.active }" ng-if="page.current" ng-repeat="page in pages" ng-click="switchPage(page, '/movies/')">{{page.num}}</a>
+    <a ng-click="skipOnePage('forward', pages, '/movies/')">></a>
+    <a ng-click="skipToFinalPage('forward', pages, '/movies/')">>></a>
+  </div>
+
+</main>

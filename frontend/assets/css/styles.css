@@ -86,6 +86,9 @@ main {
       font-size: 20px;
       padding: 10px;
       box-sizing: border-box; }
+      main form label img {
+        width: 250px;
+        display: block; }
       main form label input {
         width: 50%;
         height: 30px;
@@ -124,6 +127,32 @@ main {
   cursor: pointer;
   margin: 20px; }
 
+.basic-button:hover {
+  background-color: #D46A6A; }
+
+.top-buttons {
+  display: block; }
+
+.standard-table {
+  border-collapse: collapse;
+  width: 100%; }
+  .standard-table th {
+    font-weight: bold; }
+  .standard-table td, .standard-table th {
+    border: 1px solid #FFAAAA;
+    text-align: left;
+    padding: 8px; }
+  .standard-table tr:nth-child(even) {
+    background-color: #FFAAAA; }
+  .standard-table .location-dot {
+    background-color: #8CEE7D;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-block; }
+  .standard-table .location-dot-away {
+    background-color: red; }
+
 h1, h2, h3, h4, h5, h6 {
   padding: 10px; }
 
@@ -151,46 +180,53 @@ p {
 a {
   font-size: 18px; }
 
-.create-button:hover {
-  background-color: #D46A6A; }
-
-.books-list li {
-  height: auto;
-  background-color: #801515;
-  margin: 15px;
-  border: 5px solid #550000;
-  box-sizing: border-box; }
-  .books-list li a {
-    display: block;
-    cursor: pointer; }
-    .books-list li a img {
-      height: 200px;
-      width: auto;
-      vertical-align: middle; }
-    .books-list li a section {
+.books-list {
+  width: 100%;
+  display: inline-block; }
+  .books-list li {
+    height: auto;
+    background-color: #801515;
+    margin: 15px;
+    border: 5px solid #550000;
+    box-sizing: border-box;
+    min-height: 200px;
+    width: calc(100% - 100px);
+    float: right; }
+    .books-list li img {
+      height: auto;
+      width: 150px;
+      vertical-align: middle;
+      position: absolute;
+      left: 0px; }
+    .books-list li .movie-section div {
+      width: 78%; }
+    .books-list li section {
       display: inline-block;
       vertical-align: top;
       color: white;
       padding: 15px;
       box-sizing: border-box;
       width: 100%; }
-      .books-list li a section div {
+      .books-list li section div {
         display: inline-block;
-        width: 32%;
+        width: 39%;
         vertical-align: top; }
-      .books-list li a section p {
+      .books-list li section .list-buttons {
+        width: 20%;
+        min-width: 100px; }
+      .books-list li section p {
         color: #FFAAAA;
         margin: 5px;
         box-sizing: border-box; }
-      .books-list li a section .location {
+      .books-list li section .location {
         display: inline-block;
         width: 25px;
         height: 25px;
         background-color: #8CEE7D;
         border-radius: 50%; }
-      .books-list li a section .location-away {
+      .books-list li section .location-away {
         background-color: red; }
-      .books-list li a section .books-button {
+      .books-list li section .books-button {
         display: block;
         width: 75%;
         height: 30px;
@@ -201,12 +237,11 @@ a {
         cursor: pointer;
         margin: 10px; }
 
-.books-list li:hover {
-  background-color: #AA3939;
-  border: 5px solid #801515; }
-
 .pagination {
-  display: inline-block; }
+  display: inline-block;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%); }
   .pagination a {
     color: #550000;
     float: left;
@@ -218,14 +253,30 @@ a {
   .pagination .selected {
     color: #D46A6A; }
 
-.standard-table {
-  border-collapse: collapse;
-  width: 100%; }
-  .standard-table th {
-    font-weight: bold; }
-  .standard-table td, .standard-table th {
-    border: 1px solid #FFAAAA;
-    text-align: left;
-    padding: 8px; }
-  .standard-table tr:nth-child(even) {
-    background-color: #FFAAAA; }
+.filter-form {
+  display: block;
+  width: 100%;
+  vertical-align: top;
+  padding: 25px 0 50px 0;
+  box-sizing: border-box; }
+  .filter-form h6 {
+    text-decoration: underline; }
+  .filter-form h6:hover {
+    cursor: pointer;
+    color: #FFAAAA; }
+  .filter-form form section {
+    width: 24%;
+    display: inline-block;
+    vertical-align: top; }
+  .filter-form form button {
+    width: 100%;
+    height: 25px;
+    font-size: 12px; }
+  .filter-form form label {
+    font-size: 15px;
+    min-height: auto;
+    padding: 5px; }
+    .filter-form form label input {
+      width: 100%;
+      font-size: 12px;
+      height: 20px; }

@@ -23,7 +23,7 @@
     </label>
 
     <label for="isbn">ISBN<br>
-        <input type="text" name="password" id="password" ng-model="book.isbn" placeholder="ISBN...">
+        <input type="text" name="isbn" id="isbn" ng-model="book.isbn" placeholder="ISBN...">
     </label>
 
     <label for="cover_type">Cover Type<br>
@@ -42,9 +42,14 @@
       <input type="radio" ng-model="book.location" value="Home"> Home<br>
     </label>
 
+    <label for="image">Image<br>
+        <input type="file" name="image" file-display file-model="book.image" placeholder="Image...">
+        <img ng-if="!isEmpty(book.image)" id="image" alt="Preview Book Image" />
+    </label>
+
     <button type="submit">Create</button>
 
-</form>
+  </form>
 
 
 </main>

@@ -1,76 +1,88 @@
-.create-button:hover{
-  background-color:$light-red;
-}
-
 .books-list{
+  width:100%;
+  display:inline-block;
+
   li{
     height: auto;
     background-color:$dark-red;
     margin:15px;
     border: 5px solid $darker-red;
     box-sizing: border-box;
-    a{
-      display:block;
-      cursor:pointer;
+    min-height: 200px;
+    width: calc(100% - 100px);
+    float: right;
 
-      img{
-        height:200px;
-        width:auto;
-        vertical-align: middle;
-      }
-      section{
-        display: inline-block;
-        vertical-align: top;
-        color: $font-light;
-        padding: 15px;
-        box-sizing: border-box;
-        width: 100%;
+    img{
+      height: auto;
+      width: 150px;
+      vertical-align: middle;
+      position: absolute;
+      left: 0px;
+    }
 
-        div{
-          display:inline-block;
-          width:32%;
-          vertical-align:top;
-        }
-
-        p{
-          color: $lighter-red;
-          margin: 5px;
-          box-sizing: border-box;
-        }
-
-        .location{
-          display: inline-block;
-          width: 25px;
-          height: 25px;
-          background-color: #8CEE7D;
-          border-radius: 50%;
-        }
-        .location-away{
-          background-color:red;
-        }
-
-        .books-button{
-          display: block;
-          width: 75%;
-          height: 30px;
-          background-color: $lighter-red;
-          color: $darker-red;
-          border: none;
-          font-size:15px;
-          cursor:pointer;
-          margin:10px;
-        }
+    .movie-section{
+      div{
+        width:78%;
       }
     }
-  }
-  li:hover{
-    background-color:$medium-red;
-    border: 5px solid $dark-red;
+
+
+    section{
+      display: inline-block;
+      vertical-align: top;
+      color: $font-light;
+      padding: 15px;
+      box-sizing: border-box;
+      width: 100%;
+
+      div{
+        display:inline-block;
+        width:39%;
+        vertical-align:top;
+      }
+
+      .list-buttons{
+        width: 20%;
+        min-width: 100px;
+      }
+
+      p{
+        color: $lighter-red;
+        margin: 5px;
+        box-sizing: border-box;
+      }
+
+      .location{
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        background-color: #8CEE7D;
+        border-radius: 50%;
+      }
+      .location-away{
+        background-color:red;
+      }
+
+      .books-button{
+        display: block;
+        width: 75%;
+        height: 30px;
+        background-color: $lighter-red;
+        color: $darker-red;
+        border: none;
+        font-size:15px;
+        cursor:pointer;
+        margin:10px;
+      }
+    }
   }
 }
 
 .pagination {
   display: inline-block;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
 
   a{
     color: $darker-red;
@@ -87,21 +99,45 @@
   }
 }
 
-.standard-table{
-  border-collapse: collapse;
+.filter-form{
+  display: block;
   width: 100%;
+  vertical-align: top;
+  padding: 25px 0 50px 0;
+  box-sizing: border-box;
 
-  th{
-    font-weight:bold;
+  h6{
+    text-decoration:underline;
+  }
+  h6:hover{
+    cursor:pointer;
+    color: $lighter-red;
   }
 
-  td, th{
-    border: 1px solid $lighter-red;
-    text-align: left;
-    padding: 8px;
-  }
+  form{
 
-  tr:nth-child(even){
-    background-color: $lighter-red;
+    section{
+      width: 24%;
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    button{
+      width: 100%;
+      height: 25px;
+      font-size: 12px;
+    }
+
+    label{
+      font-size:15px;
+      min-height:auto;
+      padding:5px;
+
+      input{
+        width: 100%;
+        font-size: 12px;
+        height: 20px;
+      }
+    }
   }
 }

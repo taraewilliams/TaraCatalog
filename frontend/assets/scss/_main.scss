@@ -21,6 +21,11 @@ main{
         padding: 10px;
         box-sizing: border-box;
 
+        img{
+          width: 250px;
+          display: block;
+        }
+
         input{
           width: 50%;
           height: 30px;
@@ -73,6 +78,44 @@ main{
     font-size: 15px;
     cursor:pointer;
     margin:20px;
+}
+
+.basic-button:hover{
+  background-color:$light-red;
+}
+
+.top-buttons{
+  display:block;
+}
+
+.standard-table{
+  border-collapse: collapse;
+  width: 100%;
+
+  th{
+    font-weight:bold;
+  }
+
+  td, th{
+    border: 1px solid $lighter-red;
+    text-align: left;
+    padding: 8px;
+  }
+
+  tr:nth-child(even){
+    background-color: $lighter-red;
+  }
+
+  .location-dot{
+      background-color: #8CEE7D;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: inline-block;
+  }
+  .location-dot-away{
+      background-color: red;
+  }
 }
 
 h1, h2, h3, h4, h5, h6{

@@ -58,18 +58,22 @@ class APIService
 
     private static function get_params($request, $params, $request_names, $required = false){
 
-        $missing = array();
+        if (is_array($request_names)){
+            $missing = array();
 
-        foreach ($request_names as $param_name){
-            if (isset($request[$param_name])){
-                $params[$param_name] = $request[$param_name];
-            } else {
-                if ($required){
-                    $missing[] = $param_name;
+            foreach ($request_names as $param_name){
+                if (isset($request[$param_name])){
+                    $params[$param_name] = $request[$param_name];
+                } else {
+                    if ($required){
+                        $missing[] = $param_name;
+                    }
                 }
             }
+            return ["params" => $params, "missing" => $missing];
+        }else{
+            return ["params" => array(), "missing" => array()];
         }
-        return ["params" => $params, "missing" => $missing];
     }
 
 }

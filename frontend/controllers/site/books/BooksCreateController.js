@@ -1,4 +1,4 @@
-app.controller('BooksCreateController', function($scope, Book, CONFIG, RequestService, $http)
+app.controller('BooksCreateController', function($scope, CONFIG, RequestService, $http)
 {
 
   function init(){
@@ -12,22 +12,19 @@ app.controller('BooksCreateController', function($scope, Book, CONFIG, RequestSe
         isbn:"",
         cover_type:"",
         content_type:"",
-        location:""
+        location:"",
+        image:""
       };
 
       $http.get(CONFIG.api + '/books/authors/all')
         .then(function(response) {
           $scope.authors = response.data;
-
-          console.log($scope.authors);
-        });
+      });
 
       $http.get(CONFIG.api + '/books/titles/all')
         .then(function(response) {
           $scope.titles = response.data;
-
-          console.log($scope.titles);
-        });
+      });
 
   }
 
@@ -35,23 +32,17 @@ app.controller('BooksCreateController', function($scope, Book, CONFIG, RequestSe
 
     var url = CONFIG.api + '/books';
 
-    if($scope.book.author != '' && typeof($scope.book.author) != "undefined"){
-      delete $scope.book.old_author;
-    }
-    if($scope.book.old_author != '' && typeof($scope.book.old_author) != "undefined"){
+    if(!$scope.isEmpty($scope.book.old_author) && $scope.isEmpty($scope.book.author)){
       $scope.book.author = $scope.book.old_author.author;
-      delete $scope.book.old_author;
     }
+    delete $scope.book.old_author;
 
-    if($scope.book.title != '' && typeof($scope.book.title) != "undefined"){
-      delete $scope.book.old_title;
-    }
-    if($scope.book.old_title != '' && typeof($scope.book.old_title) != "undefined"){
+    if(!$scope.isEmpty($scope.book.old_title) && $scope.isEmpty($scope.book.title)){
       $scope.book.title = $scope.book.old_title.title;
-      delete $scope.book.old_title;
     }
+    delete $scope.book.old_title;
 
-    if($scope.book.title != '' && typeof($scope.book.title) != "undefined")
+    if(!$scope.isEmpty($scope.book.title))
     {
         RequestService.post(url, $scope.book, function(data) {
             console.log("Book was created.")
@@ -75,7 +66,8 @@ app.controller('BooksCreateController', function($scope, Book, CONFIG, RequestSe
       isbn:"",
       cover_type:"",
       content_type:"",
-      location:""
+      location:"",
+      image:""
     };
   };
 

@@ -1,0 +1,30 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-show="movies.length > 0">
+
+  <h1>Movies ( {{ movies.length - totalAddedLetters }} )</h1>
+
+  <button ng-click="goToPath('/movies/0/25')" class="basic-button">Go to List View</button>
+
+  <button ng-click="goToPath('/movies_create')" class="basic-button">Create New</button>
+
+  <div class="filter-form" ng-include="'views/site/subviews/_filterMovieResults.html'"></div>
+
+  <table class="standard-table">
+    <tr>
+      <th>Title</th>
+      <th>Edition</th>
+      <th>Format</th>
+      <th>Content Type</th>
+    </tr>
+    <tr ng-repeat="movie in movies" ng-if="isFilterResult(movie)">
+      <th ng-if="movie.isHeader" colspan="4">{{ movie.title }}</th>
+      <td ng-if="!movie.isHeader">{{movie.title}}</td>
+      <td ng-if="!movie.isHeader">{{movie.edition}}</td>
+      <td ng-if="!movie.isHeader">{{movie.format}}</td>
+      <td ng-if="!movie.isHeader">{{movie.content_type}}</td>
+    </tr>
+  </table>
+
+
+</main>

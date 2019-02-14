@@ -60,6 +60,16 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
+        /* Count books with different cover types */
+        $app->get($resource . '/cover_type/count', function ($request, $response, $args) use ($app)
+        {
+            $books = Book::get_all_cover_type_counts();
+            if($books === false) {
+                APIService::response_fail("There was a problem getting the books.", 500);
+            }
+            APIService::response_success($books);
+        });
+
         /* Count all books */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
@@ -107,6 +117,14 @@ $app->group('/api', function () use ($app) {
                 "location"
             ));
 
+            $files = APIService::build_files($_FILES, null, array(
+                "image"
+            ));
+
+            if(isset($files['image'])) {
+                $params['image'] = Book::set_image($files, $params["title"]);
+            }
+
             $book = Book::create_from_data($params);
             if($book === false || $book === null) {
                 APIService::response_fail("There was a problem creating the book.", 500);
@@ -131,12 +149,23 @@ $app->group('/api', function () use ($app) {
 
             $id = intval($args["id"]);
 
-            $book = Book::update($id, $params);
-            if($book === false) {
-                APIService::response_fail("There was an error saving the book.", 500);
+            $files = APIService::build_files($_FILES, null, array(
+                "image"
+            ));
+
+            if(isset($params["title"])){
+              $title = $params["title"];
+            }else{
+              $title = Book::get_title_for_id($id);
             }
-            if($book === null) {
-                APIService::response_fail("The requested book does not exist.", 404);
+
+            if(isset($files['image'])) {
+                $params['image'] = Book::set_image($files, $title);
+            }
+
+            $book = Book::update($id, $params);
+            if($book === false || $book === null) {
+                APIService::response_fail("There was a problem updating the book.", 500);
             }
             APIService::response_success($book);
         });

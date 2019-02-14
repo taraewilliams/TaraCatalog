@@ -1,0 +1,48 @@
+<h6 ng-click="toggleFilter()">Filter Results</h6>
+
+<form ng-submit="clearFilter()" ng-if="showFilter">
+
+    <section>
+        <label for="title">Title<br>
+            <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
+        </label>
+
+        <label for="author">Author<br>
+            <input type="text" name="author" id="author" ng-model="filter.author" placeholder="Author..."><br>
+            Select From Existing:
+            <select ng-model="filter.old_author" ng-options="author.author for author in authors"></select>
+        </label>
+    </section>
+
+    <section>
+        <label for="volume">Volume<br>
+            <input type="number" name="volume" id="volume" ng-model="filter.volume" placeholder="Volume...">
+        </label>
+
+        <label for="isbn">ISBN<br>
+            <input type="text" name="isbn" id="isbn" ng-model="filter.isbn" placeholder="ISBN...">
+        </label>
+    </section>
+
+    <section>
+        <label for="cover_type">Cover Type<br>
+            <input type="radio" ng-model="filter.cover_type" value="Paperback"> Paperback<br>
+            <input type="radio" ng-model="filter.cover_type" value="Hardcover"> Hardcover<br>
+        </label>
+        <label for="location">Location<br>
+          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+    </section>
+
+    <section>
+      <label for="content_type">Content Type<br>
+          <input type="radio" ng-model="filter.content_type" value="Novel"> Novel<br>
+          <input type="radio" ng-model="filter.content_type" value="Manga"> Manga<br>
+          <input type="radio" ng-model="filter.content_type" value="Comic Book"> Comic Book<br>
+      </label>
+
+      <button type="submit">Clear Results</button>
+    </section>
+
+</form>

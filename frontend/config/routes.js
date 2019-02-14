@@ -7,21 +7,49 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     controller: 'HomeController',
     templateUrl: CONFIG.homeTemplate
   }).
+
   /* Book list page */
-  when('/books', {
+  when('/books/:offset/:limit', {
     controller: 'BooksController',
-    templateUrl: 'views/site/books.html'
+    templateUrl: 'views/site/books/books.html'
   }).
   /* Book table page */
   when('/books_table', {
     controller: 'BooksTableController',
-    templateUrl: 'views/site/books_table.html'
+    templateUrl: 'views/site/books/books_table.html'
   }).
   /* Book creation page */
   when('/books_create', {
     controller: 'BooksCreateController',
-    templateUrl: 'views/site/books_create.html'
+    templateUrl: 'views/site/books/books_create.html'
   }).
+  /* Book update page */
+  when('/books_update/:id', {
+    controller: 'BooksUpdateController',
+    templateUrl: 'views/site/books/books_update.html'
+  }).
+
+  /* Movie list page */
+  when('/movies/:offset/:limit', {
+    controller: 'MoviesController',
+    templateUrl: 'views/site/movies/movies.html'
+  }).
+  /* Movie table page */
+  when('/movies_table', {
+    controller: 'MoviesTableController',
+    templateUrl: 'views/site/movies/movies_table.html'
+  }).
+  /* Movie creation page */
+  when('/movies_create', {
+    controller: 'MoviesCreateController',
+    templateUrl: 'views/site/movies/movies_create.html'
+  }).
+  /* Movie update page */
+  when('/movies_update/:id', {
+    controller: 'MoviesUpdateController',
+    templateUrl: 'views/site/movies/movies_update.html'
+  }).
+
   /* Statistics page */
   when('/stats', {
     controller: 'StatsController',
