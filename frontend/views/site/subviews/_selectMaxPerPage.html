@@ -1,0 +1,15 @@
+<form ng-submit="selectMaxPerPage(currentOffset, maxPerPage)">
+
+    <section>
+      <label for="maxPerPage">Select Max Per Page<br>
+          <select ng-change="selectMaxPerPage(currentOffset, maxPerPage)" ng-model="maxPerPage">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="75">75</option>
+              <option value="100">100</option>
+              <option value="all">All</option>
+          </select>
+      </label>
+    <section>
+
+</form>

@@ -7,12 +7,14 @@
   padding: 25px;
   box-sizing: border-box;
   text-align: right;
+  z-index:100;
+  overflow-y:scroll;
 
-    li{
+  li{
       display:inline-block;
       width: 100%;
-      height: 75px;
-      line-height: 75px;
+      height: 50px;
+      line-height: 50px;
       a{
         display:block;
         width:100%;
@@ -22,9 +24,32 @@
         text-decoration:none;
       }
       a:hover{
-        text-decoration:underline;
         color: $dark-red;
       }
 
+      .selected{
+          text-decoration:underline;
+      }
+  }
+
+  .sub-menu{
+    li{
+      display:block;
+      height: 25px;
+      line-height: 25px;
+      a{
+        font-size:14px;
+        color:$dark-red;
+      }
+      a:hover{
+        color: $font-light;
+      }
+      .sub-selected{
+        background-color: $dark-red;
+        color: $font-light;
+        border-radius: 15px;
+        padding-right: 10px;
+      }
     }
+  }
 }

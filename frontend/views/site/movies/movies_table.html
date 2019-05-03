@@ -1,30 +1,70 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="movies.length > 0">
+<main>
 
-  <h1>Movies ( {{ movies.length - totalAddedLetters }} )</h1>
+    <h1>Movies ( {{ item_length }} )</h1>
 
-  <button ng-click="goToPath('/movies/0/25')" class="basic-button">Go to List View</button>
+    <!-- Movie Filter -->
+    <div class="filter-form" ng-include="'views/site/subviews/_filterMovieResults.html'"></div>
 
-  <button ng-click="goToPath('/movies_create')" class="basic-button">Create New</button>
+    <!-- Movie Table Order By -->
+    <form ng-submit="sortBy(sortVal, filter)">
+        <section>
+            <label for="sortVal">Sort By:<br>
+                <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
+                    <option value="none">None</option>
+                    <option value="title">Title</option>
+                    <option value="season">Season</option>
+                    <option value="edition">Edition</option>
+                    <option value="format">Format</option>
+                    <option value="content_type">Content Type</option>
+                    <option value="location">Location</option>
+                </select>
+            </label>
+        </section>
+    </form>
 
-  <div class="filter-form" ng-include="'views/site/subviews/_filterMovieResults.html'"></div>
+    <!-- Movie Table -->
+    <p ng-show="items.length <= 0">No matching movies</p>
 
-  <table class="standard-table">
-    <tr>
-      <th>Title</th>
-      <th>Edition</th>
-      <th>Format</th>
-      <th>Content Type</th>
-    </tr>
-    <tr ng-repeat="movie in movies" ng-if="isFilterResult(movie)">
-      <th ng-if="movie.isHeader" colspan="4">{{ movie.title }}</th>
-      <td ng-if="!movie.isHeader">{{movie.title}}</td>
-      <td ng-if="!movie.isHeader">{{movie.edition}}</td>
-      <td ng-if="!movie.isHeader">{{movie.format}}</td>
-      <td ng-if="!movie.isHeader">{{movie.content_type}}</td>
-    </tr>
-  </table>
+    <table class="standard-table" ng-show="items.length > 0">
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Season</th>
+            <th>Edition</th>
+            <th>Format</th>
+            <th>Content Type</th>
+            <th colspan="2">Location</th>
+            <th></th>
+            <th></th>
+
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="10">{{ item.title }}</th>
+
+            <td ng-if="!item.isHeader">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader">{{item.title}}</td>
+            <td ng-if="!item.isHeader">{{item.season}}</td>
+            <td ng-if="!item.isHeader">{{item.edition}}</td>
+            <td ng-if="!item.isHeader">{{item.format}}</td>
+            <td ng-if="!item.isHeader">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader">{{item.location}}</td>
+            <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+            <td ng-if="!item.isHeader">
+                <button class="basic-button table-button" ng-click="goToPath('/movies_update/', item.id)">Update</button>
+                <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
+            </td>
+            <td ng-if="!item.isHeader && item.watch_list">
+                <button class="basic-button table-button-2 on-read-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
+            </td>
+            <td ng-if="!item.isHeader && !item.watch_list">
+                <button class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Watch List</button>
+            </td>
+
+        </tr>
+    </table>
 
 
 </main>

@@ -17,7 +17,7 @@ app.controller('MoviesUpdateController', function($scope, $routeParams, CONFIG, 
     var url = CONFIG.api + '/movies/' + $scope.movie.id;
 
     RequestService.post(url, new_movie, function(data) {
-        console.log("Movie was updated.");
+        alert("Movie was updated.");
     }, function(error, status){
         console.log(error.message);
     });

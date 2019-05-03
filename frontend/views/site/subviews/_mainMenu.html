@@ -1,7 +1,32 @@
 <ul class="main-menu">
-  <li><a ng-href="#">Home</a></li>
-  <li><a ng-href="#/books/0/25">Books</a></li>
-  <li><a ng-href="#/movies/0/25">Movies</a></li>
-  <li><a>Games</a></li>
-  <li><a ng-href="#/stats">Stats</a></li>
+  <li><a ng-class="{ 'selected': isActive(['/']) }" ng-href="#">Home</a></li>
+  <li>
+    <a ng-class="{ 'selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }" ng-href="#/books/0/25">Books</a>
+    <ul class="sub-menu">
+      <li><a ng-class="{ 'sub-selected': isActive(['/books_create']) }" ng-href="#/books_create">New</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/books/:offset/:limit']) }" ng-href="#/books/0/25">See Books</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/books_table','/books_table/order_by/:order_by']) }" ng-href="#/books_table">See Books List</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/books_table/read']) }" ng-href="#/books_table/read">To Read List</a></li>
+    </ul>
+  </li>
+  <li>
+    <a ng-class="{ 'selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }" ng-href="#/movies/0/25">Movies</a>
+    <ul class="sub-menu">
+      <li><a ng-class="{ 'sub-selected': isActive(['/movies_create']) }" ng-href="#/movies_create">New</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/movies/:offset/:limit']) }" ng-href="#/movies/0/25">See Movies</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/movies_table', '/movies_table/order_by/:order_by']) }" ng-href="#/movies_table">See Movies List</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/movies_table/watch']) }" ng-href="#/movies_table/watch">To Watch List</a></li>
+    </ul>
+  </li>
+  <li>
+    <a ng-class="{ 'selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }" ng-href="#/games/0/25">Games</a>
+    <ul class="sub-menu">
+      <li><a ng-class="{ 'sub-selected': isActive(['/games_create']) }" ng-href="#/games_create">New</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/games/:offset/:limit']) }" ng-href="#/games/0/25">See Games</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/games_table', '/games_table/order_by/:order_by']) }" ng-href="#/games_table">See Games List</a></li>
+      <li><a ng-class="{ 'sub-selected': isActive(['/games_table/play']) }" ng-href="#/games_table/play">To Play List</a></li>
+    </ul>
+  </li>
+  <li><a ng-class="{ 'selected': isActive(['/stats']) }" ng-href="#/stats">Stats</a></li>
+  <li><a ng-class="{ 'selected': isActive(['/settings']) }" ng-href="#/settings">Settings</a></li>
 </ul>

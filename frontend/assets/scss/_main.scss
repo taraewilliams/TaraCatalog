@@ -3,7 +3,7 @@ body{}
 main{
     width: calc(100% - 200px);
     left: 200px;
-    padding: 75px;
+    padding: 50px;
     position: relative;
     box-sizing: border-box;
 
@@ -22,7 +22,7 @@ main{
         box-sizing: border-box;
 
         img{
-          width: 250px;
+          width: 400px;
           display: block;
         }
 
@@ -59,6 +59,8 @@ main{
         height: 50px;
         font-size: 15px;
         cursor:pointer;
+        -webkit-transition: background-color 0.5s;
+        transition: background-color 0.5s;
       }
       button:focus{
         outline:none;
@@ -78,10 +80,32 @@ main{
     font-size: 15px;
     cursor:pointer;
     margin:20px;
+    -webkit-transition: background-color 0.5s;
+    transition: background-color 0.5s;
 }
 
 .basic-button:hover{
   background-color:$light-red;
+}
+
+.table-button{
+  width: 100%;
+  height: 25px;
+  font-size: 12px;
+  margin: 1px;
+}
+
+.table-button-2{
+  width: 100%;
+  height: auto;
+  font-size: 12px;
+  margin: 1px;
+  min-height:25px;
+}
+
+.on-read-list{
+  background-color:black;
+  color:white;
 }
 
 .top-buttons{
@@ -107,14 +131,15 @@ main{
   }
 
   .location-dot{
-      background-color: #8CEE7D;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      display: inline-block;
+      background-color: $light-green;
+      width:5px;
   }
   .location-dot-away{
       background-color: red;
+  }
+
+  img{
+    width:20px;
   }
 }
 

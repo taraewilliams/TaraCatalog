@@ -6,10 +6,6 @@
 
     <!-- Fonts -->
 
-    <!-- Styles -->
-    <link href="assets/css/styles.css" rel="stylesheet">
-
-
     <!-- Angular Scripts -->
     <script src="node_modules/angular/angular.min.js"></script>
     <script src="node_modules/angular-route/angular-route.min.js"></script>
@@ -31,17 +27,27 @@
     <!-- Controllers -->
     <script src="controllers/ApplicationController.js"></script>
     <script src="controllers/site/HomeController.js"></script>
-    <script src="controllers/site/books/BooksController.js"></script>
+
     <script src="controllers/site/books/BooksCreateController.js"></script>
-    <script src="controllers/site/books/BooksTableController.js"></script>
     <script src="controllers/site/books/BooksUpdateController.js"></script>
-    <script src="controllers/site/movies/MoviesController.js"></script>
+
     <script src="controllers/site/movies/MoviesCreateController.js"></script>
-    <script src="controllers/site/movies/MoviesTableController.js"></script>
     <script src="controllers/site/movies/MoviesUpdateController.js"></script>
+
+    <script src="controllers/site/games/GamesCreateController.js"></script>
+    <script src="controllers/site/games/GamesUpdateController.js"></script>
+
+    <script src="controllers/site/AddController.js"></script>
+    <script src="controllers/site/ListController.js"></script>
+    <script src="controllers/site/TableController.js"></script>
+    <script src="controllers/site/ToDoController.js"></script>
     <script src="controllers/site/StatsController.js"></script>
+    <script src="controllers/site/SettingsController.js"></script>
     <script src="controllers/site/404Controller.js"></script>
 
+    <!-- Styles -->
+    <!-- <link href="assets/css/styles.css" rel="stylesheet"> -->
+    <link ng-href="assets/css/styles_{{color_scheme}}.css" rel="stylesheet">
 
     <!-- Services -->
     <script src="services/RequestService.js"></script>

@@ -1,6 +1,6 @@
 <h6 ng-click="toggleFilter()">Filter Results</h6>
 
-<form ng-submit="clearFilter()" ng-if="showFilter">
+<form ng-submit="sortBy(sortVal, filter)" ng-if="showFilter">
 
     <section>
         <label for="title">Title<br>
@@ -9,6 +9,10 @@
 
         <label for="edition">Edition<br>
             <input type="text" name="edition" id="edition" ng-model="filter.edition" placeholder="Edition...">
+        </label>
+
+        <label for="season">Season<br>
+            <input type="text" name="season" id="season" ng-model="filter.season" placeholder="Season...">
         </label>
     </section>
 
@@ -29,7 +33,13 @@
     </section>
 
     <section>
-        <button type="submit">Clear Results</button>
+        <label for="location">Location<br>
+          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+
+        <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
+        <button type="submit">Filter Results</button>
     </section>
 
 </form>

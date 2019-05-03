@@ -1,0 +1,21 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-show="items.length > 0">
+
+  <h1>Games</h1>
+
+  <div class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
+
+  <ul class="books-list-pic">
+      <li ng-repeat="item in items">
+          <button name="Edit Game" class="left-button" ng-click="goToPath('/games_update/', item.id)">Edit</button>
+          <button name="Delete Game" ng-click="deleteItem(item.id)">X</button>
+          <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="../backend/public/{{item.image}}"/>
+          <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+          <h6>{{item.title}}</h6>
+      </li>
+  </ul>
+
+  <div ng-include="'views/site/subviews/_pagination.html'"></div>
+
+</main>

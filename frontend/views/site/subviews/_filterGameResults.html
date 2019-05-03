@@ -1,0 +1,29 @@
+<h6 ng-click="toggleFilter()">Filter Results</h6>
+
+<form ng-submit="sortBy(sortVal, filter)"  ng-if="showFilter">
+
+    <section>
+        <label for="title">Title<br>
+            <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
+        </label>
+    </section>
+
+    <section>
+        <label for="platform">Platform<br>
+            <input type="text" name="platform" id="platform" ng-model="filter.platform" placeholder="Platform...">
+        </label>
+    </section>
+
+    <section>
+        <label for="location">Location<br>
+          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+    </section>
+
+    <section>
+        <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
+        <button type="submit">Filter Results</button>
+    </section>
+
+</form>

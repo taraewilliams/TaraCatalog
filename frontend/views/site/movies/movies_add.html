@@ -1,0 +1,16 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-show="items.length > 0">
+
+  <h1>Add Movies to Watch List</h1>
+
+  <ul class="add-read-list">
+      <li ng-repeat="item in items">
+          <div ng-if="!item.season"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
+          <div ng-if="item.season"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}, {{item.season}}</div>
+      </li>
+  </ul>
+
+  <button class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Movies</button>
+
+</main>

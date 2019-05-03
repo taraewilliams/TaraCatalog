@@ -1,0 +1,26 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main>
+
+  <h1>Settings</h1>
+
+  <form ng-submit="changeStyle(color)">
+
+      <section>
+        <label for="color">Select Color Scheme<br>
+            <select ng-change="changeStyle(color)" ng-model="color">
+                <option value="blue">Blue</option>
+                <option value="gray">Gray</option>
+                <option value="green">Green</option>
+                <option value="orange">Orange</option>
+                <option value="pink">Pink</option>
+                <option value="purple">Purple</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+            </select>
+        </label>
+      <section>
+
+  </form>
+
+</main>

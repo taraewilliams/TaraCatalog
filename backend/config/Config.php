@@ -14,8 +14,9 @@ class Config
     public static function DBTables()
     {
         return (object) array(
-          "book" => "book",
-          "movie" => "movie"
+          "book"  => "book",
+          "movie" => "movie",
+          "game"  => "game"
         );
     }
 

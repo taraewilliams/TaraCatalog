@@ -1,0 +1,17 @@
+$lighter-red: #f2ccff;
+$light-red: #df80ff;
+$medium-red: #ac00e6;
+$dark-red: #600080;
+$darker-red: #260033;
+
+$font-light:white;
+$font-medium:gray;
+$font-dark:black;
+
+$light-green: #8CEE7D;
+
+@import "reset";
+@import "menu";
+@import "main";
+@import "books";
+@import "stats";

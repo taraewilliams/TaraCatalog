@@ -45,14 +45,15 @@ app.controller('BooksCreateController', function($scope, CONFIG, RequestService,
     if(!$scope.isEmpty($scope.book.title))
     {
         RequestService.post(url, $scope.book, function(data) {
-            console.log("Book was created.")
+            alert("Book was created.")
             clearBook();
+            window.scrollTo(0,0);
 
         }, function(error, status) {
             console.log(error.message);
         });
     }else{
-        console.log("Error: title is required.")
+        alert("Title is required.")
     }
   };
 

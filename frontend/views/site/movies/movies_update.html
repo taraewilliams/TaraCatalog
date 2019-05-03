@@ -14,6 +14,10 @@
         <input type="text" name="edition" id="edition" ng-model="movie_clone.edition" placeholder="Edition...">
     </label>
 
+    <label for="season">Season<br>
+        <input type="text" name="season" id="season" ng-model="movie_clone.season" placeholder="Season...">
+    </label>
+
     <label for="format">Format<br>
         <input type="radio" ng-model="movie_clone.format" value="DVD"> DVD<br>
         <input type="radio" ng-model="movie_clone.format" value="Blu-Ray"> Blu-Ray<br>
@@ -24,6 +28,11 @@
         <input type="radio" ng-model="movie_clone.content_type" value="Live Action"> Live Action<br>
         <input type="radio" ng-model="movie_clone.content_type" value="Anime"> Anime<br>
         <input type="radio" ng-model="movie_clone.content_type" value="Animated"> Animated<br>
+    </label>
+
+    <label for="location">Location<br>
+      <input type="radio" ng-model="movie_clone.location" value="Apartment"> Apartment<br>
+      <input type="radio" ng-model="movie_clone.location" value="Home"> Home<br>
     </label>
 
     <label for="image">Image<br>

@@ -1,46 +1,22 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="movies.length > 0">
+<main ng-show="items.length > 0">
 
   <h1>Movies</h1>
 
-  <section class="top-buttons">
-    <button ng-click="goToPath('/movies_table')" class="basic-button">Go to Table View</button>
-    <button ng-click="goToPath('/movies_create')" class="basic-button">Create New</button>
-  </section>
+  <div class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
 
-  <ul class="books-list">
-
-    <li ng-repeat="movie in movies">
-      <a>
-        <img ng-if="!isEmpty(movie.image)" alt="Movie Cover" ng-src="../backend/public/{{movie.image}}"/>
-        <section class="movie-section">
-          <h6>{{movie.title}}</h6>
-
-          <div>
-            <p ng-if="movie.edition">{{movie.edition}}</p>
-            <p ng-if="movie.format">Format: {{movie.format}}</p>
-            <p ng-if="movie.content_type">{{movie.content_type}}</p>
-          </div>
-          <div class="list-buttons">
-            <button class="books-button" ng-click="goToPath('/movies_update/', movie.id)">Update</button>
-            <button class="books-button" ng-click="deleteMovie(movie.id)">Delete</button>
-          </div>
-        </section>
-      </a>
-    </li>
-
+  <ul class="books-list-pic">
+      <li ng-repeat="item in items">
+          <button name="Edit Movie" class="left-button" ng-click="goToPath('/movies_update/', item.id)">Edit</button>
+          <button name="Delete Movie" ng-click="deleteItem(item.id)">X</button>
+          <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="../backend/public/{{item.image}}"/>
+          <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+          <h6 ng-if="!isEmpty(item.season)">{{item.title}}, {{item.season}}</h6>
+          <h6 ng-if="isEmpty(item.season)">{{item.title}}</h6>
+      </li>
   </ul>
 
-  <!-- <div class="filter-form" ng-include="'views/site/subviews/_filterBookResults.html'"></div> -->
-
-
-  <div class="pagination">
-    <a ng-click="skipToFinalPage('backward', pages, '/movies/')"><<</a>
-    <a ng-click="skipOnePage('backward', pages, '/movies/')"><</a>
-    <a ng-class="{ 'selected': page.active }" ng-if="page.current" ng-repeat="page in pages" ng-click="switchPage(page, '/movies/')">{{page.num}}</a>
-    <a ng-click="skipOnePage('forward', pages, '/movies/')">></a>
-    <a ng-click="skipToFinalPage('forward', pages, '/movies/')">>></a>
-  </div>
+  <div ng-include="'views/site/subviews/_pagination.html'"></div>
 
 </main>

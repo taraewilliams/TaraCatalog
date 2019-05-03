@@ -1,0 +1,58 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main>
+
+    <h1>Games ( {{ item_length }} )</h1>
+
+    <!-- Game Filter -->
+    <div class="filter-form" ng-include="'views/site/subviews/_filterGameResults.html'"></div>
+
+    <!-- Games Table Order By -->
+    <form ng-submit="sortBy(sortVal, filter)">
+        <section>
+            <label for="sortVal">Sort By:<br>
+                <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
+                    <option value="none">None</option>
+                    <option value="title">Title</option>
+                    <option value="platform">Platform</option>
+                    <option value="location">Location</option>
+                </select>
+            </label>
+        </section>
+    </form>
+
+    <!-- Games Table -->
+    <p ng-show="items.length <= 0">No matching games</p>
+
+    <table class="standard-table" ng-show="items.length > 0">
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Platform</th>
+            <th colspan="2">Location</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="7">{{ item.title }}</th>
+
+            <td ng-if="!item.isHeader">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader">{{item.title}}</td>
+            <td ng-if="!item.isHeader">{{item.platform}}</td>
+            <td ng-if="!item.isHeader">{{item.location}}</td>
+            <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+            <td ng-if="!item.isHeader">
+                <button class="basic-button table-button" ng-click="goToPath('/games_update/', item.id)">Update</button>
+                <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
+            </td>
+            <td ng-if="!item.isHeader && item.play_list">
+                <button class="basic-button table-button-2 on-read-list" ng-click="toggleReadList(item.id,0)">Remove from Play List</button>
+            </td>
+            <td ng-if="!item.isHeader && !item.play_list">
+                <button class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Play List</button>
+            </td>
+        </tr>
+    </table>
+
+</main>

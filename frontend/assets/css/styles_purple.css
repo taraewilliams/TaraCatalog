@@ -1,0 +1,392 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline; }
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block; }
+
+body {
+  line-height: 1; }
+
+ol, ul {
+  list-style: none; }
+
+blockquote, q {
+  quotes: none; }
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none; }
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+.main-menu {
+  width: 200px;
+  height: 100%;
+  background-color: #df80ff;
+  position: fixed;
+  color: white;
+  padding: 25px;
+  box-sizing: border-box;
+  text-align: right;
+  z-index: 100;
+  overflow-y: scroll; }
+  .main-menu li {
+    display: inline-block;
+    width: 100%;
+    height: 50px;
+    line-height: 50px; }
+    .main-menu li a {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      color: white;
+      text-decoration: none; }
+    .main-menu li a:hover {
+      color: #600080; }
+    .main-menu li .selected {
+      text-decoration: underline; }
+  .main-menu .sub-menu li {
+    display: block;
+    height: 25px;
+    line-height: 25px; }
+    .main-menu .sub-menu li a {
+      font-size: 14px;
+      color: #600080; }
+    .main-menu .sub-menu li a:hover {
+      color: white; }
+    .main-menu .sub-menu li .sub-selected {
+      background-color: #600080;
+      color: white;
+      border-radius: 15px;
+      padding-right: 10px; }
+
+main {
+  width: calc(100% - 200px);
+  left: 200px;
+  padding: 50px;
+  position: relative;
+  box-sizing: border-box; }
+  main h1 {
+    color: #260033; }
+  main form {
+    color: #260033; }
+    main form label {
+      display: block;
+      min-height: 75px;
+      font-size: 20px;
+      padding: 10px;
+      box-sizing: border-box; }
+      main form label img {
+        width: 400px;
+        display: block; }
+      main form label input {
+        width: 50%;
+        height: 30px;
+        border-radius: 5px;
+        font-size: 15px; }
+      main form label input:focus {
+        outline: none; }
+      main form label input[type="radio"] {
+        width: 25px;
+        vertical-align: middle; }
+      main form label select {
+        width: 150px;
+        height: 30px;
+        margin: 10px;
+        font-size: 15px; }
+    main form button {
+      border: none;
+      background-color: #600080;
+      color: white;
+      width: 200px;
+      height: 50px;
+      font-size: 15px;
+      cursor: pointer;
+      -webkit-transition: background-color 0.5s;
+      transition: background-color 0.5s; }
+    main form button:focus {
+      outline: none; }
+    main form button:hover {
+      background-color: #df80ff; }
+
+.basic-button {
+  border: none;
+  background-color: #600080;
+  color: white;
+  width: 200px;
+  height: 50px;
+  font-size: 15px;
+  cursor: pointer;
+  margin: 20px;
+  -webkit-transition: background-color 0.5s;
+  transition: background-color 0.5s; }
+
+.basic-button:hover {
+  background-color: #df80ff; }
+
+.table-button {
+  width: 100%;
+  height: 25px;
+  font-size: 12px;
+  margin: 1px; }
+
+.table-button-2 {
+  width: 100%;
+  height: auto;
+  font-size: 12px;
+  margin: 1px;
+  min-height: 25px; }
+
+.on-read-list {
+  background-color: black;
+  color: white; }
+
+.top-buttons {
+  display: block; }
+
+.standard-table {
+  border-collapse: collapse;
+  width: 100%; }
+  .standard-table th {
+    font-weight: bold; }
+  .standard-table td, .standard-table th {
+    border: 1px solid #f2ccff;
+    text-align: left;
+    padding: 8px; }
+  .standard-table tr:nth-child(even) {
+    background-color: #f2ccff; }
+  .standard-table .location-dot {
+    background-color: #8CEE7D;
+    width: 5px; }
+  .standard-table .location-dot-away {
+    background-color: red; }
+  .standard-table img {
+    width: 20px; }
+
+h1, h2, h3, h4, h5, h6 {
+  padding: 10px; }
+
+h1 {
+  font-size: 40px; }
+
+h2 {
+  font-size: 36px; }
+
+h3 {
+  font-size: 32px; }
+
+h4 {
+  font-size: 28px; }
+
+h5 {
+  font-size: 24px; }
+
+h6 {
+  font-size: 20px; }
+
+p {
+  font-size: 18px; }
+
+a {
+  font-size: 18px; }
+
+.books-list {
+  width: 100%;
+  display: inline-block; }
+  .books-list li {
+    height: auto;
+    background-color: #600080;
+    margin: 15px;
+    border: 5px solid #260033;
+    box-sizing: border-box;
+    min-height: 200px;
+    width: calc(100% - 100px);
+    float: right; }
+    .books-list li img {
+      height: auto;
+      width: 150px;
+      vertical-align: middle;
+      position: absolute;
+      left: 0px; }
+    .books-list li .movie-section div {
+      width: 78%; }
+    .books-list li section {
+      display: inline-block;
+      vertical-align: top;
+      color: white;
+      padding: 15px;
+      box-sizing: border-box;
+      width: 100%; }
+      .books-list li section div {
+        display: inline-block;
+        width: 39%;
+        vertical-align: top; }
+      .books-list li section .list-buttons {
+        width: 20%;
+        min-width: 100px; }
+      .books-list li section p {
+        color: #f2ccff;
+        margin: 5px;
+        box-sizing: border-box; }
+      .books-list li section .location {
+        display: inline-block;
+        width: 25px;
+        height: 25px;
+        background-color: #8CEE7D;
+        border-radius: 50%; }
+      .books-list li section .location-away {
+        background-color: red; }
+      .books-list li section .books-button {
+        display: block;
+        width: 75%;
+        height: 30px;
+        background-color: #f2ccff;
+        color: #260033;
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+        margin: 10px; }
+
+.pagination {
+  display: inline-block;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%); }
+  .pagination a {
+    color: #260033;
+    float: left;
+    padding: 8px 16px;
+    text-decoration: none;
+    cursor: pointer; }
+  .pagination a:hover {
+    color: #df80ff; }
+  .pagination .selected {
+    color: #df80ff; }
+
+.filter-form {
+  display: block;
+  width: 100%;
+  vertical-align: top;
+  padding: 25px 0 25px 0;
+  box-sizing: border-box; }
+  .filter-form h6 {
+    text-decoration: underline; }
+  .filter-form h6:hover {
+    cursor: pointer;
+    color: #f2ccff; }
+  .filter-form form section {
+    width: 24%;
+    display: inline-block;
+    vertical-align: top; }
+  .filter-form form button {
+    width: 48%;
+    min-height: 25px;
+    height: auto;
+    font-size: 12px;
+    display: inline-block; }
+  .filter-form form label {
+    font-size: 15px;
+    min-height: auto;
+    padding: 5px; }
+    .filter-form form label input {
+      width: 100%;
+      font-size: 12px;
+      height: 20px; }
+
+.books-list-pic li {
+  background-color: #600080;
+  display: inline-block;
+  border-radius: 10px;
+  margin: 10px;
+  border: 2px solid #600080;
+  width: 200px;
+  position: relative;
+  vertical-align: top; }
+  .books-list-pic li img {
+    display: block;
+    height: auto;
+    width: 200px;
+    border-radius: 10px 10px 0 0; }
+  .books-list-pic li h6 {
+    color: white;
+    display: block;
+    font-size: 16px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap; }
+  .books-list-pic li h6:hover {
+    overflow: visible;
+    white-space: normal; }
+  .books-list-pic li button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #df80ff;
+    color: white;
+    border: 0;
+    -webkit-transition: background-color 0.5s;
+    transition: background-color 0.5s; }
+  .books-list-pic li button:hover {
+    cursor: pointer;
+    background-color: #f2ccff; }
+  .books-list-pic li button:focus {
+    outline: none; }
+  .books-list-pic li .left-button {
+    right: 50px; }
+
+.basic-url {
+  padding: 20px 0 20px 0; }
+  .basic-url a {
+    color: #600080;
+    text-decoration: none; }
+  .basic-url a:hover {
+    color: #df80ff; }
+
+.add-read-list li {
+  padding: 10px;
+  color: #600080; }
+  .add-read-list li a:hover {
+    cursor: pointer; }
+
+.add-button {
+  position: fixed;
+  top: 75px;
+  right: 50px;
+  margin: 0; }
+
+.stat-section {
+  display: block;
+  margin-bottom: 40px;
+  box-sizing: border-box; }
+  .stat-section h2 {
+    border-bottom: 5px solid #600080; }

@@ -56,7 +56,7 @@
         display: inline-block;
         width: 25px;
         height: 25px;
-        background-color: #8CEE7D;
+        background-color: $light-green;
         border-radius: 50%;
       }
       .location-away{
@@ -103,7 +103,7 @@
   display: block;
   width: 100%;
   vertical-align: top;
-  padding: 25px 0 50px 0;
+  padding: 25px 0 25px 0;
   box-sizing: border-box;
 
   h6{
@@ -123,9 +123,11 @@
     }
 
     button{
-      width: 100%;
-      height: 25px;
+      width: 48%;
+      min-height: 25px;
+      height: auto;
       font-size: 12px;
+      display: inline-block;
     }
 
     label{
@@ -140,4 +142,86 @@
       }
     }
   }
+}
+
+.books-list-pic{
+    li{
+        background-color: $dark-red;
+        display: inline-block;
+        border-radius: 10px;
+        margin: 10px;
+        border: 2px solid $dark-red;
+        width:200px;
+        position:relative;
+        vertical-align:top;
+        img{
+            display: block;
+            height: auto;
+            width: 200px;
+            border-radius: 10px 10px 0 0;
+        }
+        h6{
+            color:$font-light;
+            display:block;
+            font-size: 16px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space:nowrap;
+        }
+        h6:hover{
+            overflow:visible;
+            white-space:normal;
+        }
+        button{
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color:$light-red;
+            color:$font-light;
+            border:0;
+            -webkit-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+        }
+        button:hover{
+            cursor:pointer;
+            background-color:$lighter-red;
+        }
+        button:focus{
+            outline:none;
+        }
+        .left-button{
+            right: 50px;
+        }
+    }
+}
+
+.basic-url{
+    padding: 20px 0 20px 0;
+    a{
+        color:$dark-red;
+        text-decoration:none;
+    }
+    a:hover{
+        color:$light-red;
+    }
+}
+
+.add-read-list{
+    li{
+        padding: 10px;
+        color: $dark-red;
+        a:hover{
+            cursor:pointer;
+        }
+    }
+}
+
+.add-button{
+    position: fixed;
+    top: 75px;
+    right: 50px;
+    margin:0;
 }

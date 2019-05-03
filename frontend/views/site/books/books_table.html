@@ -1,37 +1,72 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="books.length > 0">
+<main>
 
-  <h1>Books ( {{ books.length - totalAddedLetters }} )</h1>
+    <h1>Books ( {{ item_length }} )</h1>
 
-  <button ng-click="goToPath('/books/0/25')" class="basic-button">Go to List View</button>
+    <!-- Book Filter -->
+    <div class="filter-form" ng-include="'views/site/subviews/_filterBookResults.html'"></div>
 
-  <button ng-click="goToPath('/books_create')" class="basic-button">Create New</button>
+    <!-- Book Table Order By -->
+    <form ng-submit="sortBy(sortVal, filter)">
+        <section>
+            <label for="sortVal">Sort By:<br>
+                <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
+                    <option value="none">None</option>
+                    <option value="title">Title</option>
+                    <option value="author">Author</option>
+                    <option value="volume">Volume</option>
+                    <option value="isbn">ISBN</option>
+                    <option value="cover_type">Cover Type</option>
+                    <option value="content_type">Content Type</option>
+                    <option value="location">Location</option>
+                </select>
+            </label>
+        </section>
+    </form>
 
-  <div class="filter-form" ng-include="'views/site/subviews/_filterBookResults.html'"></div>
+    <!-- Book Table -->
+    <p ng-show="items.length <= 0">No matching books</p>
 
-  <table class="standard-table">
-    <tr>
-      <th>Title</th>
-      <th>Author</th>
-      <th>Volume</th>
-      <th>ISBN</th>
-      <th>Cover Type</th>
-      <th>Content Type</th>
-      <th>Location</th>
-    </tr>
-    <tr ng-repeat="book in books" ng-if="isFilterResult(book)">
-      <th ng-if="book.isHeader" colspan="7">{{ book.title }}</th>
-      <td ng-if="!book.isHeader">{{book.title}}</td>
-      <td ng-if="!book.isHeader">{{book.author}}</td>
-      <td ng-if="book.volume && !book.isHeader">{{book.volume}}</td>
-      <td ng-if="!book.volume && !book.isHeader"></td>
-      <td ng-if="!book.isHeader">{{book.isbn}}</td>
-      <td ng-if="!book.isHeader">{{book.cover_type}}</td>
-      <td ng-if="!book.isHeader">{{book.content_type}}</td>
-      <td ng-if="!book.isHeader">{{book.location}} <div class="location-dot" ng-class="{'location-dot-away': book.location != 'Apartment'}"></div></td>
-    </tr>
-  </table>
+    <table class="standard-table" ng-show="items.length > 0">
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Volume</th>
+            <th>ISBN</th>
+            <th>Cover Type</th>
+            <th>Content Type</th>
+            <th colspan="2">Location</th>
+            <th></th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="11">{{ item.title }}</th>
+
+            <td ng-if="!item.isHeader">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader">{{item.title}}</td>
+            <td ng-if="!item.isHeader">{{item.author}}</td>
+            <td ng-if="!item.isHeader && item.volume">{{item.volume}}</td>
+            <td ng-if="!item.isHeader && !item.volume"></td>
+            <td ng-if="!item.isHeader">{{item.isbn}}</td>
+            <td ng-if="!item.isHeader">{{item.cover_type}}</td>
+            <td ng-if="!item.isHeader">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader">{{item.location}}</td>
+            <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+            <td ng-if="!item.isHeader">
+                <button class="basic-button table-button" ng-click="goToPath('/books_update/', item.id)">Update</button>
+                <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
+            </td>
+            <td ng-if="!item.isHeader && item.read_list">
+                <button class="basic-button table-button-2 on-read-list" ng-click="toggleReadList(item.id,0)">Remove from Read List</button>
+            </td>
+            <td ng-if="!item.isHeader && !item.read_list">
+                <button class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Read List</button>
+            </td>
+        </tr>
+    </table>
 
 
 </main>

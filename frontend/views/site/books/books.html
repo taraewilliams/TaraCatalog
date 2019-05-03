@@ -1,50 +1,22 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="books.length > 0">
+<main ng-show="items.length > 0">
 
   <h1>Books</h1>
 
-  <section class="top-buttons">
-    <button ng-click="goToPath('/books_table')" class="basic-button">Go to Table View</button>
-    <button ng-click="goToPath('/books_create')" class="basic-button">Create New</button>
-  </section>
+  <div class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
 
-  <ul class="books-list">
-
-    <li ng-repeat="book in books">
-        <img ng-if="!isEmpty(book.image)" alt="Book Cover" ng-src="../backend/public/{{book.image}}"/>
-        <section>
-          <h6 ng-if="!book.volume">{{book.title}}</h6>
-          <h6 ng-if="book.volume">{{book.title}}, Volume {{book.volume}}</h6>
-
-          <div>
-            <p ng-if="book.author">by {{book.author}}</p>
-            <p ng-if="book.isbn">ISBN: {{book.isbn}}</p>
-            <p ng-if="book.location">( {{book.location}} )</p>
-          </div>
-          <div>
-            <p ng-if="book.cover_type">{{book.cover_type}}</p>
-            <p ng-if="book.content_type">{{book.content_type}}</p>
-            <div class="location" ng-class="{'location-away': book.location != 'Apartment'}"></div>
-          </div>
-          <div class="list-buttons">
-            <button class="books-button" ng-click="goToPath('/books_update/', book.id)">Update</button>
-            <button class="books-button" ng-click="deleteBook(book.id)">Delete</button>
-          </div>
-        </section>
-    </li>
-
+  <ul class="books-list-pic">
+      <li ng-repeat="item in items">
+          <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', item.id)">Edit</button>
+          <button name="Delete Book" ng-click="deleteItem(item.id)">X</button>
+          <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="../backend/public/{{item.image}}"/>
+          <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+          <h6 ng-if="!item.volume">{{item.title}}</h6>
+          <h6 ng-if="item.volume">{{item.title}}, Volume {{item.volume}}</h6>
+      </li>
   </ul>
 
-  <!-- <div class="filter-form" ng-include="'views/site/subviews/_filterBookResults.html'"></div> -->
-
-
-  <div class="pagination">
-    <a ng-click="skipToFinalPage('backward', pages, '/books/')"><<</a>
-    <a ng-click="skipOnePage('backward', pages, '/books/')"><</a>
-    <a ng-class="{ 'selected': page.active }" ng-if="page.current" ng-repeat="page in pages" ng-click="switchPage(page, '/books/')">{{page.num}}</a>
-    <a ng-click="skipOnePage('forward', pages, '/books/')">></a>
-    <a ng-click="skipToFinalPage('forward', pages, '/books/')">>></a>
-</div>
+  <div ng-include="'views/site/subviews/_pagination.html'"></div>
 
 </main>

@@ -1,0 +1,42 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-show="items.length > 0">
+
+    <h1>Watch List ( {{ item_length}} )</h1>
+
+    <!-- Go to Add to Watch List Page -->
+    <div class="basic-url"><a ng-href="#/movies_table/watch_add">+ Add to Watch List</a></div>
+
+    <!-- Movie Table -->
+    <table class="standard-table">
+        <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Season</th>
+            <th>Edition</th>
+            <th>Format</th>
+            <th>Content Type</th>
+            <th colspan="2">Location</th>
+            <th></th>
+
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="9">{{ item.title }}</th>
+
+            <td ng-if="!item.isHeader">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader">{{item.title}}</td>
+            <td ng-if="!item.isHeader">{{item.season}}</td>
+            <td ng-if="!item.isHeader">{{item.edition}}</td>
+            <td ng-if="!item.isHeader">{{item.format}}</td>
+            <td ng-if="!item.isHeader">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader">{{item.location}}</td>
+            <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+            <td ng-if="!item.isHeader">
+                <button class="basic-button table-button-2 on-read-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
+            </td>
+        </tr>
+    </table>
+
+
+</main>

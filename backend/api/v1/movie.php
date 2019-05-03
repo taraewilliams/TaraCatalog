@@ -9,8 +9,8 @@ $app->group('/api', function () use ($app) {
         $resource = "/movies";
 
         /* ========================================================== *
-         * GET
-         * ========================================================== */
+        * GET
+        * ========================================================== */
 
         /* Get all movies */
         $app->get($resource, function ($request, $response, $args) use ($app)
@@ -33,6 +33,67 @@ $app->group('/api', function () use ($app) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
             APIService::response_success($movies);
+        });
+
+        /* Get all movies on the watch list */
+        $app->get($resource . '/watch/list/{watch}', function ($request, $response, $args) use ($app)
+        {
+            $watch = intval($args['watch']);
+            $movies = Movie::get_all_on_watch_list($watch);
+            if($movies === false) {
+                APIService::response_fail("There was a problem getting the movies.", 500);
+            }
+            APIService::response_success($movies);
+        });
+
+        /* Get all movies ordered by a specific field */
+        $app->get($resource . '/order_by/{option}', function ($request, $response, $args) use ($app)
+        {
+            $option = $args['option'];
+            $movies = Movie::get_all_with_order($option);
+            if($movies === false) {
+                APIService::response_fail("There was a problem getting the movies.", 500);
+            }
+            APIService::response_success($movies);
+        });
+
+        /* Get movies for multiple filters */
+        $app->post($resource. '/filter', function () use ($app)
+        {
+            $params = APIService::build_params($_REQUEST, null, array(
+                "title",
+                "format",
+                "edition",
+                "content_type",
+                "location",
+                "season"
+            ));
+
+            $movie = Movie::get_for_filter_params($params);
+            if($movie === false || $movie === null) {
+                APIService::response_fail("There was a problem getting the movies.", 500);
+            }
+            APIService::response_success($movie);
+        });
+
+        /* Get movies for multiple filters with order */
+        $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
+        {
+            $order = $args['order'];
+            $params = APIService::build_params($_REQUEST, null, array(
+                "title",
+                "format",
+                "edition",
+                "content_type",
+                "location",
+                "season"
+            ));
+
+            $movie = Movie::get_for_filter_params($params, $order);
+            if($movie === false || $movie === null) {
+                APIService::response_fail("There was a problem getting the movies.", 500);
+            }
+            APIService::response_success($movie);
         });
 
         /* Get a single movie */
@@ -82,8 +143,10 @@ $app->group('/api', function () use ($app) {
 
 
         /* ========================================================== *
-         * POST
-         * ========================================================== */
+        * POST
+        * ========================================================== */
+
+        /* Create a movie */
         $app->post($resource, function () use ($app)
         {
             $params = APIService::build_params($_REQUEST, array(
@@ -91,7 +154,10 @@ $app->group('/api', function () use ($app) {
                 "format"
             ), array(
                 "edition",
-                "content_type"
+                "content_type",
+                "location",
+                "season",
+                "watch_list"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
@@ -110,15 +176,20 @@ $app->group('/api', function () use ($app) {
         });
 
         /* ========================================================== *
-         * PUT
-         * ========================================================== */
+        * PUT
+        * ========================================================== */
+
+        /* Update a movie */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $params = APIService::build_params($_REQUEST, null, array(
-              "title",
-              "format",
-              "edition",
-              "content_type"
+                "title",
+                "format",
+                "edition",
+                "content_type",
+                "location",
+                "season",
+                "watch_list"
             ));
 
             $id = intval($args["id"]);
@@ -128,9 +199,9 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(isset($params["title"])){
-              $title = $params["title"];
+                $title = $params["title"];
             }else{
-              $title = Movie::get_title_for_id($id);
+                $title = Movie::get_title_for_id($id);
             }
 
             if(isset($files['image'])) {
@@ -146,8 +217,10 @@ $app->group('/api', function () use ($app) {
 
 
         /* ========================================================== *
-         * DELETE
-         * ========================================================== */
+        * DELETE
+        * ========================================================== */
+
+        /* Delete a movie */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $id = intval($args["id"]);

@@ -6,8 +6,10 @@ app.controller('MoviesCreateController', function($scope, CONFIG, RequestService
       $scope.movie = {
         title:"",
         edition:"",
+        season:"",
         format:"",
         content_type:"",
+        location:"",
         image:""
       };
   }
@@ -19,14 +21,15 @@ app.controller('MoviesCreateController', function($scope, CONFIG, RequestService
     if(!$scope.isEmpty($scope.movie.title) && !$scope.isEmpty($scope.movie.format))
     {
         RequestService.post(url, $scope.movie, function(data) {
-            console.log("Movie was created.")
+            alert("Movie was created.")
             clearMovie();
+            window.scrollTo(0,0);
 
         }, function(error, status) {
             console.log(error.message);
         });
     }else{
-        console.log("Error: title and format are required.")
+        alert("Title and format are required.")
     }
   };
 
@@ -34,8 +37,10 @@ app.controller('MoviesCreateController', function($scope, CONFIG, RequestService
     $scope.movie = {
       title:"",
       edition:"",
+      season:"",
       format:"",
       content_type:"",
+      location:"",
       image:""
     };
   };

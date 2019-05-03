@@ -9,8 +9,8 @@ $app->group('/api', function () use ($app) {
         $resource = "/books";
 
         /* ========================================================== *
-         * GET
-         * ========================================================== */
+        * GET
+        * ========================================================== */
 
         /* Get all books */
         $app->get($resource, function ($request, $response, $args) use ($app)
@@ -33,6 +33,69 @@ $app->group('/api', function () use ($app) {
                 APIService::response_fail("There was a problem getting the books.", 500);
             }
             APIService::response_success($books);
+        });
+
+        /* Get all books not on the read list */
+        $app->get($resource . '/read/list/{read}', function ($request, $response, $args) use ($app)
+        {
+            $read = intval($args['read']);
+            $books = Book::get_all_on_read_list($read);
+            if($books === false) {
+                APIService::response_fail("There was a problem getting the books.", 500);
+            }
+            APIService::response_success($books);
+        });
+
+        /* Get all books ordered by a specific field */
+        $app->get($resource . '/order_by/{option}', function ($request, $response, $args) use ($app)
+        {
+            $option = $args['option'];
+            $books = Book::get_all_with_order($option);
+            if($books === false) {
+                APIService::response_fail("There was a problem getting the books.", 500);
+            }
+            APIService::response_success($books);
+        });
+
+        /* Get books for multiple filters */
+        $app->post($resource. '/filter', function () use ($app)
+        {
+            $params = APIService::build_params($_REQUEST, null, array(
+                "title",
+                "author",
+                "volume",
+                "isbn",
+                "cover_type",
+                "content_type",
+                "location"
+            ));
+
+            $book = Book::get_for_filter_params($params);
+            if($book === false || $book === null) {
+                APIService::response_fail("There was a problem getting the books.", 500);
+            }
+            APIService::response_success($book);
+        });
+
+        /* Get books for multiple filters with order */
+        $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
+        {
+            $order = $args['order'];
+            $params = APIService::build_params($_REQUEST, null, array(
+                "title",
+                "author",
+                "volume",
+                "isbn",
+                "cover_type",
+                "content_type",
+                "location"
+            ));
+
+            $book = Book::get_for_filter_params($params, $order);
+            if($book === false || $book === null) {
+                APIService::response_fail("There was a problem getting the books.", 500);
+            }
+            APIService::response_success($book);
         });
 
         /* Get a single book */
@@ -100,10 +163,11 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($titles);
         });
 
-
         /* ========================================================== *
-         * POST
-         * ========================================================== */
+        * POST
+        * ========================================================== */
+
+        /* Create a book */
         $app->post($resource, function () use ($app)
         {
             $params = APIService::build_params($_REQUEST, array(
@@ -114,7 +178,8 @@ $app->group('/api', function () use ($app) {
                 "isbn",
                 "cover_type",
                 "content_type",
-                "location"
+                "location",
+                "read_list"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
@@ -133,18 +198,21 @@ $app->group('/api', function () use ($app) {
         });
 
         /* ========================================================== *
-         * PUT
-         * ========================================================== */
+        * PUT
+        * ========================================================== */
+
+        /* Update a book */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $params = APIService::build_params($_REQUEST, null, array(
-              "title",
-              "author",
-              "volume",
-              "isbn",
-              "cover_type",
-              "content_type",
-              "location"
+                "title",
+                "author",
+                "volume",
+                "isbn",
+                "cover_type",
+                "content_type",
+                "location",
+                "read_list"
             ));
 
             $id = intval($args["id"]);
@@ -154,9 +222,9 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(isset($params["title"])){
-              $title = $params["title"];
+                $title = $params["title"];
             }else{
-              $title = Book::get_title_for_id($id);
+                $title = Book::get_title_for_id($id);
             }
 
             if(isset($files['image'])) {
@@ -172,8 +240,10 @@ $app->group('/api', function () use ($app) {
 
 
         /* ========================================================== *
-         * DELETE
-         * ========================================================== */
+        * DELETE
+        * ========================================================== */
+
+        /* Delete a book */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $id = intval($args["id"]);

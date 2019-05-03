@@ -33,7 +33,7 @@ app.controller('BooksUpdateController', function($scope, $routeParams, CONFIG, R
     var url = CONFIG.api + '/books/' + $scope.book.id;
 
     RequestService.post(url, new_book, function(data) {
-        console.log("Book was updated.");
+        alert("Book was updated.");
     }, function(error, status){
         console.log(error.message);
     });
