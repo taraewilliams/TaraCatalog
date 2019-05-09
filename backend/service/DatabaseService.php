@@ -17,9 +17,7 @@ class DatabaseService
         $question_marks = array_fill(0, count($data), '?');
         $sql = "INSERT INTO " . $table . " (" . implode(array_keys($data), ',' ) .") VALUES (" . implode($question_marks, ',') . ")";
         $sql = str_replace("  ", " ", $sql);
-
         $params = self::build_query_params($data);
-
         $query = $database->prepare($sql);
         $query->execute($params);
         $query->closeCursor();
@@ -151,9 +149,7 @@ class DatabaseService
                 if($value === null || $value === "null" || $value === NULL || $value === "NULL"){
                     $value = NULL;
                 }
-                if($value !== false){
-                    $params[] = $value;
-                }
+                $params[] = $value;
             }
         }
 

@@ -1,83 +1,3 @@
-.books-list{
-  width:100%;
-  display:inline-block;
-
-  li{
-    height: auto;
-    background-color:$dark-red;
-    margin:15px;
-    border: 5px solid $darker-red;
-    box-sizing: border-box;
-    min-height: 200px;
-    width: calc(100% - 100px);
-    float: right;
-
-    img{
-      height: auto;
-      width: 150px;
-      vertical-align: middle;
-      position: absolute;
-      left: 0px;
-    }
-
-    .movie-section{
-      div{
-        width:78%;
-      }
-    }
-
-
-    section{
-      display: inline-block;
-      vertical-align: top;
-      color: $font-light;
-      padding: 15px;
-      box-sizing: border-box;
-      width: 100%;
-
-      div{
-        display:inline-block;
-        width:39%;
-        vertical-align:top;
-      }
-
-      .list-buttons{
-        width: 20%;
-        min-width: 100px;
-      }
-
-      p{
-        color: $lighter-red;
-        margin: 5px;
-        box-sizing: border-box;
-      }
-
-      .location{
-        display: inline-block;
-        width: 25px;
-        height: 25px;
-        background-color: $light-green;
-        border-radius: 50%;
-      }
-      .location-away{
-        background-color:red;
-      }
-
-      .books-button{
-        display: block;
-        width: 75%;
-        height: 30px;
-        background-color: $lighter-red;
-        color: $darker-red;
-        border: none;
-        font-size:15px;
-        cursor:pointer;
-        margin:10px;
-      }
-    }
-  }
-}
-
 .pagination {
   display: inline-block;
   left: 50%;
@@ -141,10 +61,15 @@
         height: 20px;
       }
     }
+    input{
+      width: 100%;
+      font-size: 12px;
+      height: 20px;
+    }
   }
 }
 
-.books-list-pic{
+.items-list-pic{
     li{
         background-color: $dark-red;
         display: inline-block;
@@ -159,6 +84,14 @@
             height: auto;
             width: 200px;
             border-radius: 10px 10px 0 0;
+        }
+        .corner-img{
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 40px;
+            height: auto;
+            border-radius: 5px;
         }
         h6{
             color:$font-light;
@@ -198,18 +131,12 @@
     }
 }
 
-.basic-url{
-    padding: 20px 0 20px 0;
-    a{
-        color:$dark-red;
-        text-decoration:none;
-    }
-    a:hover{
-        color:$light-red;
-    }
+.on-todo-list{
+  background-color:black;
+  color:white;
 }
 
-.add-read-list{
+.add-todo-list{
     li{
         padding: 10px;
         color: $dark-red;

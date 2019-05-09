@@ -10,6 +10,7 @@ use TaraCatalog\Service\FileService;
 class Book
 {
     public $id;
+    public $user_id;
     public $title;
     public $author;
     public $volume;
@@ -20,6 +21,7 @@ class Book
     public $read_list;
     public $image;
     public $row_number;
+    public $type;
 
     public $created;
     public $updated;
@@ -28,6 +30,7 @@ class Book
     public function __construct($data)
     {
         $this->id              = isset($data['id']) ? intval($data['id']) : null;
+        $this->user_id         = isset($data['user_id']) ? intval($data['user_id']) : null;
         $this->title           = isset($data['title']) ? $data['title'] : null;
         $this->author          = isset($data['author']) ? $data['author'] : null;
         $this->volume          = isset($data['volume']) ? intval($data['volume']) : null;
@@ -38,6 +41,7 @@ class Book
         $this->read_list       = isset($data['read_list']) ? (boolean) $data['read_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
+        $this->type            = "book";
 
         $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
         $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
@@ -59,6 +63,7 @@ class Book
 
         $data = array(
             "title"          => $book->title,
+            "user_id"        => $book->user_id,
             "author"         => $book->author,
             "volume"         => $book->volume,
             "isbn"           => $book->isbn,
@@ -88,9 +93,9 @@ class Book
     * ========================================================== */
 
     /* Get all books */
-    public static function get_all()
+    public static function get_all($user_id)
     {
-        $where = "WHERE active = 1";
+        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,author,volume";
         $result = Book::get($where, $order_by);
         if ($result === false){
@@ -105,9 +110,9 @@ class Book
     }
 
     /* Get all books on the read list */
-    public static function get_all_on_read_list($read)
+    public static function get_all_on_read_list($user_id, $read)
     {
-        $where = "WHERE active = 1 AND read_list = " . $read;
+        $where = "WHERE active = 1 AND user_id = " . $user_id . " AND read_list = " . $read;
         $order_by = "ORDER BY title,author,volume";
         $result = Book::get($where, $order_by);
         if ($result === false){
@@ -122,9 +127,9 @@ class Book
     }
 
     /* Get a set number of books */
-    public static function get_all_with_limit($offset = 0, $limit = 50)
+    public static function get_all_with_limit($user_id, $offset = 0, $limit = 50)
     {
-        $where = "WHERE active = 1";
+        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,author,volume";
         $limit_sql = "LIMIT " . $offset . ", " . $limit;
         $result = Book::get($where, $order_by, $limit_sql);
@@ -140,9 +145,9 @@ class Book
     }
 
     /* Get all books ordered by a specific field */
-    public static function get_all_with_order($order)
+    public static function get_all_with_order($user_id, $order)
     {
-        $where = "WHERE active = 1";
+        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY ". $order;
         $result = Book::get($where, $order_by);
         if ($result === false){
@@ -157,9 +162,9 @@ class Book
     }
 
     /* Get books for multiple filters */
-    public static function get_for_filter_params($data, $order=null){
+    public static function get_for_filter_params($user_id, $data, $order=null){
 
-        $where = "WHERE active = 1";
+        $where = "WHERE active = 1 AND user_id = " . $user_id;
         foreach ($data as $key => $value) {
             $where = $where . (isset($data[$key]) ? " AND " . $key . " LIKE '%" . $data[$key] . "%'" : "");
         }
@@ -176,10 +181,37 @@ class Book
         }
     }
 
+    /* Get books for search */
+    public static function get_for_search($user_id, $data, $order=null){
+
+        $where = "WHERE (";
+        $iter = 1;
+        foreach ($data as $key => $value) {
+            if ($iter == 1){
+                $where = $where . (isset($data[$key]) ? $key . " LIKE '%" . $data[$key] . "%'" : "");
+            }else{
+                $where = $where . (isset($data[$key]) ? " OR " . $key . " LIKE '%" . $data[$key] . "%'" : "");
+            }
+            $iter += 1;
+        }
+        $where = $where . ") AND active = 1 AND user_id = " . $user_id;
+        $order_by = is_null($order) ? "ORDER BY title,author,volume" : "ORDER BY " . $order;
+        $result = Book::get($where, $order_by);
+        if ($result === false){
+            return false;
+        }else{
+            $books = array();
+            foreach( $result as $row ) {
+                $books[] = new Book($row);
+            }
+            return $books;
+        }
+    }
+
     /* Get a single book */
-    public static function get_from_id($id)
+    public static function get_from_id($user_id, $id)
     {
-        $where = array("id" => $id);
+        $where = array("id" => $id, "user_id" => $user_id);
         $result = DatabaseService::get(Config::DBTables()->book, $where);
 
         if($result === false || $result === null) {
@@ -191,25 +223,11 @@ class Book
         return new Book($result[0]);
     }
 
-    /* Generic get books function */
-    private static function get($where = null, $order_by = null, $limit = null){
-        $database = Database::instance();
-        $where_sql = is_null($where) ? "" : " " . $where;
-        $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
-        $limit_sql = is_null($limit) ? "" : " " . $limit;
-        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . CONFIG::DBTables()->book . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        return $result;
-    }
-
     /* Count all books */
-    public static function count_books()
+    public static function count_books($user_id)
     {
         $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num FROM " . CONFIG::DBTables()->book . " WHERE active = 1";
+        $sql = "SELECT COUNT(*) as num FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id;;
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetch(\PDO::FETCH_ASSOC);
@@ -222,10 +240,10 @@ class Book
     }
 
     /* Count books with different content types */
-    public static function get_all_content_type_counts()
+    public static function get_all_content_type_counts($user_id)
     {
         $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, content_type as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 GROUP BY content_type";
+        $sql = "SELECT COUNT(*) as num, content_type as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY content_type";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -238,10 +256,10 @@ class Book
     }
 
     /* Count books with different cover types */
-    public static function get_all_cover_type_counts()
+    public static function get_all_cover_type_counts($user_id)
     {
         $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, cover_type as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 GROUP BY cover_type";
+        $sql = "SELECT COUNT(*) as num, cover_type as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY cover_type";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -254,10 +272,10 @@ class Book
     }
 
     /* Get all authors */
-    public static function get_authors()
+    public static function get_authors($user_id)
     {
         $database = Database::instance();
-        $sql = "SELECT DISTINCT author FROM " . CONFIG::DBTables()->book . " WHERE active = 1 ORDER BY author";
+        $sql = "SELECT DISTINCT author FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " ORDER BY author";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -270,10 +288,10 @@ class Book
     }
 
     /* Get all titles */
-    public static function get_titles()
+    public static function get_titles($user_id)
     {
         $database = Database::instance();
-        $sql = "SELECT DISTINCT title FROM " . CONFIG::DBTables()->book . " WHERE active = 1 ORDER BY title";
+        $sql = "SELECT DISTINCT title FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " ORDER BY title";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -286,9 +304,9 @@ class Book
     }
 
     /* Get a book's title for its ID */
-    public static function get_title_for_id($id){
+    public static function get_title_for_id($user_id, $id){
         $database = Database::instance();
-        $sql = "SELECT title FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND id = " . $id;
+        $sql = "SELECT title FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND id = " . $id . " AND user_id = " . $user_id;
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetch(\PDO::FETCH_ASSOC);
@@ -305,7 +323,7 @@ class Book
     * ========================================================== */
 
     /* Update a book */
-    public static function update($id, $data)
+    public static function update($user_id, $id, $data)
     {
         $result = DatabaseService::update(Config::DBTables()->book, $id, $data);
 
@@ -315,7 +333,7 @@ class Book
         if($result === null) {
             return null;
         }
-        return $result ? self::get_from_id($id) : false;
+        return $result ? self::get_from_id($user_id, $id) : false;
     }
 
     /* ========================================================== *
@@ -345,9 +363,26 @@ class Book
         return $file_name;
     }
 
+    public static function sort_all($a, $b){
+        return $a->title > $b->title;
+    }
+
     /* ===================================================== *
     * Private Functions
     * ===================================================== */
 
+    /* Generic get books function */
+    private static function get($where = null, $order_by = null, $limit = null){
+        $database = Database::instance();
+        $where_sql = is_null($where) ? "" : " " . $where;
+        $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
+        $limit_sql = is_null($limit) ? "" : " " . $limit;
+        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . CONFIG::DBTables()->book . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        return $result;
+    }
 
 }

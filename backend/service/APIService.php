@@ -26,6 +26,21 @@ class APIService
         die(json_encode( (object) $response ));
     }
 
+    public static function authenticate_request(&$request_params)
+    {
+        $params = APIService::build_params($request_params, array(
+            "session_id",
+            "session_token"
+        ));
+
+        $error = null;
+        $result = AuthService::authenticate($params['session_id'], $params['session_token'], $error);
+        if($result === false) {
+            self::response_fail($error, 401);
+        }
+        return $result;
+    }
+
     public static function build_params($request, $required_param_names = array(), $optional_param_names = array())
     {
         $request = (array) $request;

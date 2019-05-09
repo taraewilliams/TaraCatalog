@@ -8,6 +8,15 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     templateUrl: CONFIG.homeTemplate
   }).
 
+  when('/login', {
+    controller: 'LoginController',
+    templateUrl: 'views/site/login.html'
+  }).
+  when('/logout', {
+    controller: 'LogoutController',
+    templateUrl: 'views/site/logout.html'
+  }).
+
   /* Book list page */
   when('/books/:offset/:limit', {
     controller: 'ListController',

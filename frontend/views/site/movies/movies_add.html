@@ -1,10 +1,10 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="items.length > 0">
+<main ng-show="items.length > 0" ng-if="user && color_scheme">
 
   <h1>Add Movies to Watch List</h1>
 
-  <ul class="add-read-list">
+  <ul class="add-todo-list">
       <li ng-repeat="item in items">
           <div ng-if="!item.season"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
           <div ng-if="item.season"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}, {{item.season}}</div>

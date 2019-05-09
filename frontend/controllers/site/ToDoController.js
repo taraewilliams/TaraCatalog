@@ -1,5 +1,9 @@
-app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, RequestService)
+app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
 {
+    /* Redirect if not logged in */
+    if( AuthService.redirectOnUnauthorized() ) {
+        return;
+    }
 
     function init(){
 

@@ -1,4 +1,4 @@
-<ul class="main-menu">
+<ul class="main-menu" ng-if="user && color_scheme">
   <li><a ng-class="{ 'selected': isActive(['/']) }" ng-href="#">Home</a></li>
   <li>
     <a ng-class="{ 'selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }" ng-href="#/books/0/25">Books</a>
@@ -29,4 +29,5 @@
   </li>
   <li><a ng-class="{ 'selected': isActive(['/stats']) }" ng-href="#/stats">Stats</a></li>
   <li><a ng-class="{ 'selected': isActive(['/settings']) }" ng-href="#/settings">Settings</a></li>
+  <li><a ng-class="{ 'selected': isActive(['/logout']) }" ng-href="#/logout">Logout</a></li>
 </ul>

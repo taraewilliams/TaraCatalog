@@ -1,6 +1,6 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="items.length > 0">
+<main ng-show="items.length > 0" ng-if="user && color_scheme">
 
     <h1>Watch List ( {{ item_length}} )</h1>
 
@@ -33,7 +33,7 @@
             <td ng-if="!item.isHeader">{{item.location}}</td>
             <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
             <td ng-if="!item.isHeader">
-                <button class="basic-button table-button-2 on-read-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
+                <button class="basic-button table-button-2 on-todo-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
             </td>
         </tr>
     </table>

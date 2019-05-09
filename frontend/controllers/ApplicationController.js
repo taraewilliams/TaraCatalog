@@ -1,6 +1,18 @@
-app.controller('ApplicationController', function ($scope, $route, $location)
+app.controller('ApplicationController', function ($scope, $route, $location, AuthService, AUTH_EVENTS, Session)
 {
-    $scope.color_scheme = "red";
+    /* Set the user */
+    AuthService.setUser();
+
+    /* Redirect to login page on unauthorized */
+    $scope.$on(AUTH_EVENTS.notAuthenticated, function(event, args) {
+        if( !Session.id ) {
+            return;
+        }
+
+        Session.destroy();
+        $location.path('/home');
+        alert("Your session either does not exist or has expired. Please login again.");
+    });
 
     $scope.changeStyle = function(color){
         $scope.color_scheme = color;

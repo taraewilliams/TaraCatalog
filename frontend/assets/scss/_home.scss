@@ -1,0 +1,26 @@
+.home-section{
+    margin:50px;
+    h2{
+        text-align:center;
+    }
+}
+
+#home-filter{
+    form{
+        section{
+            margin-right:10px;
+            text-align: center;
+            width: 100%;
+        }
+        input{
+            font-size: 15px;
+            height: 25px;
+            width: 49%;
+        }
+        button{
+            min-height:30px;
+            width:25%;
+            vertical-align:top;
+        }
+    }
+}

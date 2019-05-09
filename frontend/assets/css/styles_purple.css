@@ -87,6 +87,21 @@ table {
       border-radius: 15px;
       padding-right: 10px; }
 
+.login {
+  width: 100%;
+  text-align: center;
+  left: 0; }
+  .login form {
+    text-align: left;
+    width: 300px;
+    display: inline-block; }
+    .login form input {
+      width: 100%; }
+    .login form button {
+      margin: 10px;
+      width: 285px;
+      height: 30px; }
+
 main {
   width: calc(100% - 200px);
   left: 200px;
@@ -97,6 +112,16 @@ main {
     color: #260033; }
   main form {
     color: #260033; }
+    main form input {
+      width: 50%;
+      height: 30px;
+      border-radius: 5px;
+      font-size: 15px; }
+    main form input:focus {
+      outline: none; }
+    main form input[type="radio"] {
+      width: 25px;
+      vertical-align: middle; }
     main form label {
       display: block;
       min-height: 75px;
@@ -136,6 +161,14 @@ main {
     main form button:hover {
       background-color: #df80ff; }
 
+.basic-url {
+  padding: 20px 0 20px 0; }
+  .basic-url a {
+    color: #600080;
+    text-decoration: none; }
+  .basic-url a:hover {
+    color: #df80ff; }
+
 .basic-button {
   border: none;
   background-color: #600080;
@@ -163,10 +196,6 @@ main {
   font-size: 12px;
   margin: 1px;
   min-height: 25px; }
-
-.on-read-list {
-  background-color: black;
-  color: white; }
 
 .top-buttons {
   display: block; }
@@ -217,62 +246,32 @@ p {
 a {
   font-size: 18px; }
 
-.books-list {
-  width: 100%;
-  display: inline-block; }
-  .books-list li {
-    height: auto;
-    background-color: #600080;
-    margin: 15px;
-    border: 5px solid #260033;
-    box-sizing: border-box;
-    min-height: 200px;
-    width: calc(100% - 100px);
-    float: right; }
-    .books-list li img {
-      height: auto;
-      width: 150px;
-      vertical-align: middle;
-      position: absolute;
-      left: 0px; }
-    .books-list li .movie-section div {
-      width: 78%; }
-    .books-list li section {
-      display: inline-block;
-      vertical-align: top;
-      color: white;
-      padding: 15px;
-      box-sizing: border-box;
-      width: 100%; }
-      .books-list li section div {
-        display: inline-block;
-        width: 39%;
-        vertical-align: top; }
-      .books-list li section .list-buttons {
-        width: 20%;
-        min-width: 100px; }
-      .books-list li section p {
-        color: #f2ccff;
-        margin: 5px;
-        box-sizing: border-box; }
-      .books-list li section .location {
-        display: inline-block;
-        width: 25px;
-        height: 25px;
-        background-color: #8CEE7D;
-        border-radius: 50%; }
-      .books-list li section .location-away {
-        background-color: red; }
-      .books-list li section .books-button {
-        display: block;
-        width: 75%;
-        height: 30px;
-        background-color: #f2ccff;
-        color: #260033;
-        border: none;
-        font-size: 15px;
-        cursor: pointer;
-        margin: 10px; }
+.stat-section {
+  display: block;
+  margin-bottom: 40px;
+  box-sizing: border-box; }
+  .stat-section h2 {
+    border-bottom: 5px solid #600080; }
+
+.home-section {
+  margin: 50px; }
+  .home-section h2 {
+    text-align: center; }
+
+#home-filter form section {
+  margin-right: 10px;
+  text-align: center;
+  width: 100%; }
+
+#home-filter form input {
+  font-size: 15px;
+  height: 25px;
+  width: 49%; }
+
+#home-filter form button {
+  min-height: 30px;
+  width: 25%;
+  vertical-align: top; }
 
 .pagination {
   display: inline-block;
@@ -319,8 +318,12 @@ a {
       width: 100%;
       font-size: 12px;
       height: 20px; }
+  .filter-form form input {
+    width: 100%;
+    font-size: 12px;
+    height: 20px; }
 
-.books-list-pic li {
+.items-list-pic li {
   background-color: #600080;
   display: inline-block;
   border-radius: 10px;
@@ -329,22 +332,29 @@ a {
   width: 200px;
   position: relative;
   vertical-align: top; }
-  .books-list-pic li img {
+  .items-list-pic li img {
     display: block;
     height: auto;
     width: 200px;
     border-radius: 10px 10px 0 0; }
-  .books-list-pic li h6 {
+  .items-list-pic li .corner-img {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 40px;
+    height: auto;
+    border-radius: 5px; }
+  .items-list-pic li h6 {
     color: white;
     display: block;
     font-size: 16px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap; }
-  .books-list-pic li h6:hover {
+  .items-list-pic li h6:hover {
     overflow: visible;
     white-space: normal; }
-  .books-list-pic li button {
+  .items-list-pic li button {
     position: absolute;
     top: 5px;
     right: 5px;
@@ -356,26 +366,22 @@ a {
     border: 0;
     -webkit-transition: background-color 0.5s;
     transition: background-color 0.5s; }
-  .books-list-pic li button:hover {
+  .items-list-pic li button:hover {
     cursor: pointer;
     background-color: #f2ccff; }
-  .books-list-pic li button:focus {
+  .items-list-pic li button:focus {
     outline: none; }
-  .books-list-pic li .left-button {
+  .items-list-pic li .left-button {
     right: 50px; }
 
-.basic-url {
-  padding: 20px 0 20px 0; }
-  .basic-url a {
-    color: #600080;
-    text-decoration: none; }
-  .basic-url a:hover {
-    color: #df80ff; }
+.on-todo-list {
+  background-color: black;
+  color: white; }
 
-.add-read-list li {
+.add-todo-list li {
   padding: 10px;
   color: #600080; }
-  .add-read-list li a:hover {
+  .add-todo-list li a:hover {
     cursor: pointer; }
 
 .add-button {
@@ -383,10 +389,3 @@ a {
   top: 75px;
   right: 50px;
   margin: 0; }
-
-.stat-section {
-  display: block;
-  margin-bottom: 40px;
-  box-sizing: border-box; }
-  .stat-section h2 {
-    border-bottom: 5px solid #600080; }

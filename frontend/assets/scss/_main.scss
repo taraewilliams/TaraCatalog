@@ -1,5 +1,30 @@
 body{}
 
+
+.login{
+    width:100%;
+    text-align: center;
+    left:0;
+
+    form{
+        text-align: left;
+        width: 300px;
+        display: inline-block;
+
+        input{
+            width:100%;
+        }
+
+        button{
+            margin: 10px;
+            width: 285px;
+            height:30px;
+        }
+    }
+}
+
+
+
 main{
     width: calc(100% - 200px);
     left: 200px;
@@ -13,6 +38,22 @@ main{
 
     form{
       color:$darker-red;
+
+      input{
+        width: 50%;
+        height: 30px;
+        border-radius: 5px;
+        font-size:15px
+      }
+
+      input:focus{
+        outline:none;
+      }
+
+      input[type="radio"]{
+        width: 25px;
+        vertical-align: middle;
+      }
 
       label{
         display: block;
@@ -71,6 +112,17 @@ main{
     }
 }
 
+.basic-url{
+    padding: 20px 0 20px 0;
+    a{
+        color:$dark-red;
+        text-decoration:none;
+    }
+    a:hover{
+        color:$light-red;
+    }
+}
+
 .basic-button{
     border: none;
     background-color: $dark-red;
@@ -101,11 +153,6 @@ main{
   font-size: 12px;
   margin: 1px;
   min-height:25px;
-}
-
-.on-read-list{
-  background-color:black;
-  color:white;
 }
 
 .top-buttons{

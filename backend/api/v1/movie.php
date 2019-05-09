@@ -15,7 +15,10 @@ $app->group('/api', function () use ($app) {
         /* Get all movies */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
-            $movies = Movie::get_all();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $movies = Movie::get_all($user_id);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -25,10 +28,13 @@ $app->group('/api', function () use ($app) {
         /* Get a set number of movies */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $offset = intval($args['offset']);
             $limit = intval($args['limit']);
 
-            $movies = Movie::get_all_with_limit($offset, $limit);
+            $movies = Movie::get_all_with_limit($user_id, $offset, $limit);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -38,8 +44,11 @@ $app->group('/api', function () use ($app) {
         /* Get all movies on the watch list */
         $app->get($resource . '/watch/list/{watch}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $watch = intval($args['watch']);
-            $movies = Movie::get_all_on_watch_list($watch);
+            $movies = Movie::get_all_on_watch_list($user_id, $watch);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -49,8 +58,11 @@ $app->group('/api', function () use ($app) {
         /* Get all movies ordered by a specific field */
         $app->get($resource . '/order_by/{option}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $option = $args['option'];
-            $movies = Movie::get_all_with_order($option);
+            $movies = Movie::get_all_with_order($user_id, $option);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -60,6 +72,9 @@ $app->group('/api', function () use ($app) {
         /* Get movies for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "format",
@@ -69,7 +84,7 @@ $app->group('/api', function () use ($app) {
                 "season"
             ));
 
-            $movie = Movie::get_for_filter_params($params);
+            $movie = Movie::get_for_filter_params($user_id, $params);
             if($movie === false || $movie === null) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -79,6 +94,9 @@ $app->group('/api', function () use ($app) {
         /* Get movies for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $order = $args['order'];
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
@@ -89,7 +107,7 @@ $app->group('/api', function () use ($app) {
                 "season"
             ));
 
-            $movie = Movie::get_for_filter_params($params, $order);
+            $movie = Movie::get_for_filter_params($user_id, $params, $order);
             if($movie === false || $movie === null) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -99,8 +117,11 @@ $app->group('/api', function () use ($app) {
         /* Get a single movie */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $id = intval($args['id']);
-            $movie = Movie::get_from_id($id);
+            $movie = Movie::get_from_id($user_id, $id);
 
             if($movie === false) {
                 APIService::response_fail("There was a problem getting movie.", 500);
@@ -114,7 +135,10 @@ $app->group('/api', function () use ($app) {
         /* Count movies with different content types */
         $app->get($resource . '/content_type/count', function ($request, $response, $args) use ($app)
         {
-            $movies = Movie::get_all_content_type_counts();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $movies = Movie::get_all_content_type_counts($user_id);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -124,7 +148,10 @@ $app->group('/api', function () use ($app) {
         /* Count movies with different formats */
         $app->get($resource . '/format/count', function ($request, $response, $args) use ($app)
         {
-            $movies = Movie::get_all_format_counts();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $movies = Movie::get_all_format_counts($user_id);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -134,7 +161,10 @@ $app->group('/api', function () use ($app) {
         /* Count all movies */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
-            $movies = Movie::count_movies();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $movies = Movie::count_movies($user_id);
             if($movies === false) {
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
@@ -149,6 +179,9 @@ $app->group('/api', function () use ($app) {
         /* Create a movie */
         $app->post($resource, function () use ($app)
         {
+            $session = APIService::authenticate_request($_REQUEST);
+            $user_id = $session->user->id;
+
             $params = APIService::build_params($_REQUEST, array(
                 "title",
                 "format"
@@ -159,6 +192,7 @@ $app->group('/api', function () use ($app) {
                 "season",
                 "watch_list"
             ));
+            $params["user_id"] = $user_id;
 
             $files = APIService::build_files($_FILES, null, array(
                 "image"
@@ -182,6 +216,14 @@ $app->group('/api', function () use ($app) {
         /* Update a movie */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_REQUEST);
+            $user_id = $session->user->id;
+
+            $id = intval($args["id"]);
+            if (!Movie::get_from_id($user_id, $id)){
+                APIService::response_fail("There was a problem updating the movie.", 500);
+            }
+
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "format",
@@ -192,8 +234,6 @@ $app->group('/api', function () use ($app) {
                 "watch_list"
             ));
 
-            $id = intval($args["id"]);
-
             $files = APIService::build_files($_FILES, null, array(
                 "image"
             ));
@@ -201,14 +241,14 @@ $app->group('/api', function () use ($app) {
             if(isset($params["title"])){
                 $title = $params["title"];
             }else{
-                $title = Movie::get_title_for_id($id);
+                $title = Movie::get_title_for_id($user_id, $id);
             }
 
             if(isset($files['image'])) {
                 $params['image'] = Movie::set_image($files, $title);
             }
 
-            $movie = Movie::update($id, $params);
+            $movie = Movie::update($user_id, $id, $params);
             if($movie === false || $movie === null) {
                 APIService::response_fail("There was a problem updating the movie.", 500);
             }
@@ -223,7 +263,14 @@ $app->group('/api', function () use ($app) {
         /* Delete a movie */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
-            $id = intval($args["id"]);
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $id = intval($args['id']);
+
+            if (!Movie::get_from_id($user_id, $id)){
+                APIService::response_fail("There was a problem deleting the movie.", 500);
+            }
+
             $result = Movie::set_active($id, 0);
 
             if( $result === false ) {

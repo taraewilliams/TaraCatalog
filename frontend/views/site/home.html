@@ -1,7 +1,42 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main>
+<main ng-if="user && color_scheme">
 
-  <h1>Home Page</h1>
+    <h1>Welcome to Your Media Catalog!</h1>
+
+    <section class="home-section">
+
+        <h2>Search Catalog</h2>
+
+        <div class="filter-form" id="home-filter" >
+            <form ng-submit="search(searchTerm)">
+                <section>
+                    <input type="text" name="searchTerm" id="searchTerm" ng-model="searchTerm" placeholder="Search...">
+                    <button type="submit">Search</button>
+                </section>
+            </form>
+        </div>
+
+    </section>
+
+    <p ng-show="items.length <= 0">No matching results</p>
+
+    <p ng-show="items.length > 0">{{items.length}} results</p>
+
+    <ul class="items-list-pic" ng-show="items.length > 0">
+        <li ng-repeat="item in items">
+
+            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+            <img ng-if="!isEmpty(item.image)" alt="Item Cover" ng-src="../backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+            <img ng-if="isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+            <img ng-if="isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+            <h6 ng-if="!isEmpty(item.season)">{{item.title}}, {{item.season}}</h6>
+            <h6 ng-if="!isEmpty(item.volume)">{{item.title}}, Volume {{item.volume}}</h6>
+            <h6 ng-if="isEmpty(item.season) && isEmpty(item.volume)">{{item.title}}</h6>
+        </li>
+    </ul>
 
 </main>

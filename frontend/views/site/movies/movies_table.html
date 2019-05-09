@@ -1,6 +1,6 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main>
+<main ng-if="user && color_scheme">
 
     <h1>Movies ( {{ item_length }} )</h1>
 
@@ -57,7 +57,7 @@
                 <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
             </td>
             <td ng-if="!item.isHeader && item.watch_list">
-                <button class="basic-button table-button-2 on-read-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
+                <button class="basic-button table-button-2 on-todo-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
             </td>
             <td ng-if="!item.isHeader && !item.watch_list">
                 <button class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Watch List</button>

@@ -43,14 +43,18 @@
     <script src="controllers/site/ToDoController.js"></script>
     <script src="controllers/site/StatsController.js"></script>
     <script src="controllers/site/SettingsController.js"></script>
+    <script src="controllers/site/LoginController.js"></script>
+    <script src="controllers/site/LogoutController.js"></script>
     <script src="controllers/site/404Controller.js"></script>
 
     <!-- Styles -->
-    <!-- <link href="assets/css/styles.css" rel="stylesheet"> -->
-    <link ng-href="assets/css/styles_{{color_scheme}}.css" rel="stylesheet">
+    <link href="assets/css/styles.css" rel="stylesheet">
+    <link ng-if="color_scheme" ng-href="assets/css/styles_{{color_scheme}}.css" rel="stylesheet">
 
     <!-- Services -->
+    <script src="services/AuthService.js"></script>
     <script src="services/RequestService.js"></script>
+    <script src="services/SessionService.js"></script>
 
     <!-- Directives -->
     <script src="directives/FileModel.js"></script>

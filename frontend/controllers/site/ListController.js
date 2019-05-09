@@ -1,5 +1,10 @@
-app.controller('ListController', function($scope, $routeParams, RequestService, CONFIG, $http)
+app.controller('ListController', function($scope, $routeParams, RequestService, CONFIG, $http, AuthService)
 {
+    /* Redirect if not logged in */
+    if( AuthService.redirectOnUnauthorized() ) {
+        return;
+    }
+
     /* The maximum number of pages to show in the pagination bar */
     $scope.maxPages = 5;
 

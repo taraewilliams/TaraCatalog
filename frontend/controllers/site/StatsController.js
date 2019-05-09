@@ -1,5 +1,9 @@
-app.controller('StatsController', function($scope, CONFIG, $http)
+app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
 {
+    /* Redirect if not logged in */
+    if( AuthService.redirectOnUnauthorized() ) {
+        return;
+    }
 
     function init(){
 

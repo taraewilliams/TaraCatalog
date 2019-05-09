@@ -15,7 +15,10 @@ $app->group('/api', function () use ($app) {
         /* Get all games */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
-            $games = Game::get_all();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $games = Game::get_all($user_id);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -25,10 +28,13 @@ $app->group('/api', function () use ($app) {
         /* Get a set number of games */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $offset = intval($args['offset']);
             $limit = intval($args['limit']);
 
-            $games = Game::get_all_with_limit($offset, $limit);
+            $games = Game::get_all_with_limit($user_id, $offset, $limit);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -38,8 +44,11 @@ $app->group('/api', function () use ($app) {
         /* Get all games on the play list */
         $app->get($resource . '/play/list/{play}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $play = intval($args['play']);
-            $games = Game::get_all_on_play_list($play);
+            $games = Game::get_all_on_play_list($user_id, $play);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -49,8 +58,11 @@ $app->group('/api', function () use ($app) {
         /* Get all games ordered by a specific field */
         $app->get($resource . '/order_by/{option}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $option = $args['option'];
-            $games = Game::get_all_with_order($option);
+            $games = Game::get_all_with_order($user_id, $option);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -60,13 +72,16 @@ $app->group('/api', function () use ($app) {
         /* Get games for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "platform",
                 "location"
             ));
 
-            $game = Game::get_for_filter_params($params);
+            $game = Game::get_for_filter_params($user_id, $params);
             if($game === false || $game === null) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -76,6 +91,9 @@ $app->group('/api', function () use ($app) {
         /* Get games for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $order = $args['order'];
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
@@ -83,7 +101,7 @@ $app->group('/api', function () use ($app) {
                 "location"
             ));
 
-            $game = Game::get_for_filter_params($params, $order);
+            $game = Game::get_for_filter_params($user_id, $params, $order);
             if($game === false || $game === null) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -93,8 +111,11 @@ $app->group('/api', function () use ($app) {
         /* Get a single game */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
             $id = intval($args['id']);
-            $game = Game::get_from_id($id);
+            $game = Game::get_from_id($user_id, $id);
 
             if($game === false) {
                 APIService::response_fail("There was a problem getting game.", 500);
@@ -108,7 +129,10 @@ $app->group('/api', function () use ($app) {
         /* Count games with different platforms */
         $app->get($resource . '/platform/count', function ($request, $response, $args) use ($app)
         {
-            $games = Game::get_all_platform_counts();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $games = Game::get_all_platform_counts($user_id);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -118,7 +142,10 @@ $app->group('/api', function () use ($app) {
         /* Count all games */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
-            $games = Game::count_games();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $games = Game::count_games($user_id);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -128,7 +155,10 @@ $app->group('/api', function () use ($app) {
         /* Get all platforms */
         $app->get($resource . '/platforms/all', function ($request, $response, $args) use ($app)
         {
-            $authors = Game::get_platforms();
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $authors = Game::get_platforms($user_id);
             if($authors === false) {
                 APIService::response_fail("There was a problem getting the platforms.", 500);
             }
@@ -143,6 +173,9 @@ $app->group('/api', function () use ($app) {
         /* Create a game */
         $app->post($resource, function () use ($app)
         {
+            $session = APIService::authenticate_request($_REQUEST);
+            $user_id = $session->user->id;
+
             $params = APIService::build_params($_REQUEST, array(
                 "title"
             ), array(
@@ -150,6 +183,8 @@ $app->group('/api', function () use ($app) {
                 "location",
                 "play_list"
             ));
+            $params["user_id"] = $user_id;
+
 
             $files = APIService::build_files($_FILES, null, array(
                 "image"
@@ -173,14 +208,20 @@ $app->group('/api', function () use ($app) {
         /* Update a game */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
+            $session = APIService::authenticate_request($_REQUEST);
+            $user_id = $session->user->id;
+
+            $id = intval($args["id"]);
+            if (!Game::get_from_id($user_id, $id)){
+                APIService::response_fail("There was a problem updating the game.", 500);
+            }
+
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "platform",
                 "location",
                 "play_list"
             ));
-
-            $id = intval($args["id"]);
 
             $files = APIService::build_files($_FILES, null, array(
                 "image"
@@ -189,14 +230,14 @@ $app->group('/api', function () use ($app) {
             if(isset($params["title"])){
                 $title = $params["title"];
             }else{
-                $title = Game::get_title_for_id($id);
+                $title = Game::get_title_for_id($user_id, $id);
             }
 
             if(isset($files['image'])) {
                 $params['image'] = Game::set_image($files, $title);
             }
 
-            $game = Game::update($id, $params);
+            $game = Game::update($user_id, $id, $params);
             if($game === false || $game === null) {
                 APIService::response_fail("There was a problem updating the game.", 500);
             }
@@ -211,7 +252,14 @@ $app->group('/api', function () use ($app) {
         /* Delete a game */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
-            $id = intval($args["id"]);
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $id = intval($args['id']);
+
+            if (!Game::get_from_id($user_id, $id)){
+                APIService::response_fail("There was a problem deleting the game.", 500);
+            }
+
             $result = Game::set_active($id, 0);
 
             if( $result === false ) {

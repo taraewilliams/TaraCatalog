@@ -1,5 +1,9 @@
-app.controller('TableController', function($scope, $routeParams, CONFIG, $http, RequestService)
+app.controller('TableController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
 {
+    /* Redirect if not logged in */
+    if( AuthService.redirectOnUnauthorized() ) {
+        return;
+    }
 
     function init(){
 
@@ -12,7 +16,6 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 path: "/books_table/",
                 get_url: CONFIG.api + '/books',
                 get_url_order:CONFIG.api + '/books/order_by/',
-                get_url_todo:CONFIG.api + '/books/read/list/1',
                 get_url_filter:CONFIG.api + '/books/filter',
                 put_url: CONFIG.api + '/books/',
                 delete_text: "Delete this book?"
@@ -23,7 +26,6 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 path: "/movies_table/",
                 get_url: CONFIG.api + '/movies',
                 get_url_order: CONFIG.api + "/movies/order_by/",
-                get_url_todo: CONFIG.api + '/movies/watch/list/1',
                 get_url_filter:CONFIG.api + '/movies/filter',
                 put_url: CONFIG.api + '/movies/',
                 delete_text: "Delete this movie?"
@@ -34,7 +36,6 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 path: "/games_table/",
                 get_url: CONFIG.api + '/games',
                 get_url_order: CONFIG.api + "/games/order_by/",
-                get_url_todo: CONFIG.api + '/games/play/list/1',
                 get_url_filter:CONFIG.api + '/games/filter',
                 put_url: CONFIG.api + '/games/',
                 delete_text: "Delete this game?"

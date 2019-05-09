@@ -1,0 +1,19 @@
+<main class="login">
+
+    <h6>Login</h6>
+
+    <form ng-submit="login(credentials)">
+
+        <label for="username">Username<br>
+            <input type="text" name="username" id="username" ng-model="credentials.username" placeholder="Username...">
+        </label>
+
+        <label for="password">Password<br>
+            <input type="password" name="password" id="password" ng-model="credentials.password" placeholder="Password...">
+        </label>
+
+        <button type="submit">Login</button>
+
+    </form>
+
+</main>
