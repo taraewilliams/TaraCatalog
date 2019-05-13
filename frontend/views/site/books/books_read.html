@@ -1,12 +1,12 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="items.length > 0" ng-if="user && color_scheme">
+<main ng-if="user && color_scheme">
 
     <h1>Read List ( {{ item_length }} )</h1>
 
     <div class="basic-url"><a ng-href="#/books_table/read_add">+ Add to Read List</a></div>
 
-    <table class="standard-table">
+    <table class="standard-table" ng-show="items.length > 0">
         <tr>
             <th></th>
             <th>Title</th>

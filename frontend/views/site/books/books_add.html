@@ -2,15 +2,15 @@
 
 <main ng-show="items.length > 0" ng-if="user && color_scheme">
 
-  <h1>Add Books to Read List</h1>
+    <h1>Add Books to Read List</h1>
 
-  <ul class="add-todo-list">
-      <li ng-repeat="item in items">
-          <div ng-if="!item.volume"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
-          <div ng-if="item.volume"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}, Volume {{item.volume}}</div>
-      </li>
-  </ul>
+    <ul class="add-todo-list">
+        <li ng-repeat="item in items">
+            <div ng-if="!item.volume"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
+            <div ng-if="item.volume"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}, Volume {{item.volume}}</div>
+        </li>
+    </ul>
 
-  <button class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Books</button>
+    <button class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Books</button>
 
 </main>

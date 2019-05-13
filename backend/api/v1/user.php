@@ -32,6 +32,28 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($user);
         });
 
+        /* Get a single user for username and password */
+        $app->get($resource . '/{username}/{password}', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+
+            $username = $args['username'];
+            $password = $args['password'];
+
+            $user = User::get_from_username_and_password($username, $password);
+
+            if($user === false) {
+                APIService::response_fail("There was a problem getting user.", 500);
+            }
+            if($user === null) {
+                APIService::response_fail("The requested user does not exist.", 404);
+            }
+            if ($session->user->id !== $user->id){
+                APIService::response_fail("There was a problem getting user.", 500);
+            }
+            APIService::response_success($user);
+        });
+
         /* ========================================================== *
         * POST
         * ========================================================== */

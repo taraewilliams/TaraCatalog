@@ -219,8 +219,11 @@ main {
   .standard-table img {
     width: 20px; }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, p {
   padding: 10px; }
+
+button {
+  margin: 10px; }
 
 h1 {
   font-size: 40px; }
@@ -271,7 +274,8 @@ a {
 #home-filter form button {
   min-height: 30px;
   width: 25%;
-  vertical-align: top; }
+  vertical-align: top;
+  margin-top: 0; }
 
 .pagination {
   display: inline-block;
@@ -309,7 +313,8 @@ a {
     min-height: 25px;
     height: auto;
     font-size: 12px;
-    display: inline-block; }
+    display: inline-block;
+    margin: 0; }
   .filter-form form label {
     font-size: 15px;
     min-height: auto;
@@ -389,3 +394,32 @@ a {
   top: 75px;
   right: 50px;
   margin: 0; }
+
+.profile .profile-pic {
+  width: 150px;
+  height: 150px;
+  border: 1px solid #333300;
+  border-radius: 15%;
+  box-sizing: border-box; }
+
+.profile section {
+  vertical-align: top;
+  display: inline-block;
+  padding-right: 50px;
+  padding-top: 25px;
+  padding-bottom: 25px; }
+  .profile section button {
+    height: 35px;
+    display: block;
+    margin: 10px; }
+
+.profile ul li {
+  display: inline-block;
+  margin: 10px; }
+  .profile ul li p {
+    text-align: center; }
+  .profile ul li a {
+    display: block; }
+  .profile ul li a:hover {
+    cursor: pointer;
+    opacity: 0.5; }

@@ -6,6 +6,7 @@ use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\FileService;
+use TaraCatalog\Service\APIService;
 
 class Book
 {
@@ -358,7 +359,7 @@ class Book
         $dir = FileService::MAIN_DIR . '/books';
         $file_name = FileService::upload_file($files['image'], $dir, $file_prefix);
         if(!$file_name) {
-            APIService::response_error("There was an error saving the picture.");
+            APIService::response_fail("There was an error saving the picture.");
         }
         return $file_name;
     }

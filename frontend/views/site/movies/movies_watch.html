@@ -1,6 +1,6 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="items.length > 0" ng-if="user && color_scheme">
+<main ng-if="user && color_scheme">
 
     <h1>Watch List ( {{ item_length}} )</h1>
 
@@ -8,7 +8,7 @@
     <div class="basic-url"><a ng-href="#/movies_table/watch_add">+ Add to Watch List</a></div>
 
     <!-- Movie Table -->
-    <table class="standard-table">
+    <table ng-show="items.length > 0" class="standard-table">
         <tr>
             <th></th>
             <th>Title</th>

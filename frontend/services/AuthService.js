@@ -61,9 +61,9 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
 
     this.setUser = function()
     {
-        $rootScope.user = Session.userID ? $http.get(CONFIG.api + "/users/" + Session.userID)
+        Session.userID ? $http.get(CONFIG.api + "/users/" + Session.userID)
         .then(function(response) {
-            $rootScope.userCopy = angular.copy($rootScope.user);
+            $rootScope.user = response.data;
             $rootScope.color_scheme = response.data.color_scheme;
         }, function(response){
             console.log("Error");

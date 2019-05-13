@@ -18,7 +18,8 @@ class Config
           "movie"   => "movie",
           "game"    => "game",
           "user"    => "user",
-          "session" => "session"
+          "session" => "session",
+          "viewer"  => "viewer"
         );
     }
 

@@ -2,7 +2,9 @@
 
 <main ng-if="user && color_scheme">
 
-    <h1>Welcome to Your Media Catalog!</h1>
+    <h1 ng-if="!user.first_name && !user.username">Welcome to Your Media Catalog!</h1>
+    <h1 ng-if="user.first_name">Welcome to Your Media Catalog, {{user.first_name}}!</h1>
+    <h1 ng-if="user.username && !user.first_name">Welcome to Your Media Catalog, {{user.username}}!</h1>
 
     <section class="home-section">
 

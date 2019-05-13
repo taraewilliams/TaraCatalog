@@ -2,21 +2,21 @@
 
 <main ng-show="items.length > 0" ng-if="user && color_scheme">
 
-  <h1>Books</h1>
+    <h1>Books</h1>
 
-  <div class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
+    <div class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
 
-  <ul class="items-list-pic">
-      <li ng-repeat="item in items">
-          <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', item.id)">Edit</button>
-          <button name="Delete Book" ng-click="deleteItem(item.id)">X</button>
-          <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="../backend/public/{{item.image}}"/>
-          <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
-          <h6 ng-if="!item.volume">{{item.title}}</h6>
-          <h6 ng-if="item.volume">{{item.title}}, Volume {{item.volume}}</h6>
-      </li>
-  </ul>
+    <ul class="items-list-pic">
+        <li ng-repeat="item in items">
+            <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', item.id)">Edit</button>
+            <button name="Delete Book" ng-click="deleteItem(item.id)">X</button>
+            <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="../backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+            <h6 ng-if="!item.volume">{{item.title}}</h6>
+            <h6 ng-if="item.volume">{{item.title}}, Volume {{item.volume}}</h6>
+        </li>
+    </ul>
 
-  <div ng-include="'views/site/subviews/_pagination.html'"></div>
+    <div ng-include="'views/site/subviews/_pagination.html'"></div>
 
 </main>

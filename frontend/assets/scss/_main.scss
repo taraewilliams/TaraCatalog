@@ -23,8 +23,6 @@ body{}
     }
 }
 
-
-
 main{
     width: calc(100% - 200px);
     left: 200px;
@@ -33,82 +31,82 @@ main{
     box-sizing: border-box;
 
     h1{
-      color: $darker-red;
+        color: $darker-red;
     }
 
     form{
-      color:$darker-red;
-
-      input{
-        width: 50%;
-        height: 30px;
-        border-radius: 5px;
-        font-size:15px
-      }
-
-      input:focus{
-        outline:none;
-      }
-
-      input[type="radio"]{
-        width: 25px;
-        vertical-align: middle;
-      }
-
-      label{
-        display: block;
-        min-height: 75px;
-        font-size: 20px;
-        padding: 10px;
-        box-sizing: border-box;
-
-        img{
-          width: 400px;
-          display: block;
-        }
+        color:$darker-red;
 
         input{
-          width: 50%;
-          height: 30px;
-          border-radius: 5px;
-          font-size:15px
+            width: 50%;
+            height: 30px;
+            border-radius: 5px;
+            font-size:15px
         }
 
         input:focus{
-          outline:none;
+            outline:none;
         }
 
         input[type="radio"]{
-          width: 25px;
-          vertical-align: middle;
+            width: 25px;
+            vertical-align: middle;
         }
 
-        select{
-          width: 150px;
-          height: 30px;
-          margin: 10px;
-          font-size:15px;
+        label{
+            display: block;
+            min-height: 75px;
+            font-size: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+
+            img{
+                width: 400px;
+                display: block;
+            }
+
+            input{
+                width: 50%;
+                height: 30px;
+                border-radius: 5px;
+                font-size:15px
+            }
+
+            input:focus{
+                outline:none;
+            }
+
+            input[type="radio"]{
+                width: 25px;
+                vertical-align: middle;
+            }
+
+            select{
+                width: 150px;
+                height: 30px;
+                margin: 10px;
+                font-size:15px;
+            }
+
         }
 
-      }
-
-      button{
-        border: none;
-        background-color: $dark-red;
-        color: $font-light;
-        width: 200px;
-        height: 50px;
-        font-size: 15px;
-        cursor:pointer;
-        -webkit-transition: background-color 0.5s;
-        transition: background-color 0.5s;
-      }
-      button:focus{
-        outline:none;
-      }
-      button:hover{
-        background-color:$light-red;
-      }
+        button{
+            border: none;
+            background-color: $dark-red;
+            color: $font-light;
+            width: 200px;
+            height: 50px;
+            font-size: 15px;
+            cursor:pointer;
+            -webkit-transition: background-color 0.5s;
+            transition: background-color 0.5s;
+        }
+        button:focus{
+            outline:none;
+        }
+        button:hover{
+            background-color:$light-red;
+        }
     }
 }
 
@@ -137,91 +135,95 @@ main{
 }
 
 .basic-button:hover{
-  background-color:$light-red;
+    background-color:$light-red;
 }
 
 .table-button{
-  width: 100%;
-  height: 25px;
-  font-size: 12px;
-  margin: 1px;
+    width: 100%;
+    height: 25px;
+    font-size: 12px;
+    margin: 1px;
 }
 
 .table-button-2{
-  width: 100%;
-  height: auto;
-  font-size: 12px;
-  margin: 1px;
-  min-height:25px;
+    width: 100%;
+    height: auto;
+    font-size: 12px;
+    margin: 1px;
+    min-height:25px;
 }
 
 .top-buttons{
-  display:block;
+    display:block;
 }
 
 .standard-table{
-  border-collapse: collapse;
-  width: 100%;
+    border-collapse: collapse;
+    width: 100%;
 
-  th{
-    font-weight:bold;
-  }
+    th{
+        font-weight:bold;
+    }
 
-  td, th{
-    border: 1px solid $lighter-red;
-    text-align: left;
-    padding: 8px;
-  }
+    td, th{
+        border: 1px solid $lighter-red;
+        text-align: left;
+        padding: 8px;
+    }
 
-  tr:nth-child(even){
-    background-color: $lighter-red;
-  }
+    tr:nth-child(even){
+        background-color: $lighter-red;
+    }
 
-  .location-dot{
-      background-color: $light-green;
-      width:5px;
-  }
-  .location-dot-away{
-      background-color: red;
-  }
+    .location-dot{
+        background-color: $light-green;
+        width:5px;
+    }
+    .location-dot-away{
+        background-color: red;
+    }
 
-  img{
-    width:20px;
-  }
+    img{
+        width:20px;
+    }
 }
 
-h1, h2, h3, h4, h5, h6{
-  padding:10px;
+h1, h2, h3, h4, h5, h6, p{
+    padding:10px;
+}
+
+button{
+    margin:10px;
 }
 
 h1{
-  font-size:40px;
+    font-size:40px;
 }
 
 h2{
-  font-size:36px;
+    font-size:36px;
 }
 
 h3{
-  font-size:32px;
+    font-size:32px;
 }
 
 h4{
-  font-size:28px;
+    font-size:28px;
 }
 
 h5{
-  font-size:24px;
+    font-size:24px;
 }
 
 h6{
-  font-size:20px;
+    font-size:20px;
 }
 
 p{
-  font-size:18px;
+    font-size:18px;
 }
 
 a{
-  font-size:18px;
+    font-size:18px;
 }

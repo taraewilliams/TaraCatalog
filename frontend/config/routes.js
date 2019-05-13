@@ -16,6 +16,10 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     controller: 'LogoutController',
     templateUrl: 'views/site/logout.html'
   }).
+  when('/register', {
+    controller: 'RegisterController',
+    templateUrl: 'views/site/register.html'
+  }).
 
   /* Book list page */
   when('/books/:offset/:limit', {
@@ -127,6 +131,11 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     templateUrl: 'views/site/games/games_update.html'
   }).
 
+  /* View other user's lists */
+  when('/view/:id', {
+    controller: 'ViewerController',
+    templateUrl: 'views/site/viewing.html'
+  }).
 
   /* Statistics page */
   when('/stats', {
@@ -134,10 +143,20 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     templateUrl: 'views/site/stats.html'
   }).
 
-  /* Statistics page */
-  when('/settings', {
-    controller: 'SettingsController',
-    templateUrl: 'views/site/settings.html'
+  /* Profile page */
+  when('/profile', {
+    controller: 'ProfileController',
+    templateUrl: 'views/site/users/profile.html'
+  }).
+  /* User update page */
+  when('/user_update', {
+    controller: 'UserUpdateController',
+    templateUrl: 'views/site/users/user_update.html'
+  }).
+  /* Reset password page */
+  when('/reset_password', {
+    controller: 'ResetPasswordController',
+    templateUrl: 'views/site/users/reset_password.html'
   }).
 
   /* 404 Page */

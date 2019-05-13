@@ -1,0 +1,48 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<main ng-if="user && color_scheme && viewer">
+
+    <h1>{{viewer.creator.username}}'s List</h1>
+
+    <h2>Books</h2>
+
+    <p ng-show="books.length <= 0">No books</p>
+
+    <ul ng-if="books" class="items-list-pic">
+        <li ng-repeat="book in books">
+            <img ng-if="!isEmpty(book.image)" alt="Book Cover" ng-src="../backend/public/{{book.image}}"/>
+            <img ng-if="isEmpty(book.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+            <h6 ng-if="!book.volume">{{book.title}}</h6>
+            <h6 ng-if="book.volume">{{book.title}}, Volume {{book.volume}}</h6>
+        </li>
+    </ul>
+
+
+    <h2>Movies</h2>
+
+    <p ng-show="movies.length <= 0">No movies</p>
+
+    <ul ng-if="movies" class="items-list-pic">
+        <li ng-repeat="movie in movies">
+            <img ng-if="!isEmpty(movie.image)" alt="Movie Cover" ng-src="../backend/public/{{movie.image}}"/>
+            <img ng-if="isEmpty(movie.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+            <h6 ng-if="!isEmpty(movie.season)">{{movie.title}}, {{movie.season}}</h6>
+            <h6 ng-if="isEmpty(movie.season)">{{movie.title}}</h6>
+        </li>
+    </ul>
+
+
+    <h2>Games</h2>
+
+    <p ng-show="games.length <= 0">No games</p>
+
+    <ul ng-if="games" class="items-list-pic">
+        <li ng-repeat="game in games">
+            <img ng-if="!isEmpty(game.image)" alt="Game Cover" ng-src="../backend/public/{{game.image}}"/>
+            <img ng-if="isEmpty(game.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+            <h6>{{game.title}}</h6>
+        </li>
+    </ul>
+
+
+</main>

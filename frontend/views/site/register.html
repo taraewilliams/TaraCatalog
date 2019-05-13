@@ -1,0 +1,49 @@
+<main class="register">
+
+    <h1>Create Your Profile</h1>
+
+    <form ng-submit="createUser(new_user)">
+
+        <label for="username">Username<br>
+            <input required type="text" name="username" id="username" ng-model="new_user.username" placeholder="Username..."><br>
+        </label>
+
+        <label for="password">Password<br>
+            <input required type="password" name="password" id="password" ng-model="new_user.password" placeholder="Password...">
+        </label>
+
+        <label for="email">E-mail<br>
+            <input required type="email" name="email" id="email" ng-model="new_user.email" placeholder="Email..."><br>
+        </label>
+
+        <label for="first_name">First Name<br>
+            <input type="text" name="first_name" id="first_name" ng-model="new_user.first_name" placeholder="First Name...">
+        </label>
+
+        <label for="last_name">Last Name<br>
+            <input type="text" name="last_name" id="last_name" ng-model="new_user.last_name" placeholder="Last Name...">
+        </label>
+
+        <label for="color">Select Color Scheme<br>
+            <select ng-model="new_user.color_scheme">
+                <option value="blue">Blue</option>
+                <option value="gray">Gray</option>
+                <option value="green">Green</option>
+                <option value="orange">Orange</option>
+                <option value="pink">Pink</option>
+                <option value="purple">Purple</option>
+                <option value="red">Red</option>
+                <option value="yellow">Yellow</option>
+            </select>
+        </label>
+
+        <label for="image">Profile Picture<br>
+            <input type="file" name="image" file-display file-model="new_user.image" placeholder="Profile Picture...">
+            <img ng-if="!isEmpty(new_user.image)" id="image" alt="Preview Profile Picture" />
+        </label>
+
+        <button type="submit">Create Profile</button>
+
+    </form>
+
+</main>
