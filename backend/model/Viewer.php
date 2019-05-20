@@ -13,6 +13,7 @@ class Viewer
     public $id;
     public $creator_id;
     public $viewer_id;
+    public $status;
     public $row_number;
 
     public $created;
@@ -28,6 +29,7 @@ class Viewer
         $this->id              = isset($data['id']) ? intval($data['id']) : null;
         $this->creator_id      = isset($data['creator_id']) ? intval($data['creator_id']) : null;
         $this->viewer_id       = isset($data['viewer_id']) ? intval($data['viewer_id']) : null;
+        $this->status          = isset($data['status']) ? $data['status'] : "Pending";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
 
         $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
@@ -60,6 +62,7 @@ class Viewer
         $data = array(
             "creator_id"     => $viewer->creator_id,
             "viewer_id"      => $viewer->viewer_id,
+            "status"         => $viewer->status,
             "created"        => $viewer->created,
             "updated"        => $viewer->updated,
             "active"         => $viewer->active
@@ -86,41 +89,49 @@ class Viewer
     * ========================================================== */
 
     /* Get all viewers */
-    public static function get_all($user_id)
+    public static function get_all($user_id, $status)
     {
-        $where = "WHERE active = 1 AND creator_id = " . $user_id;
-        $result = Viewer::get($where);
+        $where = "WHERE viewer.active = 1 AND viewer.creator_id = " . $user_id . " AND viewer.status = '" . $status . "'";
+        $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.creator_id " . $where . ")";
+        $sql = "SELECT views.username as c_username, views.image as c_image, user.username as v_username, user.image as v_image, views.id, views.creator_id, views.viewer_id, views.status FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.viewer_id";
+        $database = Database::instance();
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
         if ($result === false){
             return false;
         }else{
-            $viewers = array();
-            foreach( $result as $row ) {
-                $viewers[] = new Viewer($row);
-            }
-            return $viewers;
+            return $result;
         }
     }
 
     /* Get all creator can view */
-    public static function get_all_user_views($user_id)
+    public static function get_all_user_views($user_id, $status)
     {
-        $where = "WHERE active = 1 AND viewer_id = " . $user_id;
-        $result = Viewer::get($where);
+        $where = "WHERE viewer.active = 1 AND viewer.viewer_id = " . $user_id. " AND viewer.status = '" . $status . "'";
+        $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.viewer_id " . $where . ")";
+        $sql = "SELECT views.username as v_username, views.image as v_image, user.username as c_username, user.image as c_image, views.id, views.creator_id, views.viewer_id, views.status FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.creator_id";
+        $database = Database::instance();
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
         if ($result === false){
             return false;
         }else{
-            $viewers = array();
-            foreach( $result as $row ) {
-                $viewers[] = new Viewer($row);
-            }
-            return $viewers;
+            return $result;
         }
     }
 
     /* Get single viewer for creator and viewer IDs */
-    public static function get_for_creator_and_viewer_id($creator_id, $viewer_id)
+    public static function get_for_creator_and_viewer_id($creator_id, $viewer_id, $status=null)
     {
-        $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id;
+        if ($status !== null){
+            $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id . " AND status = '" . $status . "'";
+        }else{
+            $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id;
+        }
         $result = Viewer::get($where);
         if($result === false || $result === null) {
             return false;
@@ -132,17 +143,47 @@ class Viewer
     }
 
     /* ========================================================== *
+    * UPDATE
+    * ========================================================== */
+
+    /* Update a book */
+    public static function update($user_id, $id, $data)
+    {
+        /* Check if a viewer exists with this id and creator id */
+        /* Creator must be the one approving the viewer */
+        $where = "WHERE active = 1 AND creator_id = " . $user_id . " AND id = " . $id;
+        $result = Viewer::get($where);
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("Invalid viewer.", 500);
+        }
+        if($result[0]["status"] === $data["status"]){
+            APIService::response_fail("Already " . $data["status"], 500);
+        }
+
+        $result = DatabaseService::update(Config::DBTables()->viewer, $id, $data);
+
+        if($result === false) {
+            return false;
+        }
+        if($result === null) {
+            return null;
+        }
+        return $result ? true : false;
+    }
+
+    /* ========================================================== *
     * DELETE
     * ========================================================== */
 
     /* Delete a viewer */
-    public static function set_active($creator_id, $viewer_id, $active)
+    public static function delete($creator_id, $viewer_id)
     {
         $id = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id)->id;
         if ($id == null || $id == false){
             APIService::response_fail("There was a problem deleting the viewer.", 500);
         }
-        $result = DatabaseService::set_active(Config::DBTables()->viewer, $id, $active);
+        $where = array("creator_id" => $creator_id, "viewer_id" => $viewer_id);
+        $result = DatabaseService::delete(Config::DBTables()->viewer, $where);
         return $result;
     }
 
@@ -151,11 +192,11 @@ class Viewer
     * ===================================================== */
 
     public static function sort_viewers($a, $b){
-        return $a->viewer["username"] > $b->viewer["username"];
+        return strtolower($a["v_username"]) > strtolower($b["v_username"]);
     }
 
     public static function sort_creators($a, $b){
-        return $a->creator["username"] > $b->creator["username"];
+        return strtolower($a["c_username"]) > strtolower($b["c_username"]);
     }
 
     /* ===================================================== *

@@ -51,11 +51,23 @@ table {
   background-color: #ffff66;
   position: fixed;
   color: #333300;
-  padding: 25px;
   box-sizing: border-box;
   text-align: right;
   z-index: 100;
   overflow-y: scroll; }
+  .main-menu .menu-item {
+    height: 60px;
+    line-height: 35px;
+    padding: 10px;
+    box-sizing: border-box;
+    -webkit-transition: background-color 0.5s;
+    transition: background-color 0.5s; }
+  .main-menu .menu-item:hover {
+    background-color: #e6e600; }
+    .main-menu .menu-item:hover .sub-menu {
+      display: block; }
+  .main-menu .selected {
+    background-color: #e6e600; }
   .main-menu li {
     display: inline-block;
     width: 100%;
@@ -68,24 +80,83 @@ table {
       cursor: pointer;
       color: #333300;
       text-decoration: none; }
-    .main-menu li a:hover {
-      color: #808000; }
-    .main-menu li .selected {
-      text-decoration: underline; }
-  .main-menu .sub-menu li {
+  .main-menu .sub-menu-selected {
+    display: block !important;
+    overflow: visible !important; }
+  .main-menu .sub-menu {
+    display: none;
+    overflow: hidden;
+    background-color: #ffffb3; }
+    .main-menu .sub-menu li {
+      display: block;
+      height: 35px;
+      line-height: 25px;
+      padding: 5px 15px 5px 15px;
+      box-sizing: border-box; }
+      .main-menu .sub-menu li a {
+        font-size: 14px;
+        color: #808000; }
+      .main-menu .sub-menu li a:hover {
+        color: #333300; }
+      .main-menu .sub-menu li .sub-selected {
+        color: #333300;
+        padding-right: 10px; }
+
+.viewer-menu div {
+  display: inline-block; }
+  .viewer-menu div a {
+    padding: 10px; }
+  .viewer-menu div .view-selected {
+    background-color: #333300;
+    color: #333300; }
+
+.positive {
+  background-color: #8CEE7D !important; }
+
+.negative {
+  background-color: red !important; }
+
+.positive:hover, .negative:hover {
+  background-color: #ffffb3 !important; }
+
+.view-list li {
+  width: 150px;
+  height: 200px;
+  display: inline-block;
+  margin: 10px;
+  text-align: center; }
+  .view-list li .profile-pic {
+    width: 150px;
+    height: 150px;
+    border: 1px solid #333300;
+    border-radius: 15px;
+    box-sizing: border-box; }
+  .view-list li p {
+    text-align: center;
+    position: relative;
+    top: -31px;
+    background-color: rgba(51, 51, 0, 0.8);
+    padding: 5px;
+    border-radius: 0 0 15px 15px;
+    color: #333300; }
+  .view-list li a {
     display: block;
-    height: 25px;
-    line-height: 25px; }
-    .main-menu .sub-menu li a {
-      font-size: 14px;
-      color: #808000; }
-    .main-menu .sub-menu li a:hover {
-      color: #333300; }
-    .main-menu .sub-menu li .sub-selected {
-      background-color: #808000;
-      color: #333300;
-      border-radius: 15px;
-      padding-right: 10px; }
+    color: #333300; }
+  .view-list li a:hover {
+    cursor: pointer;
+    opacity: 0.5; }
+  .view-list li button {
+    width: 73px;
+    height: 30px;
+    margin: 0;
+    margin-top: 5px;
+    top: -25px;
+    position: relative; }
+  .view-list li .big-button {
+    width: 150px; }
+  .view-list li input {
+    position: relative;
+    top: -10px; }
 
 .login {
   width: 100%;
@@ -208,7 +279,8 @@ main {
   .standard-table td, .standard-table th {
     border: 1px solid #ffffb3;
     text-align: left;
-    padding: 8px; }
+    padding: 8px;
+    vertical-align: top; }
   .standard-table tr:nth-child(even) {
     background-color: #ffffb3; }
   .standard-table .location-dot {
@@ -217,7 +289,8 @@ main {
   .standard-table .location-dot-away {
     background-color: red; }
   .standard-table img {
-    width: 20px; }
+    width: 50px;
+    border: 1px solid #ffffb3; }
 
 h1, h2, h3, h4, h5, h6, p {
   padding: 10px; }
@@ -360,6 +433,7 @@ a {
     overflow: visible;
     white-space: normal; }
   .items-list-pic li button {
+    margin: 0;
     position: absolute;
     top: 5px;
     right: 5px;

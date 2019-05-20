@@ -1,6 +1,6 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-if="user_clone && user && color_scheme && viewers && views" class="profile">
+<main ng-if="user_clone && user && color_scheme" class="profile">
 
     <h1 ng-if="user.first_name">Hi, {{user.first_name}} {{user.last_name}}</h1>
     <h1 ng-if="user.username && !user.first_name">Hi, {{user.username}}</h1>
@@ -23,27 +23,5 @@
         <button class="basic-button" ng-click="goToPath('/reset_password')">Reset Password</button>
         <button class="basic-button" ng-click="deleteUser(user.id)">Delete Profile</button>
     </section>
-
-    <h2 ng-if="user.role == 'creator'">Viewers of your List</h2>
-
-    <ul ng-if="user.role == 'creator'">
-        <li ng-repeat="viewer in viewers">
-            <img class="profile-pic" ng-if="!isEmpty(viewer.viewer.image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.viewer.image}}"/>
-            <img class="profile-pic" ng-if="isEmpty(viewer.viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
-            <p>{{viewer.viewer.username}}</p>
-        </li>
-    </ul>
-
-    <h2>Lists you can View</h2>
-
-    <ul>
-        <li ng-repeat="viewer in views">
-            <a ng-href="#/view/{{viewer.creator.id}}">
-                <img class="profile-pic" ng-if="!isEmpty(viewer.creator.image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.creator.image}}"/>
-                <img class="profile-pic" ng-if="isEmpty(viewer.creator.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
-                <p>{{viewer.creator.username}}</p>
-            </a>
-        </li>
-    </ul>
 
 </main>

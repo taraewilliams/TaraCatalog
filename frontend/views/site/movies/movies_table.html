@@ -30,6 +30,7 @@
     <table class="standard-table" ng-show="items.length > 0">
         <tr>
             <th></th>
+            <th>Image</th>
             <th>Title</th>
             <th>Season</th>
             <th>Edition</th>
@@ -42,9 +43,13 @@
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="10">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="11">{{ item.title }}</th>
 
             <td ng-if="!item.isHeader">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader">
+                <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="../backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+            </td>
             <td ng-if="!item.isHeader">{{item.title}}</td>
             <td ng-if="!item.isHeader">{{item.season}}</td>
             <td ng-if="!item.isHeader">{{item.edition}}</td>

@@ -1,11 +1,12 @@
 app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
+
+        /* Redirect if not logged in or if user is a viewer only */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnViewer() ) {
+            return;
+        }
 
         var urls = ['/books/content_type/count', '/books/cover_type/count','/movies/format/count',
         '/movies/content_type/count', '/games/platform/count'];
@@ -72,7 +73,6 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
         }
     };
 
-
-    init();
+    $scope.user.$promise.then(init);
 
 });

@@ -1,55 +1,83 @@
 .main-menu{
-  width: 200px;
-  height: 100%;
-  background-color: $light-red;
-  position: fixed;
-  color: $font-light;
-  padding: 25px;
-  box-sizing: border-box;
-  text-align: right;
-  z-index:100;
-  overflow-y:scroll;
+    width: 200px;
+    height: 100%;
+    background-color: $light-red;
+    position: fixed;
+    color: $font-light;
+    box-sizing: border-box;
+    text-align: right;
+    z-index:100;
+    overflow-y:scroll;
 
-  li{
-      display:inline-block;
-      width: 100%;
-      height: 50px;
-      line-height: 50px;
-      a{
-        display:block;
-        width:100%;
-        height:100%;
-        cursor: pointer;
-        color: $font-light;
-        text-decoration:none;
-      }
-      a:hover{
-        color: $dark-red;
-      }
-
-      .selected{
-          text-decoration:underline;
-      }
-  }
-
-  .sub-menu{
-    li{
-      display:block;
-      height: 25px;
-      line-height: 25px;
-      a{
-        font-size:14px;
-        color:$dark-red;
-      }
-      a:hover{
-        color: $font-light;
-      }
-      .sub-selected{
-        background-color: $dark-red;
-        color: $font-light;
-        border-radius: 15px;
-        padding-right: 10px;
-      }
+    .menu-item{
+        height: 60px;
+        line-height: 35px;
+        padding: 10px;
+        box-sizing: border-box;
+        -webkit-transition: background-color 0.5s;
+        transition: background-color 0.5s;
     }
-  }
+    .menu-item:hover{
+        background-color:$medium-red;
+        .sub-menu{
+            display:block;
+        }
+    }
+    .selected{
+        background-color:$medium-red;
+    }
+    li{
+        display:inline-block;
+        width: 100%;
+        height: 50px;
+        line-height: 50px;
+        a{
+            display:block;
+            width:100%;
+            height:100%;
+            cursor: pointer;
+            color: $font-light;
+            text-decoration:none;
+        }
+    }
+    .sub-menu-selected{
+        display:block !important;
+        overflow:visible !important;
+    }
+    .sub-menu{
+        display: none;
+        overflow: hidden;
+        background-color:$lighter-red;
+        li{
+            display: block;
+            height: 35px;
+            line-height: 25px;
+            padding: 5px 15px 5px 15px;
+            box-sizing: border-box;
+            a{
+                font-size:14px;
+                color:$dark-red;
+            }
+            a:hover{
+                color: $font-light;
+            }
+            .sub-selected{
+                color: $font-light;
+                padding-right: 10px;
+            }
+        }
+    }
+}
+
+.viewer-menu{
+    div{
+        display:inline-block;
+        a{
+            padding:10px;
+        }
+        .view-selected{
+            background-color:$darker-red;
+            color:$font-light;
+        }
+    }
 }

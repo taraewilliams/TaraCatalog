@@ -1,11 +1,12 @@
 app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
+
+        /* Redirect if not logged in or if user is a viewer only */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnViewer() ) {
+            return;
+        }
 
         if($scope.isActive(['/books_table/read'])){
             $scope.variables = {
@@ -84,8 +85,6 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
         return items_clone;
     };
 
-    //* Private Functions *//
-
-    init();
+    $scope.user.$promise.then(init);
 
 });

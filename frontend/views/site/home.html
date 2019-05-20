@@ -2,11 +2,16 @@
 
 <main ng-if="user && color_scheme">
 
+    <!-- Page Heading -->
     <h1 ng-if="!user.first_name && !user.username">Welcome to Your Media Catalog!</h1>
     <h1 ng-if="user.first_name">Welcome to Your Media Catalog, {{user.first_name}}!</h1>
     <h1 ng-if="user.username && !user.first_name">Welcome to Your Media Catalog, {{user.username}}!</h1>
 
-    <section class="home-section">
+
+    <!-- Search your catalog -->
+    <p ng-if="user.role == 'viewer' && isActive(['/'])">Your account is view-only. Go to your profile page to become a creator so you can build your own catalog!</p>
+
+    <section class="home-section" ng-if="user.role == 'creator'">
 
         <h2>Search Catalog</h2>
 

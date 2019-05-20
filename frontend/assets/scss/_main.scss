@@ -1,5 +1,65 @@
 body{}
 
+.positive{
+    background-color:$light-green !important;
+}
+
+.negative{
+    background-color:red !important;
+}
+
+.positive:hover, .negative:hover{
+    background-color:$lighter-red !important;
+}
+
+.view-list{
+    li{
+        width:150px;
+        height:200px;
+        display: inline-block;
+        margin: 10px;
+        text-align:center;
+        .profile-pic{
+            width: 150px;
+            height: 150px;
+            border: 1px solid $darker-red;
+            border-radius: 15px;
+            box-sizing: border-box;
+        }
+        p{
+            text-align:center;
+            position: relative;
+            top: -31px;
+            background-color: rgba($darker-red,0.8);
+            padding:5px;
+            border-radius: 0 0 15px 15px;
+            color:$font-light;
+        }
+        a{
+            display:block;
+            color:$font-light;
+        }
+        a:hover{
+            cursor: pointer;
+            opacity: 0.5;
+        }
+        button{
+            width: 73px;
+            height: 30px;
+            margin:0;
+            margin-top: 5px;
+            top:-25px;
+            position:relative;
+        }
+        .big-button{
+            width: 150px;
+        }
+        input{
+            position:relative;
+            top:-10px;
+        }
+    }
+}
 
 .login{
     width:100%;
@@ -169,6 +229,7 @@ main{
         border: 1px solid $lighter-red;
         text-align: left;
         padding: 8px;
+        vertical-align:top;
     }
 
     tr:nth-child(even){
@@ -184,7 +245,8 @@ main{
     }
 
     img{
-        width:20px;
+        width:50px;
+        border: 1px solid $lighter-red;
     }
 }
 

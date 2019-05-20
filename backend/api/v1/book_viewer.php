@@ -19,10 +19,11 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $viewer_id = $session->user->id;
             $creator_id = intval($args['id']);
+            $status = "approved";
 
             /* Check that the viewer has permission to view the creator's books */
-            $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id);
-            if($viewer === false) {
+            $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id, $status);
+            if($viewer === false || $viewer === null) {
                 APIService::response_fail("There was a problem getting the books.", 500);
             }
 

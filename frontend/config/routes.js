@@ -131,17 +131,48 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     templateUrl: 'views/site/games/games_update.html'
   }).
 
+
   /* View other user's lists */
   when('/view/:id', {
     controller: 'ViewerController',
-    templateUrl: 'views/site/viewing.html'
+    templateUrl: 'views/site/viewers/viewing.html'
+  }).
+  /* View other user's books */
+  when('/book_view/:id', {
+    controller: 'ViewerController',
+    templateUrl: 'views/site/viewers/viewing.html'
+  }).
+  /* View other user's movies */
+  when('/movie_view/:id', {
+    controller: 'ViewerController',
+    templateUrl: 'views/site/viewers/viewing.html'
+  }).
+  /* View other user's games */
+  when('/game_view/:id', {
+    controller: 'ViewerController',
+    templateUrl: 'views/site/viewers/viewing.html'
+  }).
+  /* Add viewers of your catalog page */
+  when('/add_viewers', {
+    controller: 'AddViewerController',
+    templateUrl: 'views/site/viewers/add_viewer.html'
+  }).
+  /* Request to view catalogs page */
+  when('/request_view', {
+    controller: 'AddViewerController',
+    templateUrl: 'views/site/viewers/add_viewer.html'
+  }).
+  /* See viewers of your catalog page */
+  when('/viewer_list', {
+    controller: 'ViewerListController',
+    templateUrl: 'views/site/viewers/viewer_list.html'
+  }).
+  /* See catalogs you can view page */
+  when('/view_list', {
+    controller: 'ViewerListController',
+    templateUrl: 'views/site/viewers/viewer_list.html'
   }).
 
-  /* Statistics page */
-  when('/stats', {
-    controller: 'StatsController',
-    templateUrl: 'views/site/stats.html'
-  }).
 
   /* Profile page */
   when('/profile', {
@@ -159,6 +190,12 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     templateUrl: 'views/site/users/reset_password.html'
   }).
 
+
+  /* Statistics page */
+  when('/stats', {
+    controller: 'StatsController',
+    templateUrl: 'views/site/stats.html'
+  }).
   /* 404 Page */
   when('/404', {
     controller: '404Controller',

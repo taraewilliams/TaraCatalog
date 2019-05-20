@@ -1,15 +1,17 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="items.length > 0" ng-if="user && color_scheme">
+<main ng-if="user && color_scheme">
 
   <h1>Add Games to Play List</h1>
 
-  <ul class="add-todo-list">
+  <p ng-show="items.length <= 0">No games</p>
+
+  <ul  ng-show="items.length > 0" class="add-todo-list">
       <li ng-repeat="item in items">
           <div><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
       </li>
   </ul>
 
-  <button class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Games</button>
+  <button ng-show="items.length > 0" class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Games</button>
 
 </main>

@@ -128,6 +128,38 @@ class User
         return new User($result[0]);
     }
 
+    /* Get users that are not viewing a creator's catalog */
+    public static function get_nonviewers($user_id){
+        $database = Database::instance();
+        $viewer_ids = "SELECT DISTINCT viewer_id FROM " . CONFIG::DBTables()->viewer . " WHERE creator_id = " . $user_id;
+        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id != " . $user_id . " AND id NOT IN (" . $viewer_ids . ")";
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return $result;
+        }
+    }
+
+    /* Get users whose catalogs a creator can't view */
+    public static function get_nonviews($user_id){
+        $database = Database::instance();
+        $creator_ids = "SELECT DISTINCT creator_id FROM " . CONFIG::DBTables()->viewer . " WHERE viewer_id = " . $user_id;
+        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id != " . $user_id . " AND id NOT IN (" . $creator_ids . ")";
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return $result;
+        }
+    }
+
     /* Generic get users function */
     private static function get($where = null, $order_by = null, $limit = null){
         $database = Database::instance();
@@ -225,6 +257,10 @@ class User
             }
         }
         return true;
+    }
+
+    public static function sort_viewers($a, $b){
+        return strtolower($a["username"]) > strtolower($b["username"]);
     }
 
     /* ===================================================== *

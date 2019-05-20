@@ -1,28 +1,14 @@
 app.controller('ProfileController', function($scope, AuthService, Session, $http, CONFIG, RequestService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
 
-        $http.get(CONFIG.api + '/users/' + Session.userID)
-        .then(function(response) {
-            $scope.user = response.data;
-            $scope.user_clone = $scope.clone($scope.user);
-        });
+        /* Redirect if not logged in */
+        if( AuthService.redirectOnUnauthorized() ) {
+            return;
+        }
 
-        $http.get(CONFIG.api + '/viewers')
-        .then(function(response) {
-            $scope.viewers = response.data;
-        });
-
-        $http.get(CONFIG.api + '/viewers/view/list')
-        .then(function(response) {
-            $scope.views = response.data;
-        });
-
+        $scope.user_clone = angular.copy($scope.user);
     }
 
     /* Delete item */
@@ -41,5 +27,5 @@ app.controller('ProfileController', function($scope, AuthService, Session, $http
         }
     };
 
-    init();
+    $scope.user.$promise.then(init);
 });

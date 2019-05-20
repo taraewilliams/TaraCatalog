@@ -1,57 +1,62 @@
-app.controller('GamesCreateController', function($scope, CONFIG, RequestService, $http)
+app.controller('GamesCreateController', function($scope, CONFIG, RequestService, $http, AuthService)
 {
 
-  function init(){
+    function init(){
 
-      $scope.game = {
-        title:"",
-        platform:"",
-        old_platform:"",
-        location:"",
-        image:""
-      };
+        /* Redirect if not logged in or if user is a viewer only */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnViewer() ) {
+            return;
+        }
 
-      $http.get(CONFIG.api + '/games/platforms/all')
+        $scope.game = {
+            title:"",
+            platform:"",
+            old_platform:"",
+            location:"",
+            image:""
+        };
+
+        $http.get(CONFIG.api + '/games/platforms/all')
         .then(function(response) {
-          $scope.platforms = response.data;
-      });
-
-  }
-
-  $scope.createGame = function(){
-
-    var url = CONFIG.api + '/games';
-
-    if(!$scope.isEmpty($scope.game.old_platform) && $scope.isEmpty($scope.game.platform)){
-      $scope.game.platform = $scope.game.old_platform.platform;
-    }
-    delete $scope.game.old_platform;
-
-    if(!$scope.isEmpty($scope.game.title))
-    {
-        RequestService.post(url, $scope.game, function(data) {
-            alert("Game was created.")
-            clearGame();
-            window.scrollTo(0,0);
-
-        }, function(error, status) {
-            console.log(error.message);
+            $scope.platforms = response.data;
         });
-    }else{
-        alert("Title is required.")
+
     }
-  };
 
-  var clearGame = function(){
-      $scope.game = {
-          title:"",
-          platform:"",
-          old_platform:"",
-          location:"",
-          image:""
-      };
-  };
+    $scope.createGame = function(){
 
-  init();
+        var url = CONFIG.api + '/games';
+
+        if(!$scope.isEmpty($scope.game.old_platform) && $scope.isEmpty($scope.game.platform)){
+            $scope.game.platform = $scope.game.old_platform.platform;
+        }
+        delete $scope.game.old_platform;
+
+        if(!$scope.isEmpty($scope.game.title))
+        {
+            RequestService.post(url, $scope.game, function(data) {
+                alert("Game was created.")
+                clearGame();
+                window.scrollTo(0,0);
+
+            }, function(error, status) {
+                console.log(error.message);
+            });
+        }else{
+            alert("Title is required.")
+        }
+    };
+
+    var clearGame = function(){
+        $scope.game = {
+            title:"",
+            platform:"",
+            old_platform:"",
+            location:"",
+            image:""
+        };
+    };
+
+    $scope.user.$promise.then(init);
 
 });

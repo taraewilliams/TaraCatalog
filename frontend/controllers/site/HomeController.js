@@ -1,11 +1,13 @@
-app.controller('HomeController', function($scope, RequestService, CONFIG, AuthService)
+app.controller('HomeController', function($scope, RequestService, CONFIG, AuthService, $http)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
+
+        /* Redirect if not logged in */
+        if( AuthService.redirectOnUnauthorized() ) {
+            return;
+        }
+
         $scope.searchTerm = "";
     }
 

@@ -54,6 +54,42 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($user);
         });
 
+        /* Get users that are not viewing a creator's catalog */
+        $app->get($resource . '/non/viewers/all', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $users = User::get_nonviewers($user_id);
+            usort($users, array("TaraCatalog\Model\User", "sort_viewers"));
+
+            if($users === false) {
+                APIService::response_fail("There was a problem getting user.", 500);
+            }
+            if($users === null) {
+                APIService::response_fail("The requested user does not exist.", 404);
+            }
+            APIService::response_success($users);
+        });
+
+        /* Get users whose catalogs a creator can't view */
+        $app->get($resource . '/non/views/all', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $users = User::get_nonviews($user_id);
+            usort($users, array("TaraCatalog\Model\User", "sort_viewers"));
+
+            if($users === false) {
+                APIService::response_fail("There was a problem getting user.", 500);
+            }
+            if($users === null) {
+                APIService::response_fail("The requested user does not exist.", 404);
+            }
+            APIService::response_success($users);
+        });
+
         /* ========================================================== *
         * POST
         * ========================================================== */

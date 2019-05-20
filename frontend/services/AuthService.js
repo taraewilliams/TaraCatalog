@@ -1,4 +1,4 @@
-app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Session, RequestService, AUTH_EVENTS)
+app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Session, RequestService, AUTH_EVENTS, User)
 {
     this.login = function(credentials) {
         var _this = this;
@@ -47,6 +47,17 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
         return false;
     };
 
+    this.redirectOnViewer = function(path)
+    {
+        path = (typeof path !== 'undefined') ? path : '/';
+
+        if( $rootScope.user.role !== 'creator' ) {
+            $location.path(path);
+            return true;
+        }
+        return false;
+    };
+
     this.redirectOnAuthorized = function(path)
     {
         path = (typeof path !== 'undefined') ? path : '/';
@@ -61,12 +72,9 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
 
     this.setUser = function()
     {
-        Session.userID ? $http.get(CONFIG.api + "/users/" + Session.userID)
-        .then(function(response) {
-            $rootScope.user = response.data;
-            $rootScope.color_scheme = response.data.color_scheme;
-        }, function(response){
-            console.log("Error");
+        $rootScope.user = Session.userID ? User.get({id: Session.userID}, function(){
+            $rootScope.userCopy = angular.copy($rootScope.user);
+            $rootScope.color_scheme = $rootScope.userCopy.color_scheme;
         }) : null;
     };
 

@@ -1,12 +1,14 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-show="items.length > 0" ng-if="user && color_scheme">
+<main ng-if="user && color_scheme">
 
   <h1>Movies</h1>
 
-  <div class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
+  <p ng-if="items.length <= 0">No movies</p>
 
-  <ul class="items-list-pic">
+  <div ng-show="items.length > 0" class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
+
+  <ul ng-show="items.length > 0" class="items-list-pic">
       <li ng-repeat="item in items">
           <button name="Edit Movie" class="left-button" ng-click="goToPath('/movies_update/', item.id)">Edit</button>
           <button name="Delete Movie" ng-click="deleteItem(item.id)">X</button>
@@ -17,6 +19,6 @@
       </li>
   </ul>
 
-  <div ng-include="'views/site/subviews/_pagination.html'"></div>
+  <div ng-show="items.length > 0" ng-include="'views/site/subviews/_pagination.html'"></div>
 
 </main>

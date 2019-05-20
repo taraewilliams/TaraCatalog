@@ -1,17 +1,14 @@
 app.controller('ResetPasswordController', function($scope, AuthService, Session, $http, CONFIG, RequestService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
 
-        $http.get(CONFIG.api + '/users/' + Session.userID)
-        .then(function(response) {
-            $scope.user = response.data;
-            $scope.user_clone = $scope.clone($scope.user);
-        });
+        /* Redirect if not logged in */
+        if( AuthService.redirectOnUnauthorized() ) {
+            return;
+        }
+
+        $scope.user_clone = angular.copy($scope.user);
 
     }
 
@@ -33,5 +30,5 @@ app.controller('ResetPasswordController', function($scope, AuthService, Session,
         }
     };
 
-    init();
+    $scope.user.$promise.then(init);
 });

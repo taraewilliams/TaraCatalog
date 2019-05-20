@@ -1,11 +1,12 @@
 app.controller('AddController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
+
+        /* Redirect if not logged in or if user is a viewer only */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnViewer() ) {
+            return;
+        }
 
         $scope.addedItems = [];
 
@@ -84,6 +85,6 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
         }
     };
 
-    init();
+    $scope.user.$promise.then(init);
 
 });

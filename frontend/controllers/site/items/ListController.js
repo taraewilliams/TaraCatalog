@@ -1,14 +1,15 @@
 app.controller('ListController', function($scope, $routeParams, RequestService, CONFIG, $http, AuthService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
-
-    /* The maximum number of pages to show in the pagination bar */
-    $scope.maxPages = 5;
-
+    
     function init(){
+
+        /* Redirect if not logged in or if user is a viewer only */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnViewer() ) {
+            return;
+        }
+
+        /* The maximum number of pages to show in the pagination bar */
+        $scope.maxPages = 5;
 
         var offset = $routeParams.offset;
         var limit = $routeParams.limit;
@@ -168,6 +169,6 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         }
     };
 
-    init();
+    $scope.user.$promise.then(init);
 
 });

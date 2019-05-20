@@ -1,11 +1,12 @@
 app.controller('TableController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
 {
-    /* Redirect if not logged in */
-    if( AuthService.redirectOnUnauthorized() ) {
-        return;
-    }
 
     function init(){
+
+        /* Redirect if not logged in or if user is a viewer only */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnViewer() ) {
+            return;
+        }
 
         $scope.is_todo_list = false;
         $scope.sortVal = "none";
@@ -212,6 +213,6 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         }
     };
 
-    init();
+    $scope.user.$promise.then(init);
 
 });

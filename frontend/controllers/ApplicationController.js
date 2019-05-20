@@ -10,7 +10,7 @@ app.controller('ApplicationController', function ($scope, $route, $location, Aut
         }
 
         Session.destroy();
-        $location.path('/home');
+        $location.path('/login');
         alert("Your session either does not exist or has expired. Please login again.");
     });
 

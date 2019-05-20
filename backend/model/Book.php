@@ -365,7 +365,7 @@ class Book
     }
 
     public static function sort_all($a, $b){
-        return $a->title > $b->title;
+        return strtolower($a->title) > strtolower($b->title);
     }
 
     /* ===================================================== *

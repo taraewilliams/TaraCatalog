@@ -32,6 +32,7 @@
         <tr>
             <th></th>
             <th>Title</th>
+            <th>Image</th>
             <th>Author</th>
             <th>Volume</th>
             <th>ISBN</th>
@@ -43,9 +44,13 @@
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="11">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="12">{{ item.title }}</th>
 
             <td ng-if="!item.isHeader">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader">
+                <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="../backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+            </td>
             <td ng-if="!item.isHeader">{{item.title}}</td>
             <td ng-if="!item.isHeader">{{item.author}}</td>
             <td ng-if="!item.isHeader && item.volume">{{item.volume}}</td>

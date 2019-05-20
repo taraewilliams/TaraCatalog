@@ -22,6 +22,13 @@
             <input type="text" name="last_name" id="last_name" ng-model="user_clone.last_name" placeholder="Last Name...">
         </label>
 
+        <label for="role">Role<br>
+            <select ng-model="user_clone.role">
+                <option value="viewer">Viewer</option>
+                <option value="creator">Creator</option>
+            </select>
+        </label>
+
         <label for="color">Select Color Scheme<br>
             <select ng-change="changeStyle(user_clone.color_scheme)" ng-model="user_clone.color_scheme">
                 <option value="blue">Blue</option>
