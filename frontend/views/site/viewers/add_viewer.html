@@ -14,7 +14,7 @@
     <ul ng-if="user.role == 'creator' && isActive(['/add_viewers'])" class="view-list">
         <li ng-repeat="viewer in users">
             <img class="profile-pic" ng-if="!isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.image}}"/>
-            <img class="profile-pic" ng-if="isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+            <img class="profile-pic" ng-if="isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/profile_saver.jpg"/>
             <p>{{viewer.username}}</p>
             <input ng-click="toggleAddedUsers(viewer.id)" type="checkbox" name="{{viewer.username}}" value="{{viewer.id}}">
         </li>
@@ -24,7 +24,7 @@
     <ul ng-if="isActive(['/request_view'])" class="view-list">
         <li ng-repeat="viewer in users">
             <img class="profile-pic" ng-if="!isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.image}}"/>
-            <img class="profile-pic" ng-if="isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+            <img class="profile-pic" ng-if="isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/profile_saver.jpg"/>
             <p>{{viewer.username}}</p>
             <input ng-click="toggleAddedUsers(viewer.id)" type="checkbox" name="{{viewer.username}}" value="{{viewer.id}}">
         </li>

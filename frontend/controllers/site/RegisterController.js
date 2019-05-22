@@ -13,7 +13,8 @@ app.controller('RegisterController', function($scope, AuthService, $location, Re
           email:'',
           first_name:'',
           last_name:'',
-          color_scheme:'',
+          color_scheme:'red',
+          role:'viewer',
           image:''
         };
     }
@@ -23,7 +24,7 @@ app.controller('RegisterController', function($scope, AuthService, $location, Re
         var url = CONFIG.api + "/users";
 
         RequestService.post(url, new_user, function(data) {
-            alert("Profile was created.")
+            alert("Profile was created.");
             $scope.goToPath('/login');
 
         }, function(response) {

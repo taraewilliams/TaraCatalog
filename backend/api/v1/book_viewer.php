@@ -23,7 +23,7 @@ $app->group('/api', function () use ($app) {
 
             /* Check that the viewer has permission to view the creator's books */
             $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id, $status);
-            if($viewer === false || $viewer === null) {
+            if($viewer === false || $viewer === null || count($viewer) === 0) {
                 APIService::response_fail("There was a problem getting the books.", 500);
             }
 

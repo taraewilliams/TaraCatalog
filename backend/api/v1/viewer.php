@@ -20,10 +20,21 @@ $app->group('/api', function () use ($app) {
             $status = $args['status'];
 
             $viewers = Viewer::get_all($user_id, $status);
-            if($viewers === false) {
-                APIService::response_fail("There was a problem getting the viewers.", 500);
-            }
             usort($viewers, array("TaraCatalog\Model\Viewer", "sort_viewers"));
+
+            APIService::response_success($viewers);
+        });
+
+        /* Get all creator can view for a specific status */
+        $app->get($resource . "/view/list/{status}", function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $status = $args['status'];
+
+            $viewers = Viewer::get_all_user_views($user_id, $status);
+
+            usort($viewers, array("TaraCatalog\Model\Viewer", "sort_creators"));
 
             APIService::response_success($viewers);
         });
@@ -35,32 +46,15 @@ $app->group('/api', function () use ($app) {
 
             $creator_id = intval($args['creator_id']);
             $viewer_id = $session->user->id;
+
+            /* A viewer can only see creators that have approved them */
             $status = "approved";
 
             $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id, $status);
-            if($viewer === false || $viewer === null) {
-                APIService::response_fail("There was a problem getting viewer.", 500);
-            }
-            if($viewer === null) {
-                APIService::response_fail("The requested viewer does not exist.", 404);
+            if ($viewer === false || $viewer === null || count($viewer) === 0){
+                APIService::response_fail("There was a problem getting the viewer.");
             }
             APIService::response_success($viewer);
-        });
-
-        /* Get all creator can view */
-        $app->get($resource . "/view/list/{status}", function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $status = $args['status'];
-
-            $viewers = Viewer::get_all_user_views($user_id, $status);
-            if($viewers === false) {
-                APIService::response_fail("There was a problem getting the viewers.", 500);
-            }
-            usort($viewers, array("TaraCatalog\Model\Viewer", "sort_creators"));
-
-            APIService::response_success($viewers);
         });
 
         /* ========================================================== *
@@ -87,9 +81,6 @@ $app->group('/api', function () use ($app) {
             }
 
             $viewer = Viewer::create_from_data($params);
-            if($viewer === false || $viewer === null) {
-                APIService::response_fail("There was a problem creating the viewer.", 500);
-            }
             APIService::response_success($viewer);
         });
 
@@ -112,11 +103,8 @@ $app->group('/api', function () use ($app) {
             if ($status !== "approved" && $status !== "rejected" && $status !== "pending"){
                 APIService::response_fail("Invalid status.", 500);
             }
-            
+
             $viewer = Viewer::update($user_id, $id, $params);
-            if($viewer === false || $viewer === null) {
-                APIService::response_fail("There was a problem updating the viewer.", 500);
-            }
             APIService::response_success($viewer);
         });
 
@@ -137,13 +125,6 @@ $app->group('/api', function () use ($app) {
             }
 
             $result = Viewer::delete($creator_id, $viewer_id);
-
-            if( $result === false ) {
-                APIService::response_fail("There was an error deleting that viewer.", 500);
-            }
-            if( $result === null ) {
-                APIService::response_fail("The requested viewer does not exist.", 404);
-            }
             APIService::response_success(true);
         });
     });

@@ -68,17 +68,15 @@ class Viewer
             "active"         => $viewer->active
         );
 
+        /* Check that a viewer can't already view the creator's catalog */
         $view = Viewer::get_for_creator_and_viewer_id($data["creator_id"], $data["viewer_id"]);
-        if ($view !== false && $view !== null){
+        if ($view !== false && $view !== null && count($view) !== 0){
             APIService::response_fail("A viewer already exists for this creator.");
         }
 
         $id = DatabaseService::create(Config::DBTables()->viewer, $data);
-        if($id === false) {
-            return false;
-        }
-        if($id === null) {
-            return null;
+        if($id === false || $id === null) {
+            APIService::response_fail("There was a problem creating the viewer.", 500);
         }
         $viewer->id = $id;
         return $viewer;
@@ -88,7 +86,7 @@ class Viewer
     * GET
     * ========================================================== */
 
-    /* Get all viewers */
+    /* Get all viewers for a creator */
     public static function get_all($user_id, $status)
     {
         $where = "WHERE viewer.active = 1 AND viewer.creator_id = " . $user_id . " AND viewer.status = '" . $status . "'";
@@ -99,8 +97,8 @@ class Viewer
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
-        if ($result === false){
-            return false;
+        if ($result === false || $result === null){
+            APIService::response_fail("There was a problem getting the viewers.", 500);
         }else{
             return $result;
         }
@@ -117,8 +115,8 @@ class Viewer
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
-        if ($result === false){
-            return false;
+        if ($result === false || $result === null){
+            APIService::response_fail("There was a problem getting the viewers.", 500);
         }else{
             return $result;
         }
@@ -146,7 +144,7 @@ class Viewer
     * UPDATE
     * ========================================================== */
 
-    /* Update a book */
+    /* Update a viewer */
     public static function update($user_id, $id, $data)
     {
         /* Check if a viewer exists with this id and creator id */
@@ -162,11 +160,8 @@ class Viewer
 
         $result = DatabaseService::update(Config::DBTables()->viewer, $id, $data);
 
-        if($result === false) {
-            return false;
-        }
-        if($result === null) {
-            return null;
+        if ($result === false || $result === null){
+            APIService::response_fail("Update failed.", 500);
         }
         return $result ? true : false;
     }
@@ -179,11 +174,14 @@ class Viewer
     public static function delete($creator_id, $viewer_id)
     {
         $id = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id)->id;
-        if ($id == null || $id == false){
+        if ($id === null || $id === false){
             APIService::response_fail("There was a problem deleting the viewer.", 500);
         }
         $where = array("creator_id" => $creator_id, "viewer_id" => $viewer_id);
         $result = DatabaseService::delete(Config::DBTables()->viewer, $where);
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error deleting that viewer.", 500);
+        }
         return $result;
     }
 
@@ -203,7 +201,7 @@ class Viewer
     * Private Functions
     * ===================================================== */
 
-    /* Generic get games function */
+    /* Generic get viewer function */
     private static function get($where = null, $order_by = null, $limit = null){
         $database = Database::instance();
         $where_sql = is_null($where) ? "" : " " . $where;
@@ -223,11 +221,8 @@ class Viewer
         $where = array("id" => $user_id);
         $result = DatabaseService::get(Config::DBTables()->user, $where);
 
-        if($result === false || $result === null) {
-            return false;
-        }
-        if(count($result) === 0) {
-            return null;
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("There was a problem getting the user.", 500);
         }
         $user = new User($result[0]);
         return array("id" => $user->id, "username" => $user->username, "image" => $user->image);

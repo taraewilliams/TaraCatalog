@@ -24,6 +24,16 @@
             <input type="text" name="last_name" id="last_name" ng-model="new_user.last_name" placeholder="Last Name...">
         </label>
 
+        <label for="role">Role<br>
+            <select ng-model="new_user.role">
+                <option value="viewer">Viewer</option>
+                <option value="creator">Creator</option>
+            </select>
+        </label>
+
+        <p ng-if="new_user.role == 'viewer'">** A viewer can see other users' catalogs but can't create their own catalog.</p>
+        <p ng-if="new_user.role == 'creator'">** A creator can see other users' catalogs and create their own catalog.</p>
+
         <label for="color">Select Color Scheme<br>
             <select ng-model="new_user.color_scheme">
                 <option value="blue">Blue</option>
