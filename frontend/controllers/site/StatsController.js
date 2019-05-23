@@ -8,8 +8,9 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             return;
         }
 
-        var urls = ['/books/content_type/count', '/books/cover_type/count','/movies/format/count',
-        '/movies/content_type/count', '/games/platform/count'];
+        var urls = ['/books/content_type/count', '/books/cover_type/count',
+        '/movies/format/count', '/movies/content_type/count', '/movies/mpaa_rating/count',
+        '/games/esrb_rating/count', '/games/platform/count'];
 
         for(i = 0; i < urls.length; i++){
             $http.get(CONFIG.api + urls[i])
@@ -38,11 +39,20 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Movie Content Type', 'Number of Movies']];
             var title = 'Content';
             var html_element = 'MovieContentTypeChart';
+        }else if(itemKey == 'movie_mpaa_rating_type'){
+            var dataArray = [['Movie MPAA/TV Rating', 'Number of Movies']];
+            var title = 'MPAA/TV Rating';
+            var html_element = 'MovieMPAARatingTypeChart';
+        }else if(itemKey == "game_esrb_rating_type"){
+            var dataArray = [['Game ESRB Rating', 'Number of Games']];
+            var title = 'ESRB Rating';
+            var html_element = 'GameESRBRatingTypeChart';
         }else{
             var dataArray = [['Game Platform Type', 'Number of Games']];
             var title = 'Platform';
             var html_element = 'GamePlatformTypeChart';
         }
+
         makePieChart(items[itemKey], html_element, title, dataArray);
     };
 

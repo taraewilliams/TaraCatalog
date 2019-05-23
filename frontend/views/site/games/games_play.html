@@ -13,16 +13,18 @@
             <th></th>
             <th>Title</th>
             <th>Platform</th>
+            <th>ESRB Rating</th>
             <th colspan="2">Location</th>
             <th></th>
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="6">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="7">{{ item.title }}</th>
 
             <td ng-if="!item.isHeader">{{item.row_number}}</td>
             <td ng-if="!item.isHeader">{{item.title}}</td>
             <td ng-if="!item.isHeader">{{item.platform}}</td>
+            <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
             <td ng-if="!item.isHeader">{{item.location}}</td>
             <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
             <td ng-if="!item.isHeader">

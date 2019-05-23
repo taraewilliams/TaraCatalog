@@ -22,9 +22,7 @@
             <input type="radio" ng-model="filter.format" value="Blu-Ray"> Blu-Ray<br>
             <input type="radio" ng-model="filter.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
         </label>
-    </section>
 
-    <section>
         <label for="content_type">Content Type<br>
             <input type="radio" ng-model="filter.content_type" value="Live Action"> Live Action<br>
             <input type="radio" ng-model="filter.content_type" value="Anime"> Anime<br>
@@ -33,11 +31,31 @@
     </section>
 
     <section>
+        <label for="mpaa_rating">MPAA/TV Rating<br>
+            <select ng-model="filter.mpaa_rating">
+                <option value="none">None</option>
+                <option value="G">G</option>
+                <option value="PG">PG</option>
+                <option value="PG-13">PG-13</option>
+                <option value="NC-17">NC-17</option>
+                <option value="Not Rated">Not Rated</option>
+                <option value="Unrated">Unrated</option>
+                <option value="TV-Y">TV-7</option>
+                <option value="TV-Y7">TV-Y7</option>
+                <option value="TV-G">TV-G</option>
+                <option value="TV-PG">TV-PG</option>
+                <option value="TV-14">TV-14</option>
+                <option value="TV-MA">TV-MA</option>
+            </select>
+        </label>
+
         <label for="location">Location<br>
           <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
           <input type="radio" ng-model="filter.location" value="Home"> Home<br>
         </label>
+    </section>
 
+    <section>
         <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
         <button type="submit">Filter Results</button>
     </section>

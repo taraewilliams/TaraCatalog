@@ -16,6 +16,20 @@
         <select ng-model="game_clone.old_platform" ng-options="platform.platform for platform in platforms"></select>
     </label>
 
+    <label for="esrb_rating">ESRB Rating<br>
+        <select ng-model="game_clone.esrb_rating">
+            <option value="none">None</option>
+            <option value="RP">RP (Rating Pending)</option>
+            <option value="EC">EC (Early Childhood)</option>
+            <option value="E">E (Everyone)</option>
+            <option value="E10+">E10+ (Everyone 10+)</option>
+            <option value="KA">KA (Kids to Adults)</option>
+            <option value="T">T (Teen)</option>
+            <option value="M">M (Mature)</option>
+            <option value="AO">AO (Adults Only)</option>
+        </select>
+    </label>
+
     <label for="location">Location<br>
       <input type="radio" ng-model="game_clone.location" value="Apartment"> Apartment<br>
       <input type="radio" ng-model="game_clone.location" value="Home"> Home<br>

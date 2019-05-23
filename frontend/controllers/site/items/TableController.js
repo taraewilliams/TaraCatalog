@@ -202,12 +202,14 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 season:"",
                 format:"",
                 content_type:"",
+                mpaa_rating:"",
                 location:""
             };
         }else{
             return {
                 title:"",
                 platform:"",
+                esrb_rating:"",
                 location:""
             };
         }

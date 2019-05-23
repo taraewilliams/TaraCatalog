@@ -14,6 +14,7 @@ app.controller('MoviesCreateController', function($scope, CONFIG, RequestService
             season:"",
             format:"",
             content_type:"",
+            mpaa_rating:"none",
             location:"",
             image:""
         };
@@ -45,6 +46,7 @@ app.controller('MoviesCreateController', function($scope, CONFIG, RequestService
             season:"",
             format:"",
             content_type:"",
+            mpaa_rating:"none",
             location:"",
             image:""
         };

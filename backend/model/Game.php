@@ -16,6 +16,7 @@ class Game
     public $platform;
     public $location;
     public $play_list;
+    public $esrb_rating;
     public $image;
     public $row_number;
     public $type;
@@ -33,6 +34,7 @@ class Game
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->play_list       = isset($data['play_list']) ? (boolean) $data['play_list'] : false;
+        $this->esrb_rating     = isset($data['esrb_rating']) ? $data['esrb_rating'] : null;
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
         $this->type            = "game";
 
@@ -60,6 +62,7 @@ class Game
             "platform"       => $game->platform,
             "location"       => $game->location,
             "play_list"      => $game->play_list,
+            "esrb_rating"    => $game->esrb_rating,
             "image"          => $game->image,
             "created"        => $game->created,
             "updated"        => $game->updated,
@@ -85,7 +88,7 @@ class Game
     public static function get_all($user_id)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY title,platform";
+        $order_by = "ORDER BY title,platform,esrb_rating";
         $result = Game::get($where, $order_by);
         if ($result === false){
             return false;
@@ -102,7 +105,7 @@ class Game
     public static function get_all_on_play_list($user_id, $play)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id . " AND play_list = " . $play;
-        $order_by = "ORDER BY title,platform";
+        $order_by = "ORDER BY title,platform,esrb_rating";
         $result = Game::get($where, $order_by);
         if ($result === false){
             return false;
@@ -119,7 +122,7 @@ class Game
     public static function get_all_with_limit($user_id, $offset = 0, $limit = 50)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY title,platform";
+        $order_by = "ORDER BY title,platform,esrb_rating";
         $limit_sql = "LIMIT " . $offset . ", " . $limit;
         $result = Game::get($where, $order_by, $limit_sql);
         if ($result === false){
@@ -157,7 +160,7 @@ class Game
         foreach ($data as $key => $value) {
             $where = $where . (isset($data[$key]) ? " AND " . $key . " LIKE '%" . $data[$key] . "%'" : "");
         }
-        $order_by = is_null($order) ? "ORDER BY title,platform" : "ORDER BY " . $order;
+        $order_by = is_null($order) ? "ORDER BY title,platform,esrb_rating" : "ORDER BY " . $order;
         $result = Game::get($where, $order_by);
         if ($result === false){
             return false;
@@ -185,7 +188,7 @@ class Game
         }
         $where = $where . ") AND active = 1 AND user_id = " . $user_id;
 
-        $order_by = is_null($order) ? "ORDER BY title,platform" : "ORDER BY " . $order;
+        $order_by = is_null($order) ? "ORDER BY title,platform,esrb_rating" : "ORDER BY " . $order;
         $result = Game::get($where, $order_by);
         if ($result === false){
             return false;
@@ -232,17 +235,17 @@ class Game
     /* Count all games, grouped by platform */
     public static function get_all_platform_counts($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, platform as type FROM " . CONFIG::DBTables()->game . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY platform";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array('game_platform_type' => $result);
-        }
+        $column_name = "platform";
+        $header = "game_platform_type";
+        return Game::get_counts_for_column($user_id, $column_name, $header);
+    }
+
+    /* Count all games, grouped by esrb rating */
+    public static function get_all_esrb_rating_counts($user_id)
+    {
+        $column_name = "esrb_rating";
+        $header = "game_esrb_rating_type";
+        return Game::get_counts_for_column($user_id, $column_name, $header);
     }
 
     /* Get all game platforms */
@@ -337,6 +340,22 @@ class Game
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         return $result;
+    }
+
+    /* Generic get counts function */
+    private static function get_counts_for_column($user_id, $column_name, $header)
+    {
+        $database = Database::instance();
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . CONFIG::DBTables()->game . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return array($header => $result);
+        }
     }
 
 }

@@ -78,7 +78,8 @@ $app->group('/api', function () use ($app) {
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "platform",
-                "location"
+                "location",
+                "esrb_rating"
             ));
 
             $game = Game::get_for_filter_params($user_id, $params);
@@ -98,7 +99,8 @@ $app->group('/api', function () use ($app) {
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "platform",
-                "location"
+                "location",
+                "esrb_rating"
             ));
 
             $game = Game::get_for_filter_params($user_id, $params, $order);
@@ -133,6 +135,19 @@ $app->group('/api', function () use ($app) {
             $user_id = $session->user->id;
 
             $games = Game::get_all_platform_counts($user_id);
+            if($games === false) {
+                APIService::response_fail("There was a problem getting the games.", 500);
+            }
+            APIService::response_success($games);
+        });
+
+        /* Count games with different esrb ratings */
+        $app->get($resource . '/esrb_rating/count', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $games = Game::get_all_esrb_rating_counts($user_id);
             if($games === false) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
@@ -181,7 +196,8 @@ $app->group('/api', function () use ($app) {
             ), array(
                 "platform",
                 "location",
-                "play_list"
+                "play_list",
+                "esrb_rating"
             ));
             $params["user_id"] = $user_id;
 
@@ -220,7 +236,8 @@ $app->group('/api', function () use ($app) {
                 "title",
                 "platform",
                 "location",
-                "play_list"
+                "play_list",
+                "esrb_rating"
             ));
 
             $files = APIService::build_files($_FILES, null, array(

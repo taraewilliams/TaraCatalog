@@ -6,11 +6,24 @@
         <label for="title">Title<br>
             <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
         </label>
+
+        <label for="platform">Platform<br>
+            <input type="text" name="platform" id="platform" ng-model="filter.platform" placeholder="Platform...">
+        </label>
     </section>
 
     <section>
-        <label for="platform">Platform<br>
-            <input type="text" name="platform" id="platform" ng-model="filter.platform" placeholder="Platform...">
+        <label for="esrb_rating">ESRB Rating<br>
+            <select ng-model="filter.esrb_rating">
+                <option value="none">None</option>
+                <option value="RP">RP (Rating Pending)</option>
+                <option value="EC">EC (Early Childhood)</option>
+                <option value="E">E (Everyone)</option>
+                <option value="E10+">E10+ (Everyone 10+)</option>
+                <option value="T">T (Teen)</option>
+                <option value="M">M (Mature)</option>
+                <option value="AO">AO (Adults Only)</option>
+            </select>
         </label>
     </section>
 

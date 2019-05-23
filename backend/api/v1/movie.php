@@ -80,6 +80,7 @@ $app->group('/api', function () use ($app) {
                 "format",
                 "edition",
                 "content_type",
+                "mpaa_rating",
                 "location",
                 "season"
             ));
@@ -103,6 +104,7 @@ $app->group('/api', function () use ($app) {
                 "format",
                 "edition",
                 "content_type",
+                "mpaa_rating",
                 "location",
                 "season"
             ));
@@ -158,6 +160,19 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
+        /* Count movies with different mpaa ratings */
+        $app->get($resource . '/mpaa_rating/count', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+
+            $movies = Movie::get_all_mpaa_rating_counts($user_id);
+            if($movies === false) {
+                APIService::response_fail("There was a problem getting the movies.", 500);
+            }
+            APIService::response_success($movies);
+        });
+
         /* Count all movies */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
@@ -188,6 +203,7 @@ $app->group('/api', function () use ($app) {
             ), array(
                 "edition",
                 "content_type",
+                "mpaa_rating",
                 "location",
                 "season",
                 "watch_list"
@@ -229,6 +245,7 @@ $app->group('/api', function () use ($app) {
                 "format",
                 "edition",
                 "content_type",
+                "mpaa_rating",
                 "location",
                 "season",
                 "watch_list"

@@ -243,33 +243,17 @@ class Book
     /* Count books with different content types */
     public static function get_all_content_type_counts($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, content_type as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY content_type";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array('book_content_type' => $result);
-        }
+        $column_name = "content_type";
+        $header = "book_content_type";
+        return Book::get_counts_for_column($user_id, $column_name, $header);
     }
 
     /* Count books with different cover types */
     public static function get_all_cover_type_counts($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, cover_type as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY cover_type";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array('book_cover_type' => $result);
-        }
+        $column_name = "cover_type";
+        $header = "book_cover_type";
+        return Book::get_counts_for_column($user_id, $column_name, $header);
     }
 
     /* Get all authors */
@@ -384,6 +368,22 @@ class Book
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         return $result;
+    }
+
+    /* Generic get counts function */
+    private static function get_counts_for_column($user_id, $column_name, $header)
+    {
+        $database = Database::instance();
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return array($header => $result);
+        }
     }
 
 }

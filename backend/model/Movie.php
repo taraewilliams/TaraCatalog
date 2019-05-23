@@ -16,6 +16,7 @@ class Movie
     public $format;
     public $edition;
     public $content_type;
+    public $mpaa_rating;
     public $location;
     public $season;
     public $row_number;
@@ -34,6 +35,7 @@ class Movie
         $this->format          = isset($data['format']) ? $data['format'] : "DVD";
         $this->edition         = isset($data['edition']) ? $data['edition'] : null;
         $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Live Action";
+        $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->season          = isset($data['season']) ? $data['season'] : null;
         $this->watch_list      = isset($data['watch_list']) ? (boolean) $data['watch_list'] : false;
@@ -65,6 +67,7 @@ class Movie
             "format"         => $movie->format,
             "edition"        => $movie->edition,
             "content_type"   => $movie->content_type,
+            "mpaa_rating"    => $movie->mpaa_rating,
             "location"       => $movie->location,
             "season"         => $movie->season,
             "image"          => $movie->image,
@@ -93,7 +96,7 @@ class Movie
     public static function get_all($user_id)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY title";
+        $order_by = "ORDER BY title,mpaa_rating";
         $result = Movie::get($where, $order_by);
         if ($result === false){
             return false;
@@ -110,7 +113,7 @@ class Movie
     public static function get_all_with_limit($user_id, $offset = 0, $limit = 50)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY title";
+        $order_by = "ORDER BY title,mpaa_rating";
         $limit_sql = "LIMIT " . $offset . ", " . $limit;
         $result = Movie::get($where, $order_by, $limit_sql);
         if ($result === false){
@@ -145,7 +148,7 @@ class Movie
     public static function get_all_on_watch_list($user_id, $watch)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id . " AND watch_list = " . $watch;
-        $order_by = "ORDER BY title";
+        $order_by = "ORDER BY title,mpaa_rating";
         $result = Movie::get($where, $order_by);
         if ($result === false){
             return false;
@@ -165,7 +168,7 @@ class Movie
         foreach ($data as $key => $value) {
             $where = $where . (isset($data[$key]) ? " AND " . $key . " LIKE '%" . $data[$key] . "%'" : "");
         }
-        $order_by = is_null($order) ? "ORDER BY title" : "ORDER BY " . $order;
+        $order_by = is_null($order) ? "ORDER BY title,mpaa_rating" : "ORDER BY " . $order;
         $result = Movie::get($where, $order_by);
         if ($result === false){
             return false;
@@ -192,7 +195,7 @@ class Movie
             $iter += 1;
         }
         $where = $where . ") AND active = 1 AND user_id = " . $user_id;
-        $order_by = is_null($order) ? "ORDER BY title" : "ORDER BY " . $order;
+        $order_by = is_null($order) ? "ORDER BY title,mpaa_rating" : "ORDER BY " . $order;
         $result = Movie::get($where, $order_by);
         if ($result === false){
             return false;
@@ -239,33 +242,25 @@ class Movie
     /* Count movies with different content types */
     public static function get_all_content_type_counts($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, content_type as type FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY content_type";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array('movie_content_type' => $result);
-        }
+        $column_name = "content_type";
+        $header = "movie_content_type";
+        return Movie::get_counts_for_column($user_id, $column_name, $header);
     }
 
     /* Count movies with different formats */
     public static function get_all_format_counts($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, format as type FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND user_id = " . $user_id . " GROUP BY format";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array('movie_format_type' => $result);
-        }
+        $column_name = "format";
+        $header = "movie_format_type";
+        return Movie::get_counts_for_column($user_id, $column_name, $header);
+    }
+
+    /* Count all movies, grouped by mpaa rating */
+    public static function get_all_mpaa_rating_counts($user_id)
+    {
+        $column_name = "mpaa_rating";
+        $header = "movie_mpaa_rating_type";
+        return Movie::get_counts_for_column($user_id, $column_name, $header);
     }
 
     /* Get a movie's title for its ID */
@@ -344,5 +339,21 @@ class Movie
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         return $result;
+    }
+
+    /* Generic get counts function */
+    private static function get_counts_for_column($user_id, $column_name, $header)
+    {
+        $database = Database::instance();
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return array($header => $result);
+        }
     }
 }

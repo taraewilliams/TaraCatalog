@@ -8,6 +8,9 @@ class FileService
 
     public static function upload_file($file, $relative_dir, $file_name)
     {
+        $illegal_char = array('[', ']', '\\', '/', '*', '<', '>', '|', '{', '}', '?');
+        $file_name = str_replace($illegal_char,'',$file_name);
+
         if(!$file) {
             return null;
         }

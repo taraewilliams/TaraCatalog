@@ -12,6 +12,7 @@ app.controller('GamesCreateController', function($scope, CONFIG, RequestService,
             title:"",
             platform:"",
             old_platform:"",
+            esrb_rating:"none",
             location:"",
             image:""
         };
@@ -52,6 +53,7 @@ app.controller('GamesCreateController', function($scope, CONFIG, RequestService,
             title:"",
             platform:"",
             old_platform:"",
+            esrb_rating:"none",
             location:"",
             image:""
         };
