@@ -20,10 +20,6 @@ class Viewer
     public $updated;
     public $active;
 
-    /* Relationships */
-    public $viewer;
-    public $creator;
-
     public function __construct($data, $include_relationships = true)
     {
         $this->id              = isset($data['id']) ? intval($data['id']) : null;
@@ -35,15 +31,6 @@ class Viewer
         $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
         $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
         $this->active           = isset($data['active']) ? (boolean) $data['active'] : true;
-
-        /* Relationship */
-        if($include_relationships) {
-            $this->viewer = self::get_user_for_id($this->viewer_id);
-            $this->creator = self::get_user_for_id($this->creator_id);
-        } else {
-            unset($this->viewer);
-            unset($this->creator);
-        }
     }
 
     /* =====================================================
@@ -69,9 +56,8 @@ class Viewer
         );
 
         /* Check that a viewer can't already view the creator's catalog */
-        $view = Viewer::get_for_creator_and_viewer_id($data["creator_id"], $data["viewer_id"]);
-        if ($view !== false && $view !== null && count($view) !== 0){
-            APIService::response_fail("A viewer already exists for this creator.");
+        if(Viewer::exists_for_creator_and_viewer_id($data["creator_id"], $data["viewer_id"])){
+            APIService::response_fail("A viewer already exists for this creator.", 500);
         }
 
         $id = DatabaseService::create(Config::DBTables()->viewer, $data);
@@ -130,14 +116,20 @@ class Viewer
         }else{
             $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id;
         }
-        $result = Viewer::get($where);
-        if($result === false || $result === null) {
-            return false;
-        }
-        if(count($result) === 0) {
-            return null;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("There was a problem getting the viewer.", 500);
         }
         return new Viewer($result[0]);
+    }
+
+    /* See if a viewer exists for creator and viewer IDs */
+    public static function exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status=null)
+    {
+        $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id;
+        $where_full = ($status !== null) ? $where . " AND status = '" . $status . "'" : $where;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where_full);
+        return ($result !== false && $result !== null && count($result) !== 0);
     }
 
     /* ========================================================== *
@@ -150,7 +142,7 @@ class Viewer
         /* Check if a viewer exists with this id and creator id */
         /* Creator must be the one approving the viewer */
         $where = "WHERE active = 1 AND creator_id = " . $user_id . " AND id = " . $id;
-        $result = Viewer::get($where);
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
         if($result === false || $result === null || count($result) === 0) {
             APIService::response_fail("Invalid viewer.", 500);
         }
@@ -195,37 +187,6 @@ class Viewer
 
     public static function sort_creators($a, $b){
         return strtolower($a["c_username"]) > strtolower($b["c_username"]);
-    }
-
-    /* ===================================================== *
-    * Private Functions
-    * ===================================================== */
-
-    /* Generic get viewer function */
-    private static function get($where = null, $order_by = null, $limit = null){
-        $database = Database::instance();
-        $where_sql = is_null($where) ? "" : " " . $where;
-        $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
-        $limit_sql = is_null($limit) ? "" : " " . $limit;
-        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . CONFIG::DBTables()->viewer . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        return $result;
-    }
-
-    /* Get a user for an ID */
-    private static function get_user_for_id($user_id)
-    {
-        $where = array("id" => $user_id);
-        $result = DatabaseService::get(Config::DBTables()->user, $where);
-
-        if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the user.", 500);
-        }
-        $user = new User($result[0]);
-        return array("id" => $user->id, "username" => $user->username, "image" => $user->image);
     }
 
 }

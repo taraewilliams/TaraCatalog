@@ -273,7 +273,8 @@ main {
 
 .standard-table {
   border-collapse: collapse;
-  width: 100%; }
+  width: 100%;
+  margin-top: 50px; }
   .standard-table th {
     font-weight: bold; }
   .standard-table td, .standard-table th {
@@ -291,6 +292,9 @@ main {
   .standard-table img {
     width: 50px;
     border: 1px solid #ffccee; }
+  .standard-table tr .table-toggle-box {
+    text-align: center;
+    vertical-align: middle; }
 
 h1, h2, h3, h4, h5, h6, p {
   padding: 10px; }

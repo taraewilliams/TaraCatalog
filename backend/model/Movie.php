@@ -16,13 +16,15 @@ class Movie
     public $format;
     public $edition;
     public $content_type;
-    public $mpaa_rating;
     public $location;
     public $season;
-    public $row_number;
+    public $watch_list;
     public $image;
-    public $type;
+    public $mpaa_rating;
+    public $notes;
 
+    public $type;
+    public $row_number;
     public $created;
     public $updated;
     public $active;
@@ -35,17 +37,18 @@ class Movie
         $this->format          = isset($data['format']) ? $data['format'] : "DVD";
         $this->edition         = isset($data['edition']) ? $data['edition'] : null;
         $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Live Action";
-        $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->season          = isset($data['season']) ? $data['season'] : null;
         $this->watch_list      = isset($data['watch_list']) ? (boolean) $data['watch_list'] : false;
-        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
         $this->image           = isset($data['image']) ? $data['image'] : null;
-        $this->type            = "movie";
+        $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
+        $this->$notes          = isset($data['notes']) ? $data['notes'] : null;
 
-        $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active           = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->type            = "movie";
+        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
+        $this->created         = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
+        $this->updated         = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
+        $this->active          = isset($data['active']) ? (boolean) $data['active'] : true;
     }
 
     /* =====================================================
@@ -67,22 +70,20 @@ class Movie
             "format"         => $movie->format,
             "edition"        => $movie->edition,
             "content_type"   => $movie->content_type,
-            "mpaa_rating"    => $movie->mpaa_rating,
             "location"       => $movie->location,
             "season"         => $movie->season,
-            "image"          => $movie->image,
             "watch_list"     => $movie->watch_list,
+            "image"          => $movie->image,
+            "mpaa_rating"    => $movie->mpaa_rating,
+            "notes"          => $movie->notes,
             "created"        => $movie->created,
             "updated"        => $movie->updated,
             "active"         => $movie->active
         );
 
         $id = DatabaseService::create(Config::DBTables()->movie, $data);
-        if($id === false) {
-            return false;
-        }
-        if($id === null) {
-            return null;
+        if($id === false || $id === null) {
+            APIService::response_fail("There was a problem creating the movie.", 500);
         }
         $movie->id = $id;
         return $movie;
@@ -92,14 +93,29 @@ class Movie
     * GET
     * ========================================================== */
 
+    /* ========================================================== *
+    * GET MOVIES
+    * ========================================================== */
+
+    /* Get a single movie */
+    public static function get_from_id($user_id, $id)
+    {
+        $where = array("id" => $id, "user_id" => $user_id);
+        $result = DatabaseService::get(Config::DBTables()->movie, $where);
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("There was a problem getting the movie.", 500);
+        }
+        return new Movie($result[0]);
+    }
+
     /* Get all movies */
     public static function get_all($user_id)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY title,mpaa_rating";
-        $result = Movie::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $order_by = "ORDER BY title,season,mpaa_rating";
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the movies.", 500);
         }else{
             $movies = array();
             foreach( $result as $row ) {
@@ -113,11 +129,11 @@ class Movie
     public static function get_all_with_limit($user_id, $offset = 0, $limit = 50)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY title,mpaa_rating";
+        $order_by = "ORDER BY title,season,mpaa_rating";
         $limit_sql = "LIMIT " . $offset . ", " . $limit;
-        $result = Movie::get($where, $order_by, $limit_sql);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by, $limit_sql);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the movies.", 500);
         }else{
             $movies = array();
             foreach( $result as $row ) {
@@ -132,9 +148,9 @@ class Movie
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY ". $order;
-        $result = Movie::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the movies.", 500);
         }else{
             $movies = array();
             foreach( $result as $row ) {
@@ -148,10 +164,10 @@ class Movie
     public static function get_all_on_watch_list($user_id, $watch)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id . " AND watch_list = " . $watch;
-        $order_by = "ORDER BY title,mpaa_rating";
-        $result = Movie::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $order_by = "ORDER BY title,season,mpaa_rating";
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the movies.", 500);
         }else{
             $movies = array();
             foreach( $result as $row ) {
@@ -161,44 +177,23 @@ class Movie
         }
     }
 
-    /* Get movies for multiple filters */
-    public static function get_for_filter_params($user_id, $data, $order=null){
-
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        foreach ($data as $key => $value) {
-            $where = $where . (isset($data[$key]) ? " AND " . $key . " LIKE '%" . $data[$key] . "%'" : "");
-        }
-        $order_by = is_null($order) ? "ORDER BY title,mpaa_rating" : "ORDER BY " . $order;
-        $result = Movie::get($where, $order_by);
-        if ($result === false){
-            return false;
-        }else{
-            $movies = array();
-            foreach( $result as $row ) {
-                $movies[] = new Movie($row);
-            }
-            return $movies;
-        }
-    }
-
-    /* Get movies for search */
-    public static function get_for_search($user_id, $data, $order=null){
-
+    /* Get movies for search parameters */
+    /* AND for filter by specific column */
+    /* OR for search all columns */
+    public static function get_for_search($user_id, $data, $conj="AND", $order=null)
+    {
         $where = "WHERE (";
         $iter = 1;
         foreach ($data as $key => $value) {
-            if ($iter == 1){
-                $where = $where . (isset($data[$key]) ? $key . " LIKE '%" . $data[$key] . "%'" : "");
-            }else{
-                $where = $where . (isset($data[$key]) ? " OR " . $key . " LIKE '%" . $data[$key] . "%'" : "");
-            }
+            $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
+            $where = $where . (isset($data[$key]) ? $conj_full . $key . " LIKE '%" . $data[$key] . "%'" : "");
             $iter += 1;
         }
         $where = $where . ") AND active = 1 AND user_id = " . $user_id;
-        $order_by = is_null($order) ? "ORDER BY title,mpaa_rating" : "ORDER BY " . $order;
-        $result = Movie::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $order_by = is_null($order) ? "ORDER BY title,season,mpaa_rating" : "ORDER BY " . $order;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the movies.", 500);
         }else{
             $movies = array();
             foreach( $result as $row ) {
@@ -208,20 +203,9 @@ class Movie
         }
     }
 
-    /* Get a single movie */
-    public static function get_from_id($user_id, $id)
-    {
-        $where = array("id" => $id, "user_id" => $user_id);
-        $result = DatabaseService::get(Config::DBTables()->movie, $where);
-
-        if($result === false || $result === null) {
-            return false;
-        }
-        if(count($result) === 0) {
-            return null;
-        }
-        return new Movie($result[0]);
-    }
+    /* ========================================================== *
+    * GET MOVIE COUNTS
+    * ========================================================== */
 
     /* Count all movies */
     public static function count_movies($user_id)
@@ -244,7 +228,7 @@ class Movie
     {
         $column_name = "content_type";
         $header = "movie_content_type";
-        return Movie::get_counts_for_column($user_id, $column_name, $header);
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
     }
 
     /* Count movies with different formats */
@@ -252,7 +236,7 @@ class Movie
     {
         $column_name = "format";
         $header = "movie_format_type";
-        return Movie::get_counts_for_column($user_id, $column_name, $header);
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
     }
 
     /* Count all movies, grouped by mpaa rating */
@@ -260,8 +244,47 @@ class Movie
     {
         $column_name = "mpaa_rating";
         $header = "movie_mpaa_rating_type";
-        return Movie::get_counts_for_column($user_id, $column_name, $header);
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
     }
+
+    /* Count movies with different mpaa ratings, grouped by under PG and above PG */
+    public static function get_all_mpaa_rating_counts_grouped($user_id)
+    {
+        $column_name = "mpaa_rating";
+        $header = "movie_mpaa_grouped_rating_type";
+        $counts = Movie::get_counts_for_column($user_id, $column_name, $header);
+
+        $under_pg = array('G', 'PG', 'TV-Y', 'TV-Y7', 'TV-G', 'TV-PG');
+        $over_pg = array('PG-13', 'R', 'TV-14', 'TV-MA');
+        $under_pg_counts = 0;
+        $over_pg_counts = 0;
+        $none_counts = 0;
+
+        foreach ($counts[$header] as $count){
+            $rating = $count["type"];
+            $num = intval($count["num"]);
+
+            if (in_array($rating, $under_pg)){
+                $under_pg_counts = $under_pg_counts + $num;
+            }else if (in_array($rating, $over_pg)){
+                $over_pg_counts = $over_pg_counts + $num;
+            }else{
+                $none_counts = $none_counts + $num;
+            }
+        }
+
+        $grouped_counts = array(
+            array("num" => $under_pg_counts, "type" => "Up To PG"),
+            array("num" => $over_pg_counts, "type" => "Above PG"),
+            array("num" => $none_counts, "type" => "None")
+        );
+
+        return array($header => $grouped_counts);
+    }
+
+    /* ========================================================== *
+    * GET A SINGLE VALUE FOR A COLUMN
+    * ========================================================== */
 
     /* Get a movie's title for its ID */
     public static function get_title_for_id($user_id, $id){
@@ -286,12 +309,8 @@ class Movie
     public static function update($user_id, $id, $data)
     {
         $result = DatabaseService::update(Config::DBTables()->movie, $id, $data);
-
-        if($result === false) {
-            return false;
-        }
-        if($result === null) {
-            return null;
+        if ($result === false || $result === null){
+            APIService::response_fail("Update failed.", 500);
         }
         return $result ? self::get_from_id($user_id, $id) : false;
     }
@@ -304,6 +323,9 @@ class Movie
     public static function set_active($id, $active)
     {
         $result = DatabaseService::set_active(Config::DBTables()->movie, $id, $active);
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error deleting the movie.", 500);
+        }
         return $result;
     }
 
@@ -321,39 +343,5 @@ class Movie
             APIService::response_fail("There was an error saving the picture.");
         }
         return $file_name;
-    }
-
-    /* ===================================================== *
-    * Private Functions
-    * ===================================================== */
-
-    /* Generic get movies function */
-    private static function get($where = null, $order_by = null, $limit = null){
-        $database = Database::instance();
-        $where_sql = is_null($where) ? "" : " " . $where;
-        $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
-        $limit_sql = is_null($limit) ? "" : " " . $limit;
-        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . CONFIG::DBTables()->movie . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        return $result;
-    }
-
-    /* Generic get counts function */
-    private static function get_counts_for_column($user_id, $column_name, $header)
-    {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array($header => $result);
-        }
     }
 }

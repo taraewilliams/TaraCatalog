@@ -22,15 +22,11 @@ $app->group('/api', function () use ($app) {
             $status = "approved";
 
             /* Check that the viewer has permission to view the creator's movies */
-            $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id, $status);
-            if($viewer === false || $viewer === null) {
+            if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
                 APIService::response_fail("There was a problem getting the movies.", 500);
             }
 
             $movies = Movie::get_all($creator_id);
-            if($movies === false) {
-                APIService::response_fail("There was a problem getting the movies.", 500);
-            }
             APIService::response_success($movies);
         });
 

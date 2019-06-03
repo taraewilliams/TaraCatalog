@@ -220,6 +220,7 @@ main{
 .standard-table{
     border-collapse: collapse;
     width: 100%;
+    margin-top: 50px;
 
     th{
         font-weight:bold;
@@ -247,6 +248,13 @@ main{
     img{
         width:50px;
         border: 1px solid $lighter-red;
+    }
+
+    tr{
+        .table-toggle-box{
+            text-align: center;
+            vertical-align: middle;
+        }
     }
 }
 

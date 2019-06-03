@@ -18,10 +18,7 @@ $app->group('/api', function () use ($app) {
             ));
 
             $session = AuthService::login($params['username'], $params['password']);
-            if($session == false || $session == null) {
-                return APIService::response_fail("Username or password incorrect.", 403);
-            }
-            return APIService::response_success($session);
+            APIService::response_success($session);
         });
 
         $app->post($resource . "/logout", function () use ($app)
@@ -33,8 +30,7 @@ $app->group('/api', function () use ($app) {
             ));
 
             $result = AuthService::logout($params['session_id']);
-
-            return APIService::response_success($result);
+            APIService::response_success($result);
         });
 
     });

@@ -12,9 +12,6 @@ class AuthService
     public static function login($username, $password){
 
         $user = User::get_from_username_and_password($username, $password);
-        if ($user === null || $user === false){
-            return false;
-        }
 
         /* Delete old sessions for user */
         Session::delete_for_user_id($user->id);
@@ -36,11 +33,6 @@ class AuthService
     {
         $session = Session::get_from_id($session_id);
 
-        /* Check if session is valid */
-        if($session == null || $session == false) {
-            $error = "Authentication failed.";
-            return false;
-        }
         /* Check if session token matches token from request */
         if($session->token !== $token) {
             $error = "Authentication failed.";

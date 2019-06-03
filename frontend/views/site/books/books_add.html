@@ -6,12 +6,39 @@
 
     <p ng-show="items.length <= 0">No books</p>
 
-    <ul ng-show="items.length > 0" class="add-todo-list">
-        <li ng-repeat="item in items">
-            <div ng-if="!item.volume"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
-            <div ng-if="item.volume"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}, Volume {{item.volume}}</div>
-        </li>
-    </ul>
+    <table class="standard-table" ng-show="items.length > 0">
+        <tr>
+            <th>Select</th>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Volume</th>
+            <th>ISBN</th>
+            <th>Cover Type</th>
+            <th>Content Type</th>
+            <th colspan="2">Location</th>
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="10">{{ item.title }}</th>
+
+            <td class="table-toggle-box" ng-if="!item.isHeader"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
+            <td ng-if="!item.isHeader">
+                <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="../backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
+            </td>
+            <td ng-if="!item.isHeader">{{item.title}}</td>
+            <td ng-if="!item.isHeader">{{item.author}}</td>
+            <td ng-if="!item.isHeader && item.volume">{{item.volume}}</td>
+            <td ng-if="!item.isHeader && !item.volume"></td>
+            <td ng-if="!item.isHeader">{{item.isbn}}</td>
+            <td ng-if="!item.isHeader">{{item.cover_type}}</td>
+            <td ng-if="!item.isHeader">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader">{{item.location}}</td>
+            <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+        </tr>
+    </table>
+
 
     <button ng-show="items.length > 0" class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Books</button>
 

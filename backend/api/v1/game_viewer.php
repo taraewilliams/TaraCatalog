@@ -22,15 +22,11 @@ $app->group('/api', function () use ($app) {
             $status = "approved";
 
             /* Check that the viewer has permission to view the creator's games */
-            $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id, $status);
-            if($viewer === false || $viewer === null) {
+            if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
 
             $games = Game::get_all($creator_id);
-            if($games === false) {
-                APIService::response_fail("There was a problem getting the games.", 500);
-            }
             APIService::response_success($games);
         });
 

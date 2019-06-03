@@ -28,9 +28,9 @@ class Session
         $this->expires  = isset($data['expires']) ? new \DateTime($data['expires']) : (new \DateTime('now'))->modify("+" . self::EXPIRES_DAYS . " day");
         $this->token    = isset($data['token']) ? $data['token'] : bin2hex(openssl_random_pseudo_bytes(40));
 
-        $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active           = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->created  = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
+        $this->updated  = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
+        $this->active   = isset($data['active']) ? (boolean) $data['active'] : true;
 
         /* Relationship */
         if($include_relationships) {
@@ -63,11 +63,8 @@ class Session
         );
 
         $id = DatabaseService::create(Config::DBTables()->session, $data);
-        if($id === false) {
-            return false;
-        }
-        if($id === null) {
-            return null;
+        if($id === false || $id === null) {
+            APIService::response_fail("There was a problem logging in.", 500);
         }
         $session->id = $id;
         return $session;
@@ -82,12 +79,8 @@ class Session
     {
         $where = array("id" => $id);
         $result = DatabaseService::get(Config::DBTables()->session, $where);
-
-        if($result === false || $result === null) {
-            return false;
-        }
-        if(count($result) === 0) {
-            return null;
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("Authentication failed.", 500);
         }
         return new Session($result[0]);
     }
@@ -97,12 +90,8 @@ class Session
     {
         $where = array("id" => $session->user_id);
         $result = DatabaseService::get(Config::DBTables()->user, $where);
-
-        if($result === false || $result === null) {
-            return false;
-        }
-        if(count($result) === 0) {
-            return null;
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("There was a problem getting the user.", 500);
         }
         return new User($result[0], false);
     }
@@ -131,6 +120,9 @@ class Session
     public static function delete($where)
     {
         $result = DatabaseService::delete(Config::DBTables()->session, $where);
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error deleting the session.", 500);
+        }
         return $result;
     }
 }

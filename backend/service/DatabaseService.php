@@ -7,6 +7,7 @@ use TaraCatalog\Config\Database;
 
 class DatabaseService
 {
+    /* Create Function */
     public static function create($table, $data)
     {
         $database = Database::instance();
@@ -25,6 +26,7 @@ class DatabaseService
         return $id;
     }
 
+    /* Get Function */
     public static function get($table, $where = null, $include_inactive = false)
     {
         $database = Database::instance();
@@ -46,6 +48,37 @@ class DatabaseService
         return $result;
     }
 
+    /* Get with where, order, and limit */
+    public static function get_where_order_limit($table, $where = null, $order_by = null, $limit = null){
+        $database = Database::instance();
+        $where_sql = is_null($where) ? "" : " " . $where;
+        $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
+        $limit_sql = is_null($limit) ? "" : " " . $limit;
+        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . $table . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        return $result;
+    }
+
+    /* Get counts grouped by a column */
+    public static function get_counts_for_column($table, $user_id, $column_name, $header = "counts")
+    {
+        $database = Database::instance();
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . $table . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return array($header => $result);
+        }
+    }
+
+    /* Update Function */
     public static function update($table, $id, $data)
     {
         $database = Database::instance();
@@ -69,6 +102,7 @@ class DatabaseService
         return ($query->rowCount() > 0);
     }
 
+    /* Set Active Function */
     public static function set_active($table, $id, $active, $where = null)
     {
         $active = ($active == true) ? 1 : 0;
@@ -97,6 +131,7 @@ class DatabaseService
         return ($query->rowCount() > 0);
     }
 
+    /* Delete Function */
     public static function delete($table, $where)
     {
         $database = Database::instance();

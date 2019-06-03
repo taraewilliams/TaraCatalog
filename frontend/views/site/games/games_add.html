@@ -6,11 +6,33 @@
 
   <p ng-show="items.length <= 0">No games</p>
 
-  <ul  ng-show="items.length > 0" class="add-todo-list">
-      <li ng-repeat="item in items">
-          <div><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}">{{item.title}}</div>
-      </li>
-  </ul>
+  <!-- Games Table -->
+  <table ng-show="items.length > 0" class="standard-table">
+      <tr>
+          <th>Select</th>
+          <th>Image</th>
+          <th>Title</th>
+          <th>Platform</th>
+          <th>ESRB Rating</th>
+          <th colspan="2">Location</th>
+      </tr>
+      <tr ng-repeat="item in items">
+
+          <th ng-if="item.isHeader" colspan="7">{{ item.title }}</th>
+
+          <td class="table-toggle-box" ng-if="!item.isHeader"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
+          <td ng-if="!item.isHeader">
+              <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="../backend/public/{{item.image}}"/>
+              <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+          </td>
+          <td ng-if="!item.isHeader">{{item.title}}</td>
+          <td ng-if="!item.isHeader">{{item.platform}}</td>
+          <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
+          <td ng-if="!item.isHeader">{{item.location}}</td>
+          <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+      </tr>
+  </table>
+
 
   <button ng-show="items.length > 0" class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Games</button>
 

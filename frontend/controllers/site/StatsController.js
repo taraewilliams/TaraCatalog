@@ -9,7 +9,7 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
         }
 
         var urls = ['/books/content_type/count', '/books/cover_type/count',
-        '/movies/format/count', '/movies/content_type/count', '/movies/mpaa_rating/count',
+        '/movies/format/count', '/movies/content_type/count', '/movies/mpaa_rating/count', '/movies/mpaa_rating_grouped/count',
         '/games/esrb_rating/count', '/games/platform/count'];
 
         for(i = 0; i < urls.length; i++){
@@ -43,6 +43,10 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Movie MPAA/TV Rating', 'Number of Movies']];
             var title = 'MPAA/TV Rating';
             var html_element = 'MovieMPAARatingTypeChart';
+        }else if(itemKey == 'movie_mpaa_grouped_rating_type'){
+            var dataArray = [['Movie MPAA/TV Rating', 'Number of Movies']];
+            var title = 'MPAA/TV Rating Under/Over PG';
+            var html_element = 'MovieMPAARatingGroupedTypeChart';
         }else if(itemKey == "game_esrb_rating_type"){
             var dataArray = [['Game ESRB Rating', 'Number of Games']];
             var title = 'ESRB Rating';

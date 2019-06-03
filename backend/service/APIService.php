@@ -35,7 +35,7 @@ class APIService
 
         $error = null;
         $result = AuthService::authenticate($params['session_id'], $params['session_token'], $error);
-        if($result === false) {
+        if($result === false || $result === null) {
             self::response_fail($error, 401);
         }
         return $result;

@@ -16,11 +16,12 @@ class Game
     public $platform;
     public $location;
     public $play_list;
-    public $esrb_rating;
     public $image;
-    public $row_number;
-    public $type;
+    public $esrb_rating;
+    public $notes;
 
+    public $type;
+    public $row_number;
     public $created;
     public $updated;
     public $active;
@@ -32,15 +33,16 @@ class Game
         $this->title           = isset($data['title']) ? $data['title'] : null;
         $this->platform        = isset($data['platform']) ? $data['platform'] : null;
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
-        $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->play_list       = isset($data['play_list']) ? (boolean) $data['play_list'] : false;
+        $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->esrb_rating     = isset($data['esrb_rating']) ? $data['esrb_rating'] : null;
-        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
-        $this->type            = "game";
+        $this->notes           = isset($data['notes']) ? $data['notes'] : null;
 
-        $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active           = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->type            = "game";
+        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
+        $this->created         = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
+        $this->updated         = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
+        $this->active          = isset($data['active']) ? (boolean) $data['active'] : true;
     }
 
     /* =====================================================
@@ -57,12 +59,13 @@ class Game
         $game = new Game($data);
 
         $data = array(
-            "title"          => $game->title,
             "user_id"        => $game->user_id,
+            "title"          => $game->title,
             "platform"       => $game->platform,
             "location"       => $game->location,
             "play_list"      => $game->play_list,
             "esrb_rating"    => $game->esrb_rating,
+            "notes"          => $game->notes,
             "image"          => $game->image,
             "created"        => $game->created,
             "updated"        => $game->updated,
@@ -70,11 +73,8 @@ class Game
         );
 
         $id = DatabaseService::create(Config::DBTables()->game, $data);
-        if($id === false) {
-            return false;
-        }
-        if($id === null) {
-            return null;
+        if($id === false || $id === null) {
+            APIService::response_fail("There was a problem creating the game.", 500);
         }
         $game->id = $id;
         return $game;
@@ -84,14 +84,30 @@ class Game
     * GET
     * ========================================================== */
 
-    /* Get all games */
+
+    /* ========================================================== *
+    * GET GAMES
+    * ========================================================== */
+
+    /* Get a single game */
+    public static function get_from_id($user_id, $id)
+    {
+        $where = array("id" => $id, "user_id" => $user_id);
+        $result = DatabaseService::get(Config::DBTables()->game, $where);
+        if($result === false || $result === null || count($result) === 0) {
+            APIService::response_fail("There was a problem getting the game.", 500);
+        }
+        return new Game($result[0]);
+    }
+
+    /* Get all games for a user */
     public static function get_all($user_id)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,platform,esrb_rating";
-        $result = Game::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->game, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the games.", 500);
         }else{
             $games = array();
             foreach( $result as $row ) {
@@ -101,14 +117,14 @@ class Game
         }
     }
 
-    /* Get all games on the play list */
+    /* Get all games on the play list or not on the play list */
     public static function get_all_on_play_list($user_id, $play)
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id . " AND play_list = " . $play;
         $order_by = "ORDER BY title,platform,esrb_rating";
-        $result = Game::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->game, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the games.", 500);
         }else{
             $games = array();
             foreach( $result as $row ) {
@@ -124,9 +140,9 @@ class Game
         $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,platform,esrb_rating";
         $limit_sql = "LIMIT " . $offset . ", " . $limit;
-        $result = Game::get($where, $order_by, $limit_sql);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->game, $where, $order_by, $limit_sql);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the games.", 500);
         }else{
             $games = array();
             foreach( $result as $row ) {
@@ -141,9 +157,9 @@ class Game
     {
         $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY ". $order;
-        $result = Game::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->game, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the games.", 500);
         }else{
             $games = array();
             foreach( $result as $row ) {
@@ -153,45 +169,23 @@ class Game
         }
     }
 
-    /* Get games for multiple filters */
-    public static function get_for_filter_params($user_id, $data, $order=null){
-
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        foreach ($data as $key => $value) {
-            $where = $where . (isset($data[$key]) ? " AND " . $key . " LIKE '%" . $data[$key] . "%'" : "");
-        }
-        $order_by = is_null($order) ? "ORDER BY title,platform,esrb_rating" : "ORDER BY " . $order;
-        $result = Game::get($where, $order_by);
-        if ($result === false){
-            return false;
-        }else{
-            $games = array();
-            foreach( $result as $row ) {
-                $games[] = new Game($row);
-            }
-            return $games;
-        }
-    }
-
-    /* Get games for search */
-    public static function get_for_search($user_id, $data, $order=null){
-
+    /* Get games for search parameters */
+    /* AND for filter by specific column */
+    /* OR for search all columns */
+    public static function get_for_search($user_id, $data, $conj="AND", $order=null)
+    {
         $where = "WHERE (";
         $iter = 1;
         foreach ($data as $key => $value) {
-            if ($iter == 1){
-                $where = $where . (isset($data[$key]) ? $key . " LIKE '%" . $data[$key] . "%'" : "");
-            }else{
-                $where = $where . (isset($data[$key]) ? " OR " . $key . " LIKE '%" . $data[$key] . "%'" : "");
-            }
+            $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
+            $where = $where . (isset($data[$key]) ? $conj_full . $key . " LIKE '%" . $data[$key] . "%'" : "");
             $iter += 1;
         }
         $where = $where . ") AND active = 1 AND user_id = " . $user_id;
-
         $order_by = is_null($order) ? "ORDER BY title,platform,esrb_rating" : "ORDER BY " . $order;
-        $result = Game::get($where, $order_by);
-        if ($result === false){
-            return false;
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->game, $where, $order_by);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the games.", 500);
         }else{
             $games = array();
             foreach( $result as $row ) {
@@ -201,20 +195,9 @@ class Game
         }
     }
 
-    /* Get a single game */
-    public static function get_from_id($user_id, $id)
-    {
-        $where = array("id" => $id, "user_id" => $user_id);
-        $result = DatabaseService::get(Config::DBTables()->game, $where);
-
-        if($result === false || $result === null) {
-            return false;
-        }
-        if(count($result) === 0) {
-            return null;
-        }
-        return new Game($result[0]);
-    }
+    /* ========================================================== *
+    * GET GAME COUNTS
+    * ========================================================== */
 
     /* Count all games */
     public static function count_games($user_id)
@@ -225,8 +208,8 @@ class Game
         $query->execute();
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
-        if ($result === false){
-            return false;
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem counting the games.", 500);
         }else{
             return $result;
         }
@@ -237,7 +220,7 @@ class Game
     {
         $column_name = "platform";
         $header = "game_platform_type";
-        return Game::get_counts_for_column($user_id, $column_name, $header);
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
     }
 
     /* Count all games, grouped by esrb rating */
@@ -245,8 +228,12 @@ class Game
     {
         $column_name = "esrb_rating";
         $header = "game_esrb_rating_type";
-        return Game::get_counts_for_column($user_id, $column_name, $header);
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
     }
+
+    /* ========================================================== *
+    * GET ALL DISTINCT VALUES FOR A COLUMN
+    * ========================================================== */
 
     /* Get all game platforms */
     public static function get_platforms($user_id)
@@ -257,12 +244,16 @@ class Game
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
-        if ($result === false){
-            return false;
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the platforms.", 500);
         }else{
             return $result;
         }
     }
+
+    /* ========================================================== *
+    * GET A SINGLE VALUE FOR A COLUMN
+    * ========================================================== */
 
     /* Get a game's title for its ID */
     public static function get_title_for_id($user_id, $id){
@@ -272,8 +263,8 @@ class Game
         $query->execute();
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
-        if ($result === false){
-            return false;
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the title.", 500);
         }else{
             return $result["title"];
         }
@@ -287,12 +278,8 @@ class Game
     public static function update($user_id, $id, $data)
     {
         $result = DatabaseService::update(Config::DBTables()->game, $id, $data);
-
-        if($result === false) {
-            return false;
-        }
-        if($result === null) {
-            return null;
+        if ($result === false || $result === null){
+            APIService::response_fail("Update failed.", 500);
         }
         return $result ? self::get_from_id($user_id, $id) : false;
     }
@@ -305,6 +292,9 @@ class Game
     public static function set_active($id, $active)
     {
         $result = DatabaseService::set_active(Config::DBTables()->game, $id, $active);
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error deleting the game.", 500);
+        }
         return $result;
     }
 
@@ -322,40 +312,6 @@ class Game
             APIService::response_fail("There was an error saving the picture.");
         }
         return $file_name;
-    }
-
-    /* ===================================================== *
-    * Private Functions
-    * ===================================================== */
-
-    /* Generic get games function */
-    private static function get($where = null, $order_by = null, $limit = null){
-        $database = Database::instance();
-        $where_sql = is_null($where) ? "" : " " . $where;
-        $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
-        $limit_sql = is_null($limit) ? "" : " " . $limit;
-        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . CONFIG::DBTables()->game . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        return $result;
-    }
-
-    /* Generic get counts function */
-    private static function get_counts_for_column($user_id, $column_name, $header)
-    {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . CONFIG::DBTables()->game . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array($header => $result);
-        }
     }
 
 }

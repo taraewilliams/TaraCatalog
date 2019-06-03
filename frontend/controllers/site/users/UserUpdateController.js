@@ -8,24 +8,33 @@ app.controller('UserUpdateController', function($scope, AuthService, Session, $h
             return;
         }
 
-        $scope.user_clone = angular.copy($scope.user);
-
+        $http.get(CONFIG.api + '/users/' + $scope.user.id)
+        .then(function(response) {
+            $scope.user_orig = response.data;
+            $scope.user_clone = $scope.clone($scope.user_orig);
+        }, function(error){
+            console.log("Error");
+        });
     }
 
     $scope.updateUser = function(user_clone){
 
-        var new_user = removeNotUpdatedFields(user_clone, $scope.user);
-        var url = CONFIG.api + '/users/' + $scope.user.id;
+        var new_user = removeNotUpdatedFields(user_clone, $scope.user_orig);
+        var url = CONFIG.api + '/users/' + $scope.user_orig.id;
 
-        RequestService.post(url, new_user, function(data) {
-            alert("User was updated.");
-        }, function(response){
-            alert(response.data.message);
-        });
+        if (!$scope.isEmptyObj(new_user)){
+            RequestService.post(url, new_user, function(data) {
+                alert("User was updated.");
+            }, function(response){
+                alert(response.data.message);
+            });
+        }else{
+            alert("No changes made.");
+        }
     };
 
     $scope.hasChanged = function(image){
-        return ($scope.user.image != image);
+        return ($scope.user_orig.image != image);
     };
 
     /* Private Functions */
