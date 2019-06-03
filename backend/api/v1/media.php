@@ -1,4 +1,4 @@
-media<?php
+<?php
 
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Book;

@@ -42,7 +42,7 @@ class Movie
         $this->watch_list      = isset($data['watch_list']) ? (boolean) $data['watch_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
-        $this->$notes          = isset($data['notes']) ? $data['notes'] : null;
+        $this->notes           = isset($data['notes']) ? $data['notes'] : null;
 
         $this->type            = "movie";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
@@ -252,7 +252,7 @@ class Movie
     {
         $column_name = "mpaa_rating";
         $header = "movie_mpaa_grouped_rating_type";
-        $counts = Movie::get_counts_for_column($user_id, $column_name, $header);
+        $counts = DatabaseService::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
 
         $under_pg = array('G', 'PG', 'TV-Y', 'TV-Y7', 'TV-G', 'TV-PG');
         $over_pg = array('PG-13', 'R', 'TV-14', 'TV-MA');
