@@ -14,8 +14,9 @@ class Viewer
     public $creator_id;
     public $viewer_id;
     public $status;
-    public $row_number;
+    public $c_username;
 
+    public $row_number;
     public $created;
     public $updated;
     public $active;
@@ -26,11 +27,12 @@ class Viewer
         $this->creator_id      = isset($data['creator_id']) ? intval($data['creator_id']) : null;
         $this->viewer_id       = isset($data['viewer_id']) ? intval($data['viewer_id']) : null;
         $this->status          = isset($data['status']) ? $data['status'] : "Pending";
-        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
+        $this->c_username      = User::get_username_for_id($this->creator_id);
 
-        $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active           = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
+        $this->created         = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
+        $this->updated         = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
+        $this->active          = isset($data['active']) ? (boolean) $data['active'] : true;
     }
 
     /* =====================================================

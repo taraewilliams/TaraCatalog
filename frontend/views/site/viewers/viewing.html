@@ -3,10 +3,10 @@
 <main ng-if="user && color_scheme && viewer">
 
     <!-- Page Heading -->
-    <h1 ng-if="isActive(['/view/:id'])">{{viewer.creator.username}}'s Catalog</h1>
-    <h1 ng-if="isActive(['/book_view/:id'])">{{viewer.creator.username}}'s Books</h1>
-    <h1 ng-if="isActive(['/movie_view/:id'])">{{viewer.creator.username}}'s Movies</h1>
-    <h1 ng-if="isActive(['/game_view/:id'])">{{viewer.creator.username}}'s Games</h1>
+    <h1 ng-if="isActive(['/view/:id'])">{{viewer.c_username}}'s Catalog</h1>
+    <h1 ng-if="isActive(['/book_view/:id'])">{{viewer.c_username}}'s Books</h1>
+    <h1 ng-if="isActive(['/movie_view/:id'])">{{viewer.c_username}}'s Movies</h1>
+    <h1 ng-if="isActive(['/game_view/:id'])">{{viewer.c_username}}'s Games</h1>
 
     <!-- Viewer Menu -->
     <div ng-include="'views/site/subviews/_viewerMenu.html'"></div>
@@ -45,7 +45,7 @@
 
     <!-- Search another user's catalog -->
     <section ng-if="isActive(['/view/:id'])" class="home-section">
-        <h2>Search {{viewer.creator.username}}'s Catalog</h2>
+        <h2>Search {{viewer.c_username}}'s Catalog</h2>
 
         <div class="filter-form" id="home-filter" >
             <form ng-submit="search(searchTerm)">
