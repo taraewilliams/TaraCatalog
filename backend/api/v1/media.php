@@ -6,6 +6,25 @@ use TaraCatalog\Model\Movie;
 use TaraCatalog\Model\Game;
 use TaraCatalog\Model\Viewer;
 
+/* Requests */
+
+
+/* GET */
+
+/*
+
+1. search
+    Gets all media that matches the search term for a user.
+    Input: search (the search term)
+    Output: Media object array
+
+2. search/{id}
+    Gets all of a creator's media that matches the search term for a viewer.
+    Input: id (creator ID), search (the search term)
+    Output: Media object array
+*/
+
+
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
         $resource = "/search";

@@ -3,6 +3,56 @@
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Viewer;
 
+/* Requests */
+
+
+/* GET */
+
+/*
+
+1. viewers/list/{status}
+    Gets all viewers for a creator for a specific status (approved, pending, rejected).
+    Input: status
+    Output: Viewer object array (with viewer and creator usernames and images)
+
+2. viewers/view/list/{status}
+    Gets all a creator can view for a specific status (approved, pending rejected).
+    Input: status
+    Output: Viewer object array (with viewer and creator usernames and images)
+
+3. viewers/{creator_id}
+    Gets a single viewer for creator ID and viewer ID.
+    Input: creator_id
+    Output: Viewer object
+*/
+
+
+/* POST */
+
+/*
+
+1. viewers
+    Creates a new viewer and sets the status based on whether the user ID is a creator ID (approved) or viewer ID (pending).
+    Input: creator_id, viewer_id
+    Output: Viewer object
+
+2. viewers/{id}
+    Updates a viewer.
+    Input: id (viewer object ID), status
+    Output: true or false (success or failure)
+*/
+
+
+/* DELETE */
+
+/*
+
+1. viewers/{viewer_id}/{creator_id}
+    Deletes a viewer for the viewer ID and creator ID. Either a viewer or creator can delete the relationship.
+    Input: viewer_id, creator_id
+    Output: true or false (success or failure)
+*/
+
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {

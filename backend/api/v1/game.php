@@ -3,6 +3,98 @@
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Game;
 
+/* Requests */
+
+
+/* GET */
+
+/*
+
+1. games/{id}
+    Gets a single game for a user for its ID and user ID.
+    Input: id (game ID)
+    Output: Game object
+
+2. games
+    Gets all games for a user for the user ID.
+    Input: none
+    Output: Game object array
+
+3. games/play/list/{play}
+    Gets all games on the play list or not on the play list for a user.
+    Input: play (0 or 1)
+    Output: Game object array
+
+4. /limit/{offset}/{limit}
+    Gets a set number of games with a limit and an offset for a user.
+    Input: offset, limit
+    Output: Game object array
+
+5. games/order_by/{order}
+    Gets all games ordered by a specific field for a user.
+    Input: order (the field to order by)
+    Output: Game object array
+
+6. games/filter
+    Gets games that match the filter options for each field for a user.
+    Input: (optional) title, platform, location, esrb_rating
+    Output: Game object array
+
+7. games/filter/{order}
+    Gets games that match the filter options for each field ordered by a specific field for a user.
+    Input: (required) order
+        (optional) title, platform, location, esrb_rating
+    Output: Game object array
+
+8. games/count/all
+    Gets the count of all games for a user.
+    Input: none
+    Output: Game count
+
+9. games/platform/count
+    Gets the count of all games grouped by distinct platform for a user.
+    Input: none
+    Output: Game counts
+
+10. games/esrb_rating/count
+    Gets the count of all games grouped by distinct ESRB rating for a user.
+    Input: none
+    Output: Game counts
+
+11. games/platforms/all
+    Gets all distinct platforms from all games for a user.
+    Input: none
+    Output: Array of platforms
+*/
+
+
+/* POST */
+
+/*
+
+1. games
+    Creates a new game.
+    Input: (required) title
+        (optional) platform, location, play_list, esrb_rating, notes, image
+    Output: Game object
+
+2. games/{id}
+    Updates a game.
+    Input: (required) id (game ID)
+        (optional) title, platform, location, play_list, esrb_rating, notes, image
+    Output: true or false (success or failure)
+*/
+
+
+/* DELETE */
+
+/*
+
+1. games/{id}
+    Deletes a game.
+    Input: id (game ID)
+    Output: true or false (success or failure)
+*/
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
@@ -57,12 +149,12 @@ $app->group('/api', function () use ($app) {
         });
 
         /* Get all games ordered by a specific field */
-        $app->get($resource . '/order_by/{option}', function ($request, $response, $args) use ($app)
+        $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $option = $args['option'];
-            $games = Game::get_all_with_order($user_id, $option);
+            $order = $args['order'];
+            $games = Game::get_all_with_order($user_id, $order);
             APIService::response_success($games);
         });
 

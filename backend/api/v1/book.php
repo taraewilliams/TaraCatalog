@@ -3,6 +3,103 @@
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Book;
 
+/* Requests */
+
+
+/* GET */
+
+/*
+
+1. books/{id}
+    Gets a single book for a user for its ID and user ID.
+    Input: id (book ID)
+    Output: Book object
+
+2. books
+    Gets all books for a user for the user ID.
+    Input: none
+    Output: Book object array
+
+3. books/read/list/{read}
+    Gets all books on the read list or not on the read list for a user.
+    Input: read (0 or 1)
+    Output: Book object array
+
+4. /limit/{offset}/{limit}
+    Gets a set number of books with a limit and an offset for a user.
+    Input: offset, limit
+    Output: Book object array
+
+5. books/order_by/{order}
+    Gets all books ordered by a specific field for a user.
+    Input: order (the field to order by)
+    Output: Book object array
+
+6. books/filter
+    Gets books that match the filter options for each field for a user.
+    Input: (optional) title, author, volume, isbn, cover_type, content_type, location
+    Output: Book object array
+
+7. books/filter/{order}
+    Gets books that match the filter options for each field ordered by a specific field for a user.
+    Input: (required) order
+        (optional) title, author, volume, isbn, cover_type, content_type, location
+    Output: Book object array
+
+8. books/count/all
+    Gets the count of all books for a user.
+    Input: none
+    Output: Book count
+
+9. books/content_type/count
+    Gets the count of all books grouped by distinct content type for a user.
+    Input: none
+    Output: Book counts
+
+10. books/cover_type/count
+    Gets the count of all books grouped by distinct cover type for a user.
+    Input: none
+    Output: Book counts
+
+11. books/authors/all
+    Gets all distinct authors from all books for a user.
+    Input: none
+    Output: Array of authors
+
+12. books/titles/all
+    Gets all distinct titles from all books for a user.
+    Input: none
+    Output: Array of titles
+*/
+
+
+/* POST */
+
+/*
+
+1. books
+    Creates a new book.
+    Input: (required) title
+        (optional) author, volume, isbn, cover_type, content_type, notes, location, read_list, image
+    Output: Book object
+
+2. books/{id}
+    Updates a book.
+    Input: (required) id (book ID)
+        (optional) title, author, volume, isbn, cover_type, content_type, notes, location, read_list, image
+    Output: true or false (success or failure)
+*/
+
+
+/* DELETE */
+
+/*
+
+1. books/{id}
+    Deletes a book.
+    Input: id (book ID)
+    Output: true or false (success or failure)
+*/
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
@@ -57,12 +154,12 @@ $app->group('/api', function () use ($app) {
         });
 
         /* Get all books ordered by a specific field */
-        $app->get($resource . '/order_by/{option}', function ($request, $response, $args) use ($app)
+        $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $option = $args['option'];
-            $books = Book::get_all_with_order($user_id, $option);
+            $order = $args['order'];
+            $books = Book::get_all_with_order($user_id, $order);
             APIService::response_success($books);
         });
 
