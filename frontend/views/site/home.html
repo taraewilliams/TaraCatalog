@@ -30,7 +30,7 @@
 
     <p ng-show="items.length > 0">{{items.length}} results</p>
 
-    <ul class="items-list-pic" ng-show="items.length > 0">
+    <ul class="media-list-pic" ng-show="items.length > 0">
         <li ng-repeat="item in items">
 
             <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>

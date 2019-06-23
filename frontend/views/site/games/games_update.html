@@ -1,23 +1,23 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-if="game_clone && game && user && color_scheme">
+<main ng-if="media_clone && media && user && color_scheme">
 
   <h1>Update Game</h1>
 
-  <form ng-submit="updateGame(game_clone)">
+  <form ng-submit="updateMedia(media_clone)">
 
     <label for="title">Title<br>
-        <input type="text" name="title" id="title" ng-model="game_clone.title" placeholder="Title..."><br>
+        <input type="text" name="title" id="title" ng-model="media_clone.title" placeholder="Title..."><br>
     </label>
 
     <label for="platform">Platform<br>
-        <input type="text" name="platform" id="platform" ng-model="game_clone.platform" placeholder="Platform..."><br>
+        <input type="text" name="platform" id="platform" ng-model="media_clone.platform" placeholder="Platform..."><br>
         Select From Existing:
-        <select ng-model="game_clone.old_platform" ng-options="platform.platform for platform in platforms"></select>
+        <select ng-model="media_clone.old_platform" ng-options="platform.platform for platform in platforms" ng-change="updateForSelectValue(media_clone.old_platform.platform, 'platform')"></select>
     </label>
 
     <label for="esrb_rating">ESRB Rating<br>
-        <select ng-model="game_clone.esrb_rating">
+        <select ng-model="media_clone.esrb_rating">
             <option value="none">None</option>
             <option value="RP">RP (Rating Pending)</option>
             <option value="EC">EC (Early Childhood)</option>
@@ -31,14 +31,14 @@
     </label>
 
     <label for="location">Location<br>
-      <input type="radio" ng-model="game_clone.location" value="Apartment"> Apartment<br>
-      <input type="radio" ng-model="game_clone.location" value="Home"> Home<br>
+      <input type="radio" ng-model="media_clone.location" value="Apartment"> Apartment<br>
+      <input type="radio" ng-model="media_clone.location" value="Home"> Home<br>
     </label>
 
     <label for="image">Image<br>
-        <input type="file" name="image" file-display file-model="game_clone.image" placeholder="Image...">
-        <img ng-if="hasChanged(game_clone.image)" id="image" alt="Preview Game Image" />
-        <img ng-if="!isEmpty(game_clone.image) && !hasChanged(game_clone.image)" ng-src="../backend/public/{{game_clone.image}}" alt="Preview Game Thumbnail" />
+        <input type="file" name="image" file-display file-model="media_clone.image" placeholder="Image...">
+        <img ng-if="hasChanged(media_clone.image)" id="image" alt="Preview Game Image" />
+        <img ng-if="!isEmpty(media_clone.image) && !hasChanged(media_clone.image)" ng-src="../backend/public/{{media_clone.image}}" alt="Preview Game Thumbnail" />
     </label>
 
     <button type="submit">Update</button>

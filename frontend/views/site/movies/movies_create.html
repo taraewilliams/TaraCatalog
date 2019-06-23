@@ -4,34 +4,34 @@
 
   <h1>Create a Movie</h1>
 
-  <form ng-submit="createMovie(movie)">
+  <form ng-submit="createMedia(media)">
 
     <label for="title">Title<br>
-        <input type="text" name="title" id="title" ng-model="movie.title" placeholder="Title..."><br>
+        <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
     </label>
 
     <label for="edition">Edition<br>
-        <input type="text" name="edition" id="edition" ng-model="movie.edition" placeholder="Edition...">
+        <input type="text" name="edition" id="edition" ng-model="media.edition" placeholder="Edition...">
     </label>
 
     <label for="season">Season<br>
-        <input type="text" name="season" id="season" ng-model="movie.season" placeholder="Season...">
+        <input type="text" name="season" id="season" ng-model="media.season" placeholder="Season...">
     </label>
 
     <label for="format">Format<br>
-        <input type="radio" ng-model="movie.format" value="DVD"> DVD<br>
-        <input type="radio" ng-model="movie.format" value="Blu-Ray"> Blu-Ray<br>
-        <input type="radio" ng-model="movie.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
+        <input required type="radio" name="format" ng-model="media.format" value="DVD"> DVD<br>
+        <input type="radio" name="format" ng-model="media.format" value="Blu-Ray"> Blu-Ray<br>
+        <input type="radio" name="format" ng-model="media.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
     </label>
 
     <label for="content_type">Content Type<br>
-        <input type="radio" ng-model="movie.content_type" value="Live Action"> Live Action<br>
-        <input type="radio" ng-model="movie.content_type" value="Anime"> Anime<br>
-        <input type="radio" ng-model="movie.content_type" value="Animated"> Animated<br>
+        <input type="radio" ng-model="media.content_type" value="Live Action"> Live Action<br>
+        <input type="radio" ng-model="media.content_type" value="Anime"> Anime<br>
+        <input type="radio" ng-model="media.content_type" value="Animated"> Animated<br>
     </label>
 
     <label for="mpaa_rating">MPAA/TV Rating<br>
-        <select ng-model="movie.mpaa_rating">
+        <select ng-model="media.mpaa_rating">
             <option value="none">None</option>
             <option value="G">G</option>
             <option value="PG">PG</option>
@@ -50,13 +50,13 @@
     </label>
 
     <label for="location">Location<br>
-      <input type="radio" ng-model="movie.location" value="Apartment"> Apartment<br>
-      <input type="radio" ng-model="movie.location" value="Home"> Home<br>
+      <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
+      <input type="radio" ng-model="media.location" value="Home"> Home<br>
     </label>
 
     <label for="image">Image<br>
-        <input type="file" name="image" file-display file-model="movie.image" placeholder="Image...">
-        <img ng-if="!isEmpty(movie.image)" id="image" alt="Preview Movie Image" />
+        <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
+        <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Movie Image" />
     </label>
 
     <button type="submit">Create</button>

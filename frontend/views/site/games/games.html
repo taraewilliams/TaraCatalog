@@ -8,7 +8,7 @@
 
     <div ng-show="items.length > 0" class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
 
-    <ul ng-show="items.length > 0" class="items-list-pic">
+    <ul ng-show="items.length > 0" class="media-list-pic">
         <li ng-repeat="item in items">
             <button name="Edit Game" class="left-button" ng-click="goToPath('/games_update/', item.id)">Edit</button>
             <button name="Delete Game" ng-click="deleteItem(item.id)">X</button>

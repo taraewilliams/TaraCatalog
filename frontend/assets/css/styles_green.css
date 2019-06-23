@@ -405,7 +405,7 @@ a {
     font-size: 12px;
     height: 20px; }
 
-.items-list-pic li {
+.media-list-pic li {
   background-color: #008000;
   display: inline-block;
   border-radius: 10px;
@@ -414,29 +414,29 @@ a {
   width: 250px;
   position: relative;
   vertical-align: top; }
-  .items-list-pic li img {
+  .media-list-pic li img {
     display: block;
     height: auto;
     width: 250px;
     border-radius: 10px 10px 0 0; }
-  .items-list-pic li .corner-img {
+  .media-list-pic li .corner-img {
     position: absolute;
     top: 5px;
     right: 5px;
     width: 40px;
     height: auto;
     border-radius: 5px; }
-  .items-list-pic li h6 {
+  .media-list-pic li h6 {
     color: white;
     display: block;
     font-size: 16px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap; }
-  .items-list-pic li h6:hover {
+  .media-list-pic li h6:hover {
     overflow: visible;
     white-space: normal; }
-  .items-list-pic li button {
+  .media-list-pic li button {
     margin: 0;
     position: absolute;
     top: 5px;
@@ -449,12 +449,12 @@ a {
     border: 0;
     -webkit-transition: background-color 0.5s;
     transition: background-color 0.5s; }
-  .items-list-pic li button:hover {
+  .media-list-pic li button:hover {
     cursor: pointer;
     background-color: #ccffcc; }
-  .items-list-pic li button:focus {
+  .media-list-pic li button:focus {
     outline: none; }
-  .items-list-pic li .left-button {
+  .media-list-pic li .left-button {
     right: 50px; }
 
 .on-todo-list {

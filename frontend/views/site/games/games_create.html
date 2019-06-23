@@ -4,20 +4,20 @@
 
   <h1>Create a Game</h1>
 
-  <form ng-submit="createGame(game)">
+  <form ng-submit="createMedia(media)">
 
     <label for="title">Title<br>
-        <input type="text" name="title" id="title" ng-model="game.title" placeholder="Title..."><br>
+        <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
     </label>
 
     <label for="platform">Platform<br>
-        <input type="text" name="platform" id="platform" ng-model="game.platform" placeholder="Platform..."><br>
+        <input type="text" name="platform" id="platform" ng-model="media.platform" placeholder="Platform..."><br>
         Select From Existing:
-        <select ng-model="game.old_platform" ng-options="platform.platform for platform in platforms"></select>
+        <select ng-model="media.old_platform" ng-options="platform.platform for platform in platforms" ng-change="updateForSelectValue(media.old_platform.platform, 'platform')"></select>
     </label>
 
     <label for="esrb_rating">ESRB Rating<br>
-        <select ng-model="game.esrb_rating">
+        <select ng-model="media.esrb_rating">
             <option value="none">None</option>
             <option value="RP">RP (Rating Pending)</option>
             <option value="EC">EC (Early Childhood)</option>
@@ -31,13 +31,13 @@
     </label>
 
     <label for="location">Location<br>
-      <input type="radio" ng-model="game.location" value="Apartment"> Apartment<br>
-      <input type="radio" ng-model="game.location" value="Home"> Home<br>
+      <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
+      <input type="radio" ng-model="media.location" value="Home"> Home<br>
     </label>
 
     <label for="image">Image<br>
-        <input type="file" name="image" file-display file-model="game.image" placeholder="Image...">
-        <img ng-if="!isEmpty(game.image)" id="image" alt="Preview Game Image" />
+        <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
+        <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Game Image" />
     </label>
 
     <button type="submit">Create</button>

@@ -21,6 +21,9 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     templateUrl: 'views/site/register.html'
   }).
 
+
+  /* Books */
+
   /* Book list page */
   when('/books/:offset/:limit', {
     controller: 'ListController',
@@ -48,15 +51,17 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   }).
   /* Book creation page */
   when('/books_create', {
-    controller: 'BooksCreateController',
+    controller: 'CreateController',
     templateUrl: 'views/site/books/books_create.html'
   }).
   /* Book update page */
   when('/books_update/:id', {
-    controller: 'BooksUpdateController',
+    controller: 'UpdateController',
     templateUrl: 'views/site/books/books_update.html'
   }).
 
+
+  /* Movies */
 
   /* Movie list page */
   when('/movies/:offset/:limit', {
@@ -85,15 +90,17 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   }).
   /* Movie creation page */
   when('/movies_create', {
-    controller: 'MoviesCreateController',
+    controller: 'CreateController',
     templateUrl: 'views/site/movies/movies_create.html'
   }).
   /* Movie update page */
   when('/movies_update/:id', {
-    controller: 'MoviesUpdateController',
+    controller: 'UpdateController',
     templateUrl: 'views/site/movies/movies_update.html'
   }).
 
+
+  /* Games */
 
   /* Games list page */
   when('/games/:offset/:limit', {
@@ -122,12 +129,12 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   }).
   /* Game creation page */
   when('/games_create', {
-    controller: 'GamesCreateController',
+    controller: 'CreateController',
     templateUrl: 'views/site/games/games_create.html'
   }).
   /* Game update page */
   when('/games_update/:id', {
-    controller: 'GamesUpdateController',
+    controller: 'UpdateController',
     templateUrl: 'views/site/games/games_update.html'
   }).
 

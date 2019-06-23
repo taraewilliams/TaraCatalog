@@ -13,7 +13,7 @@
 
     <!-- Books -->
     <p ng-if="isActive(['/book_view/:id'])" ng-show="books.length <= 0">No books</p>
-    <ul ng-if="isActive(['/book_view/:id']) && books" class="items-list-pic">
+    <ul ng-if="isActive(['/book_view/:id']) && books" class="media-list-pic">
         <li ng-repeat="book in books">
             <img ng-if="!isEmpty(book.image)" alt="Book Cover" ng-src="../backend/public/{{book.image}}"/>
             <img ng-if="isEmpty(book.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
@@ -24,7 +24,7 @@
 
     <!-- Movies -->
     <p ng-if="isActive(['/movie_view/:id'])" ng-show="movies.length <= 0">No movies</p>
-    <ul ng-if="isActive(['/movie_view/:id']) && movies" class="items-list-pic">
+    <ul ng-if="isActive(['/movie_view/:id']) && movies" class="media-list-pic">
         <li ng-repeat="movie in movies">
             <img ng-if="!isEmpty(movie.image)" alt="Movie Cover" ng-src="../backend/public/{{movie.image}}"/>
             <img ng-if="isEmpty(movie.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
@@ -35,7 +35,7 @@
 
     <!-- Games -->
     <p ng-if="isActive(['/game_view/:id'])" ng-show="games.length <= 0">No games</p>
-    <ul ng-if="isActive(['/game_view/:id']) && games" class="items-list-pic">
+    <ul ng-if="isActive(['/game_view/:id']) && games" class="media-list-pic">
         <li ng-repeat="game in games">
             <img ng-if="!isEmpty(game.image)" alt="Game Cover" ng-src="../backend/public/{{game.image}}"/>
             <img ng-if="isEmpty(game.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
@@ -61,7 +61,7 @@
 
     <p ng-show="items.length > 0">{{items.length}} results</p>
 
-    <ul class="items-list-pic" ng-show="items.length > 0">
+    <ul class="media-list-pic" ng-show="items.length > 0">
         <li ng-repeat="item in items">
             <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
             <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
