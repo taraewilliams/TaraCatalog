@@ -1,6 +1,6 @@
 app.controller('ListController', function($scope, $routeParams, RequestService, CONFIG, $http, AuthService)
 {
-    
+
     function init(){
 
         /* Redirect if not logged in or if user is a viewer only */
@@ -145,7 +145,8 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         if (max == "all"){
             $scope.goToPath($scope.variables.path + 0 + "/" + 0);
         }else{
-            $scope.goToPath($scope.variables.path + offset + "/" + max);
+            var new_offset = Math.floor(offset/max) * max;
+            $scope.goToPath($scope.variables.path + new_offset + "/" + max);
         }
     };
 
