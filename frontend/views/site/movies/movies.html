@@ -4,21 +4,21 @@
 
   <h1>Movies</h1>
 
-  <p ng-if="items.length <= 0">No movies</p>
+  <p ng-if="media.length <= 0">No movies</p>
 
-  <div ng-show="items.length > 0" class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
+  <div ng-show="media.length > 0" class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
 
-  <ul ng-show="items.length > 0" class="media-list-pic">
-      <li ng-repeat="item in items">
-          <button name="Edit Movie" class="left-button" ng-click="goToPath('/movies_update/', item.id)">Edit</button>
-          <button name="Delete Movie" ng-click="deleteItem(item.id)">X</button>
-          <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="../backend/public/{{item.image}}"/>
-          <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
-          <h6 ng-if="!isEmpty(item.season)">{{item.title}}, {{item.season}}</h6>
-          <h6 ng-if="isEmpty(item.season)">{{item.title}}</h6>
+  <ul ng-show="media.length > 0" class="media-list-pic">
+      <li ng-repeat="media_item in media">
+          <button name="Edit Movie" class="left-button" ng-click="goToPath('/movies_update/', media_item.id)">Edit</button>
+          <button name="Delete Movie" ng-click="deleteMedia(media_item.id)">X</button>
+          <img ng-if="!isEmpty(media_item.image)" alt="Movie Cover" ng-src="../backend/public/{{media_item.image}}"/>
+          <img ng-if="isEmpty(media_item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
+          <h6 ng-if="!isEmpty(media_item.season)">{{media_item.title}}, {{media_item.season}}</h6>
+          <h6 ng-if="isEmpty(media_item.season)">{{media_item.title}}</h6>
       </li>
   </ul>
 
-  <div ng-show="items.length > 0" ng-include="'views/site/subviews/_pagination.html'"></div>
+  <div ng-show="media.length > 0" ng-include="'views/site/subviews/_pagination.html'"></div>
 
 </main>

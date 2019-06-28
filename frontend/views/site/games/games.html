@@ -4,20 +4,20 @@
 
     <h1>Games</h1>
 
-    <p ng-if="items.length <= 0">No games</p>
+    <p ng-if="media.length <= 0">No games</p>
 
-    <div ng-show="items.length > 0" class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
+    <div ng-show="media.length > 0" class="select-max-form" ng-include="'views/site/subviews/_selectMaxPerPage.html'"></div>
 
-    <ul ng-show="items.length > 0" class="media-list-pic">
-        <li ng-repeat="item in items">
-            <button name="Edit Game" class="left-button" ng-click="goToPath('/games_update/', item.id)">Edit</button>
-            <button name="Delete Game" ng-click="deleteItem(item.id)">X</button>
-            <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="../backend/public/{{item.image}}"/>
-            <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
-            <h6>{{item.title}}</h6>
+    <ul ng-show="media.length > 0" class="media-list-pic">
+        <li ng-repeat="media_item in media">
+            <button name="Edit Game" class="left-button" ng-click="goToPath('/games_update/', media_item.id)">Edit</button>
+            <button name="Delete Game" ng-click="deleteMedia(media_item.id)">X</button>
+            <img ng-if="!isEmpty(media_item.image)" alt="Game Cover" ng-src="../backend/public/{{media_item.image}}"/>
+            <img ng-if="isEmpty(media_item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+            <h6>{{media_item.title}}</h6>
         </li>
     </ul>
 
-    <div ng-show="items.length > 0" ng-include="'views/site/subviews/_pagination.html'"></div>
+    <div ng-show="media.length > 0" ng-include="'views/site/subviews/_pagination.html'"></div>
 
 </main>

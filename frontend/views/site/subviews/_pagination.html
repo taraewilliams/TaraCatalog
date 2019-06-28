@@ -1,7 +1,7 @@
 <div class="pagination" ng-if="maxPerPage != 'all'">
-  <a ng-click="skipToFinalPage('backward', pages, variables.path)"><<</a>
-  <a ng-click="skipOnePage('backward', pages, variables.path)"><</a>
-  <a ng-class="{ 'selected': page.active }" ng-if="page.current" ng-repeat="page in pages" ng-click="switchPage(page, variables.path)">{{page.num}}</a>
-  <a ng-click="skipOnePage('forward', pages, variables.path)">></a>
-  <a ng-click="skipToFinalPage('forward', pages, variables.path)">>></a>
+  <a ng-click="skipPage('backward_final', pages, variables.path)"><<</a>
+  <a ng-click="skipPage('backward', pages, variables.path)"><</a>
+  <a ng-class="{ 'selected': page.active }" ng-if="page.visible" ng-repeat="page in pages" ng-click="switchPage(page, variables.path)">{{page.num}}</a>
+  <a ng-click="skipPage('forward', pages, variables.path)">></a>
+  <a ng-click="skipPage('forward_final', pages, variables.path)">>></a>
 </div>
