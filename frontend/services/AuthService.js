@@ -5,7 +5,6 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
         var url = CONFIG.api + '/auth/login';
 
         RequestService.post(url, credentials, function(response) {
-            console.log("Logged in:", response.data);
             Session.create(response.data.id, response.data.token, response.data.user.id);
             _this.setUser();
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
@@ -22,7 +21,6 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
         var url = CONFIG.api + '/auth/logout';
 
         RequestService.post(url, {session_id: Session.id}, function(response) {
-            console.log("Logged out:", response.data);
             Session.destroy();
             $location.path('/login');
         }, function(error) {
@@ -75,6 +73,10 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
         $rootScope.user = Session.userID ? User.get({id: Session.userID}, function(){
             $rootScope.userCopy = angular.copy($rootScope.user);
             $rootScope.color_scheme = $rootScope.userCopy.color_scheme;
+        }, function(response){
+            alert(response.data.message);
+            Session.destroy();
+            $location.path('/login');
         }) : null;
     };
 

@@ -4,6 +4,7 @@ namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
 use TaraCatalog\Service\DatabaseService;
+use TaraCatalog\Service\APIService;
 
 class Session
 {

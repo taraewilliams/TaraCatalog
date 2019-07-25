@@ -240,6 +240,14 @@ class Book
         return DatabaseService::get_counts_for_column(CONFIG::DBTables()->book, $user_id, $column_name, $header);
     }
 
+    /* Count books with different locations */
+    public static function get_all_location_counts($user_id)
+    {
+        $column_name = "location";
+        $header = "book_location";
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->book, $user_id, $column_name, $header);
+    }
+
     /* ========================================================== *
     * GET ALL DISTINCT VALUES FOR A COLUMN
     * ========================================================== */
@@ -342,6 +350,25 @@ class Book
     /* Sort all media by title */
     public static function sort_all($a, $b){
         return strtolower($a->title) > strtolower($b->title);
+    }
+
+    public static function get_all_media_location_counts($user_id){
+        $column_name = "location";
+        $header = "media_locations";
+
+        $database = Database::instance();
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type, 'book' as media FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $sql .= " UNION SELECT COUNT(*) as num, " . $column_name . " as type, 'movie' as media FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $sql .= " UNION SELECT COUNT(*) as num, " . $column_name . " as type, 'game' as media FROM " . CONFIG::DBTables()->game . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false || $result === null){
+            APIService::response_fail("There was a problem getting the counts.", 500);
+        }else{
+            return array($header => $result);
+        }
     }
 
 }

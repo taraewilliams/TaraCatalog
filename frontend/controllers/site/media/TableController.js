@@ -53,6 +53,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
             items_clone = $scope.clone($scope.items);
             $scope.item_length = items_clone.length;
             $scope.items = $scope.addLettersToTitles($scope.items);
+            $scope.items_resolved = true;
         }, function(response){
             console.log("Error");
         });
@@ -145,31 +146,6 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
 
     $scope.toggleFilter = function(){
         $scope.showFilter = !$scope.showFilter;
-    };
-
-    /* Add alphabetical letters between the titles to organize */
-    $scope.addLettersToTitles = function(items){
-
-        var items_clone = $scope.clone(items);
-        var added_letters = 0;
-
-        for (var i = 0; i < items.length; i++){
-            if (i !== items.length - 1){
-                var prev_letter = items[i].title.charAt(0).toUpperCase();
-                var curr_letter = items[i + 1].title.charAt(0).toUpperCase();
-
-                if (prev_letter !== curr_letter){
-                    var index = (i + 1) + added_letters;
-                    var letter = {
-                        title: curr_letter,
-                        isHeader: 1
-                    };
-                    items_clone.splice(index, 0, letter);
-                    added_letters += 1;
-                }
-            }
-        }
-        return items_clone;
     };
 
     //* Private Functions *//

@@ -1,6 +1,8 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-if="user && color_scheme">
+<div class="loader" ng-if="!user || !color_scheme || !items_resolved"></div>
+
+<main ng-if="user && color_scheme && items_resolved">
 
   <h1>Add Games to Play List</h1>
 

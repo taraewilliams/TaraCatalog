@@ -282,6 +282,14 @@ class Movie
         return array($header => $grouped_counts);
     }
 
+    /* Count movies with different locations */
+    public static function get_all_location_counts($user_id)
+    {
+        $column_name = "location";
+        $header = "movie_location";
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
+    }
+
     /* ========================================================== *
     * GET A SINGLE VALUE FOR A COLUMN
     * ========================================================== */

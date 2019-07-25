@@ -8,21 +8,97 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             return;
         }
 
-        var urls = ['/books/content_type/count', '/books/cover_type/count',
-        '/movies/format/count', '/movies/content_type/count', '/movies/mpaa_rating/count', '/movies/mpaa_rating_grouped/count',
-        '/games/esrb_rating/count', '/games/platform/count'];
-
+        var urls = getCountUrls();
         for(i = 0; i < urls.length; i++){
             $http.get(CONFIG.api + urls[i])
             .then(function(response) {
                 makePieChartForData(response.data);
             });
         }
+
+        $http.get(CONFIG.api + '/media/location/count')
+        .then(function(response) {
+
+            var dataArray = [['Location', 'Books', 'Movies', 'Games']];
+            var counts = response.data;
+            for (var key in counts) {
+                dataArray.push(counts[key]);
+            }
+
+            var title = 'Location (Percentage)';
+            var html_element = 'LocationBarChart';
+            makeBarChart(dataArray, html_element, title);
+        });
     }
 
     /* Make Pie Charts for Count Data */
     var makePieChartForData = function(items){
         var itemKey = Object.keys(items)[0];
+        var chartItems = getPieChartItems(itemKey);
+        makePieChart(items[itemKey], chartItems.html_element, chartItems.title, chartItems.dataArray);
+    };
+
+    /* Generic Pie Chart */
+    var makePieChart = function(items, html_element, title, dataArray)
+    {
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+
+            for (i = 0; i < items.length; i++){
+                dataArray.push([items[i].type, parseInt(items[i].num)]);
+            }
+
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                'title': title,
+                'height':400,
+                'backgroundColor': 'transparent',
+                'titleTextStyle': {
+                    fontSize: 20
+                }
+            };
+
+            var chart = new google.visualization.PieChart(document.getElementById(html_element));
+            chart.draw(data, options);
+        }
+    };
+
+    var makeBarChart = function(dataArray, html_element, title)
+    {
+        google.charts.setOnLoadCallback(drawBarChart);
+
+        function drawBarChart() {
+
+            var data = google.visualization.arrayToDataTable(dataArray);
+
+            var options = {
+                'title': title,
+                'height':400,
+                'backgroundColor': 'transparent',
+                'titleTextStyle': {
+                    fontSize: 20
+                }
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById(html_element));
+            chart.draw(data, options);
+        }
+    };
+
+    var getCountUrls = function(){
+        return ['/books/content_type/count',
+        '/books/cover_type/count',
+        '/movies/format/count',
+        '/movies/content_type/count',
+        '/movies/mpaa_rating/count',
+        '/movies/mpaa_rating_grouped/count',
+        '/games/esrb_rating/count',
+        '/games/platform/count'];
+    };
+
+    var getPieChartItems = function(itemKey){
         if (itemKey == 'book_content_type'){
             var dataArray = [['Book Content Type', 'Number of Books']];
             var title = 'Content';
@@ -57,34 +133,11 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var html_element = 'GamePlatformTypeChart';
         }
 
-        makePieChart(items[itemKey], html_element, title, dataArray);
-    };
-
-    /* Generic Pie Chart */
-    var makePieChart = function(items, html_element, title, dataArray){
-
-        google.charts.setOnLoadCallback(drawChart);
-
-        function drawChart() {
-
-            for (i = 0; i < items.length; i++){
-                dataArray.push([items[i].type, parseInt(items[i].num)]);
-            }
-
-            var data = google.visualization.arrayToDataTable(dataArray);
-
-            var options = {
-                'title': title,
-                'height':400,
-                'backgroundColor': 'transparent',
-                'titleTextStyle': {
-                    fontSize: 20
-                }
-            };
-
-            var chart = new google.visualization.PieChart(document.getElementById(html_element));
-            chart.draw(data, options);
-        }
+        return {
+            dataArray: dataArray,
+            title: title,
+            html_element: html_element
+        };
     };
 
     $scope.user.$promise.then(init);

@@ -47,6 +47,7 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
         .then(function(response) {
             $scope.media = response.data;
             $scope.media_clone = $scope.clone($scope.media);
+            $scope.media_resolved = true;
         }, function(error){
             console.log("Error");
         });

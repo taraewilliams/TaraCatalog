@@ -8,6 +8,9 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
             return;
         }
 
+        $scope.removedItems = [];
+        $scope.editOn = false;
+
         if($scope.isActive(['/books_table/read'])){
             $scope.variables = {
                 item_type:"book",
@@ -35,54 +38,56 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
             items_clone = $scope.clone($scope.items);
             $scope.item_length = items_clone.length;
             $scope.items = $scope.addLettersToTitles($scope.items);
+            $scope.items_resolved = true;
         }, function(response){
             console.log("Error");
         });
     }
 
-    /* Toggle Read/Watch List of Item */
-    $scope.toggleReadList = function(id,toggle){
-
-        if ($scope.variables.item_type == "book"){
-            var new_item = { read_list:toggle };
-        }else if ($scope.variables.item_type == "movie"){
-            var new_item = { watch_list:toggle };
+    /* Add or Remove items from the Read/Watch/Play List to be Updated */
+    $scope.toggleRemovedItems = function(id){
+        var index = $scope.removedItems.indexOf(id);
+        if (index > -1){
+            $scope.removedItems.splice(index,1);
         }else{
-            var new_item = { play_list:toggle };
+            $scope.removedItems.push(id);
         }
-
-        var url = $scope.variables.put_url + id;
-
-        RequestService.post(url, new_item, function(data) {
-            alert($scope.variables.item_type + " was updated.");
-        }, function(error, status){
-            console.log(error.message);
-        });
     };
 
-    /* Add alphabetical letters between the titles to organize */
-    $scope.addLettersToTitles = function(items){
+    /* Toggle Read/Watch/Play List of Item */
+    $scope.removeFromToDoList = function(id_list){
 
-        var items_clone = $scope.clone(items);
-        var added_letters = 0;
+        for (i = 0; i < id_list.length; i++){
+            var id = id_list[i];
 
-        for (var i = 0; i < items.length; i++){
-            if (i !== items.length - 1){
-                var prev_letter = items[i].title.charAt(0).toUpperCase();
-                var curr_letter = items[i + 1].title.charAt(0).toUpperCase();
-
-                if (prev_letter !== curr_letter){
-                    var index = (i + 1) + added_letters;
-                    var letter = {
-                        title: curr_letter,
-                        isHeader: 1
-                    };
-                    items_clone.splice(index, 0, letter);
-                    added_letters += 1;
-                }
+            if ($scope.variables.item_type == "book"){
+                var new_item = { read_list:0 };
+            }else if ($scope.variables.item_type == "movie"){
+                var new_item = { watch_list:0 };
+            }else{
+                var new_item = { play_list:0 };
             }
+
+            var url = $scope.variables.put_url + id;
+
+            update_num = 0;
+            /* Add the books/movies/games to the read/watch/play list */
+            RequestService.post(url, new_item, function(data) {
+                console.log($scope.variables.item_type + " was updated.");
+
+                /* Redirect to the Read/Watch/Play list page once all items are updated */
+                update_num = update_num + 1;
+                if (update_num == id_list.length){
+                    location.reload();
+                }
+            }, function(error, status){
+                console.log(error.message);
+            });
         }
-        return items_clone;
+    };
+
+    $scope.toggleEdit = function(){
+        $scope.editOn = !$scope.editOn;
     };
 
     $scope.user.$promise.then(init);

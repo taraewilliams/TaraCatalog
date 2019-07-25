@@ -1,5 +1,40 @@
+// Mobile CSS
+@media screen and (max-width: 800px) {
+    .home-section{
+        margin:0;
+    }
+
+    #home-filter{
+        form{
+            input{
+                width: 75%;
+            }
+            button{
+                width: 20%;
+            }
+        }
+    }
+}
+
+// Web CSS
+@media screen and (min-width: 800px) {
+    .home-section{
+        margin:50px;
+    }
+
+    #home-filter{
+        form{
+            input{
+                width: 49%;
+            }
+            button{
+                width:25%;
+            }
+        }
+    }
+}
+
 .home-section{
-    margin:50px;
     h2{
         text-align:center;
     }
@@ -15,11 +50,9 @@
         input{
             font-size: 15px;
             height: 25px;
-            width: 49%;
         }
         button{
             min-height:30px;
-            width:25%;
             vertical-align:top;
             margin-top: 0;
         }

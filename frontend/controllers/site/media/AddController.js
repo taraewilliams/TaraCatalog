@@ -38,6 +38,7 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
         $http.get($scope.variables.get_url)
         .then(function(response) {
             $scope.items = response.data;
+            $scope.items_resolved = true;
         }, function(response){
             console.log("Error");
         });

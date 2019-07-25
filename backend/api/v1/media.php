@@ -4,7 +4,6 @@ use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Book;
 use TaraCatalog\Model\Movie;
 use TaraCatalog\Model\Game;
-use TaraCatalog\Model\Viewer;
 
 /* Requests */
 
@@ -13,109 +12,54 @@ use TaraCatalog\Model\Viewer;
 
 /*
 
-1. search
-    Gets all media that matches the search term for a user.
-    Input: search (the search term)
-    Output: Media object array
+1. media/location/count
+    Gets the count of all media grouped by distinct location for a user.
+    Input: none
+    Output: Media counts
 
-2. search/{id}
-    Gets all of a creator's media that matches the search term for a viewer.
-    Input: id (creator ID), search (the search term)
-    Output: Media object array
 */
 
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
-        $resource = "/search";
+        $resource = "/media";
 
         /* ========================================================== *
         * GET
         * ========================================================== */
 
-        /* Get media for search */
-        $app->post($resource, function () use ($app)
-        {
-            $session = APIService::authenticate_request($_REQUEST);
-            $user_id = $session->user->id;
-
-            $params = APIService::build_params($_REQUEST, null, array(
-                "search"
-            ));
-
-            $searchTerm = isset($params["search"]) ? $params["search"] : null;
-
-            $book_params = array(
-                "title"          => $searchTerm,
-                "author"         => $searchTerm,
-                "volume"         => $searchTerm,
-                "isbn"           => $searchTerm,
-                "cover_type"     => $searchTerm,
-                "content_type"   => $searchTerm,
-                "location"       => $searchTerm
-            );
-
-            $movie_params = array(
-                "title"         => $searchTerm,
-                "format"        => $searchTerm,
-                "edition"       => $searchTerm,
-                "content_type"  => $searchTerm,
-                "location"      => $searchTerm,
-                "season"        => $searchTerm,
-                "mpaa_rating"   => $searchTerm
-            );
-
-            $game_params = array(
-                "title"         => $searchTerm,
-                "platform"      => $searchTerm,
-                "location"      => $searchTerm,
-                "esrb_rating"   => $searchTerm
-            );
-
-            $conj = "OR";
-            $books = Book::get_for_search($user_id, $book_params, $conj);
-            $movies = Movie::get_for_search($user_id, $movie_params, $conj);
-            $games = Game::get_for_search($user_id, $game_params, $conj);
-
-            $merge = array_merge($books, $movies);
-            $media = array_merge($merge, $games);
-            usort($media, array("TaraCatalog\Model\Book", "sort_all"));
-
-            APIService::response_success($media);
-        });
-
-        /* Get media for viewer search */
-        $app->post($resource . "/{id}", function ($request, $response, $args) use ($app)
+        /* Count media with different locations */
+        $app->get($resource . '/location/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
-            $viewer_id = $session->user->id;
-            $creator_id = intval($args['id']);
+            $user_id = $session->user->id;
 
-            /* Check that the viewer has permission to view the creator's media */
-            if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
-                APIService::response_fail("There was a problem getting the media.", 500);
+            $media_counts = Book::get_all_media_location_counts($user_id);
+            $total_books = intval(Book::count_books($user_id)["num"]);
+            $total_movies = intval(Movie::count_movies($user_id)["num"]);
+            $total_games = intval(Game::count_games($user_id)["num"]);
+
+            $location_strings = array();
+            $row_order = array("book", "movie", "game");
+            $book_index = 0;
+            $movie_index = 1;
+            $game_index = 2;
+
+            foreach($media_counts["media_locations"] as $count){
+                $location_type = $count["type"];
+                if (!in_array($location_type, $location_strings)){
+                    array_push($location_strings, $location_type);
+                    $location_types[$location_type] = array($location_type, 0, 0, 0);
+                }
+                if ($count["media"] == $row_order[$book_index]){
+                    $location_types[$location_type][$book_index+1] = intval($count["num"])/$total_books * 100;
+                }else if ($count["media"] == $row_order[$movie_index]){
+                    $location_types[$location_type][$movie_index+1] = intval($count["num"])/$total_movies * 100;
+                }else{
+                    $location_types[$location_type][$game_index+1] = intval($count["num"])/$total_games * 100;
+                }
             }
-
-            $params = APIService::build_params($_REQUEST, null, array(
-                "search"
-            ));
-
-            $searchTerm = isset($params["search"]) ? $params["search"] : null;
-
-            $book_params = array( "title" => $searchTerm );
-            $movie_params = array( "title" => $searchTerm );
-            $game_params = array( "title" => $searchTerm );
-
-            $conj = "OR";
-            $books = Book::get_for_search($creator_id, $book_params, $conj);
-            $movies = Movie::get_for_search($creator_id, $movie_params, $conj);
-            $games = Game::get_for_search($creator_id, $game_params, $conj);
-
-            $merge = array_merge($books, $movies);
-            $media = array_merge($merge, $games);
-            usort($media, array("TaraCatalog\Model\Book", "sort_all"));
-
-            APIService::response_success($media);
+            APIService::response_success($location_types);
         });
 
     });

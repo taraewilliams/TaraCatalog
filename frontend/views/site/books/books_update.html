@@ -1,6 +1,8 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
-<main ng-if="media_clone && media && user && color_scheme">
+<div class="loader" ng-if="!media_clone || !media || !user || !color_scheme || !media_resolved"></div>
+
+<main ng-if="media_clone && media && user && color_scheme && media_resolved">
 
     <h1>Update Book</h1>
 

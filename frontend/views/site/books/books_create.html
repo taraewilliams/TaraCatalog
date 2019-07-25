@@ -1,5 +1,7 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
 <main ng-if="user && color_scheme">
 
     <h1>Create a Book</h1>

@@ -11,6 +11,9 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         /* The maximum number of pages to show in the pagination bar */
         $scope.maxPages = 5;
 
+        /* The valid limits for number of items per page */
+        $scope.validLimits = [28, 56, 84, 112, "All"];
+
         /* The limit for 'all' is set to 0 */
         var all_limit = 0;
         var offset = $routeParams.offset;
@@ -59,9 +62,10 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         $http.get($scope.variables.get_url)
         .then(function(response) {
             $scope.media = response.data;
+            $scope.media_resolved = true;
         });
 
-        if ($scope.maxPerPage != "all" && $scope.maxPerPage != "invalid"){
+        if ($scope.maxPerPage != "All" && $scope.maxPerPage != "invalid"){
             /* Count all the media items */
             $http.get($scope.variables.get_count_url)
             .then(function(response) {
@@ -108,7 +112,7 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
     };
 
     $scope.selectMaxPerPage = function(offset, max){
-        if (max == "all"){
+        if (max == "All"){
             $scope.goToPath($scope.variables.path + 0 + "/" + 0);
         }else{
             var new_offset = Math.floor(offset/max) * max;
@@ -152,12 +156,12 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
     var setMaxPerPage = function(offset, limit, all_limit){
         if (isValidLimit(limit) && isValidOffset(offset, limit)){
             if (limit == all_limit){
-                return "all";
+                return "All";
             }else{
                 return limit;
             }
         }else{
-            var new_limit = 25;
+            var new_limit = isValidLimit(limit) ? limit : 28;
             var new_offset = Math.floor(offset/new_limit) * new_limit;
             $scope.goToPath($scope.variables.path + new_offset + "/" + new_limit);
             return "invalid";
@@ -165,7 +169,8 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
     };
 
     var isValidLimit = function(limit){
-        return (limit == 0 || limit == 25 || limit == 50 || limit == 75 || limit == 100);
+        limit = parseInt(limit);
+        return limit == 0 ? true : $scope.validLimits.includes(limit);
     };
 
     var isValidOffset = function(offset, limit){

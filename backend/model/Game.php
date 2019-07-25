@@ -231,6 +231,14 @@ class Game
         return DatabaseService::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
     }
 
+    /* Count games with different locations */
+    public static function get_all_location_counts($user_id)
+    {
+        $column_name = "location";
+        $header = "game_location";
+        return DatabaseService::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
+    }
+
     /* ========================================================== *
     * GET ALL DISTINCT VALUES FOR A COLUMN
     * ========================================================== */
