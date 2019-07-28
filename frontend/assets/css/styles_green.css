@@ -50,7 +50,7 @@ table {
     text-align: center;
     width: 100%;
     height: auto;
-    position: relative; }
+    position: fixed; }
     .main-menu .menu-item {
       height: auto;
       width: auto;
@@ -142,7 +142,8 @@ button {
 
 @media screen and (max-width: 800px) {
   main {
-    left: 0; }
+    left: 0;
+    top: 100px; }
     main form input {
       width: 100%; }
     main form label input {
@@ -457,7 +458,9 @@ main {
       width: 145px;
       font-size: 12px; }
   .pagination a {
-    padding: 8px 8px; } }
+    padding: 8px 8px; }
+  .filter-form form section {
+    width: 100%; } }
 
 @media screen and (min-width: 800px) {
   .add-button {
@@ -472,7 +475,9 @@ main {
       width: 260px;
       font-size: 16px; }
   .pagination a {
-    padding: 8px 16px; } }
+    padding: 8px 16px; }
+  .filter-form form section {
+    width: 24%; } }
 
 .pagination {
   display: inline-block;
@@ -501,7 +506,6 @@ main {
     cursor: pointer;
     color: #ccffcc; }
   .filter-form form section {
-    width: 24%;
     display: inline-block;
     vertical-align: top; }
   .filter-form form button {

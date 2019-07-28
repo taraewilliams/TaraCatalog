@@ -183,11 +183,13 @@ class Book
     /* OR for search all columns */
     public static function get_for_search($user_id, $data, $conj="AND", $order=null)
     {
+        $enum_keys = array("cover_type", "content_type", "location");
         $where = "WHERE (";
         $iter = 1;
         foreach ($data as $key => $value) {
             $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
-            $where = $where . (isset($data[$key]) ? $conj_full . $key . " LIKE '%" . $data[$key] . "%'" : "");
+            $equality = in_array($key, $enum_keys) ? " = '" . $data[$key] . "'" : " LIKE '%" . $data[$key] . "%'";
+            $where = $where . (isset($data[$key]) ? $conj_full . $key . $equality : "");
             $iter += 1;
         }
         $where = $where . ") AND active = 1 AND user_id = " . $user_id;

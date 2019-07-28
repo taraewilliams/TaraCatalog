@@ -174,13 +174,16 @@ class Game
     /* OR for search all columns */
     public static function get_for_search($user_id, $data, $conj="AND", $order=null)
     {
+        $enum_keys = array("location", "esrb_rating");
         $where = "WHERE (";
         $iter = 1;
         foreach ($data as $key => $value) {
             $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
-            $where = $where . (isset($data[$key]) ? $conj_full . $key . " LIKE '%" . $data[$key] . "%'" : "");
+            $equality = in_array($key, $enum_keys) ? " = '" . $data[$key] . "'" : " LIKE '%" . $data[$key] . "%'";
+            $where = $where . (isset($data[$key]) ? $conj_full . $key . $equality : "");
             $iter += 1;
         }
+
         $where = $where . ") AND active = 1 AND user_id = " . $user_id;
         $order_by = is_null($order) ? "ORDER BY title,platform,esrb_rating" : "ORDER BY " . $order;
         $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->game, $where, $order_by);

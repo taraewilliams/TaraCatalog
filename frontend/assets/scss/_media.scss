@@ -25,6 +25,13 @@
             padding: 8px 8px;
         }
     }
+    .filter-form{
+        form{
+            section{
+                width: 100%;
+            }
+        }
+    }
 }
 
 // Web CSS
@@ -51,6 +58,13 @@
     .pagination{
         a{
             padding: 8px 16px;
+        }
+    }
+    .filter-form{
+        form{
+            section{
+                width: 24%;
+            }
         }
     }
 }
@@ -93,7 +107,6 @@
   form{
 
     section{
-      width: 24%;
       display: inline-block;
       vertical-align: top;
     }
