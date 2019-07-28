@@ -79,7 +79,7 @@ $app->group('/api', function () use ($app) {
 
             $merge = array_merge($books, $movies);
             $media = array_merge($merge, $games);
-            usort($media, array("TaraCatalog\Model\Book", "sort_all"));
+            usort($media, array("TaraCatalog\Model\Media", "sort_all"));
 
             APIService::response_success($media);
         });
@@ -114,7 +114,7 @@ $app->group('/api', function () use ($app) {
 
             $merge = array_merge($books, $movies);
             $media = array_merge($merge, $games);
-            usort($media, array("TaraCatalog\Model\Book", "sort_all"));
+            usort($media, array("TaraCatalog\Model\Media", "sort_all"));
 
             APIService::response_success($media);
         });

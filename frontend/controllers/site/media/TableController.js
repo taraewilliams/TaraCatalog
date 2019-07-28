@@ -62,14 +62,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
     /* Toggle Read/Watch List of Item */
     $scope.toggleReadList = function(id,toggle){
 
-        if ($scope.variables.item_type == "book"){
-            var new_item = { read_list:toggle };
-        }else if ($scope.variables.item_type == "movie"){
-            var new_item = { watch_list:toggle };
-        }else{
-            var new_item = { play_list:toggle };
-        }
-
+        var new_item = { todo_list:toggle };
         var url = $scope.variables.put_url + id;
 
         RequestService.post(url, new_item, function(data) {
@@ -78,7 +71,6 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
             console.log(error.message);
         });
     };
-
 
     /* Delete item */
     $scope.deleteItem = function(bookID){

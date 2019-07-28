@@ -2,6 +2,7 @@
 
 namespace TaraCatalog\Model;
 
+use TaraCatalog\Model\Media;
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
@@ -18,7 +19,7 @@ class Movie
     public $content_type;
     public $location;
     public $season;
-    public $watch_list;
+    public $todo_list;
     public $image;
     public $mpaa_rating;
     public $notes;
@@ -39,7 +40,7 @@ class Movie
         $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Live Action";
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->season          = isset($data['season']) ? $data['season'] : null;
-        $this->watch_list      = isset($data['watch_list']) ? (boolean) $data['watch_list'] : false;
+        $this->todo_list      = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
@@ -72,7 +73,7 @@ class Movie
             "content_type"   => $movie->content_type,
             "location"       => $movie->location,
             "season"         => $movie->season,
-            "watch_list"     => $movie->watch_list,
+            "todo_list"     => $movie->todo_list,
             "image"          => $movie->image,
             "mpaa_rating"    => $movie->mpaa_rating,
             "notes"          => $movie->notes,
@@ -100,81 +101,35 @@ class Movie
     /* Get a single movie */
     public static function get_from_id($user_id, $id)
     {
-        $where = array("id" => $id, "user_id" => $user_id);
-        $result = DatabaseService::get(Config::DBTables()->movie, $where);
-        if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the movie.", 500);
-        }
-        return new Movie($result[0]);
+        $result = Media::get_from_id($user_id, $id, Config::DBTables()->movie);
+        return new Movie($result);
     }
 
     /* Get all movies */
     public static function get_all($user_id)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,season,mpaa_rating";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the movies.", 500);
-        }else{
-            $movies = array();
-            foreach( $result as $row ) {
-                $movies[] = new Movie($row);
-            }
-            return $movies;
-        }
+        return Media::get_all($user_id, CONFIG::DBTables()->movie, $order_by);
+    }
+
+    /* Get all movies on the to do list */
+    public static function get_all_on_todo_list($user_id, $todo)
+    {
+        $order_by = "ORDER BY title,season,mpaa_rating";
+        return Media::get_all_on_todo_list($user_id, $todo, CONFIG::DBTables()->movie, $order_by);
     }
 
     /* Get a set number of movies */
     public static function get_all_with_limit($user_id, $offset = 0, $limit = 50)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,season,mpaa_rating";
-        $limit_sql = "LIMIT " . $offset . ", " . $limit;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by, $limit_sql);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the movies.", 500);
-        }else{
-            $movies = array();
-            foreach( $result as $row ) {
-                $movies[] = new Movie($row);
-            }
-            return $movies;
-        }
+        return Media::get_all_with_limit($user_id, CONFIG::DBTables()->movie, $order_by, $offset, $limit);
     }
 
     /* Get all movies ordered by a specific field */
     public static function get_all_with_order($user_id, $order)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY ". $order;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the movies.", 500);
-        }else{
-            $movies = array();
-            foreach( $result as $row ) {
-                $movies[] = new Movie($row);
-            }
-            return $movies;
-        }
-    }
-
-    /* Get all movies on the watch list */
-    public static function get_all_on_watch_list($user_id, $watch)
-    {
-        $where = "WHERE active = 1 AND user_id = " . $user_id . " AND watch_list = " . $watch;
-        $order_by = "ORDER BY title,season,mpaa_rating";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the movies.", 500);
-        }else{
-            $movies = array();
-            foreach( $result as $row ) {
-                $movies[] = new Movie($row);
-            }
-            return $movies;
-        }
+        return Media::get_all_with_order($user_id, CONFIG::DBTables()->movie, $order);
     }
 
     /* Get movies for search parameters */
@@ -182,28 +137,9 @@ class Movie
     /* OR for search all columns */
     public static function get_for_search($user_id, $data, $conj="AND", $order=null)
     {
-        $enum_keys = array("format", "content_type", "location", "mpaa_rating");
-        $where = "WHERE (";
-        $iter = 1;
-        foreach ($data as $key => $value) {
-            $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
-            $equality = in_array($key, $enum_keys) ? " = '" . $data[$key] . "'" : " LIKE '%" . $data[$key] . "%'";
-            $where = $where . (isset($data[$key]) ? $conj_full . $key . $equality : "");
-            $iter += 1;
-        }
-
-        $where = $where . ") AND active = 1 AND user_id = " . $user_id;
         $order_by = is_null($order) ? "ORDER BY title,season,mpaa_rating" : "ORDER BY " . $order;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->movie, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the movies.", 500);
-        }else{
-            $movies = array();
-            foreach( $result as $row ) {
-                $movies[] = new Movie($row);
-            }
-            return $movies;
-        }
+        $enum_keys = array("format", "content_type", "location", "mpaa_rating");
+        return Media::get_for_search($user_id, CONFIG::DBTables()->movie, $data, $order_by, $enum_keys, $conj);
     }
 
     /* ========================================================== *
@@ -213,17 +149,7 @@ class Movie
     /* Count all movies */
     public static function count_movies($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND user_id = " . $user_id;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetch(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return $result;
-        }
+        return Media::count_media($user_id, CONFIG::DBTables()->movie);
     }
 
     /* Count movies with different content types */
@@ -299,17 +225,8 @@ class Movie
 
     /* Get a movie's title for its ID */
     public static function get_title_for_id($user_id, $id){
-        $database = Database::instance();
-        $sql = "SELECT title FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND user_id = " . $user_id . " AND id = " . $id;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetch(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return $result["title"];
-        }
+        $column_name = "title";
+        return Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->movie, $column_name);
     }
 
     /* ========================================================== *
@@ -344,15 +261,4 @@ class Movie
     * Public Functions
     * ===================================================== */
 
-    /* Set movie image */
-    public static function set_image($files, $title)
-    {
-        $file_prefix = $title;
-        $dir = FileService::MAIN_DIR . '/movies';
-        $file_name = FileService::upload_file($files['image'], $dir, $file_prefix);
-        if(!$file_name) {
-            APIService::response_fail("There was an error saving the picture.");
-        }
-        return $file_name;
-    }
 }

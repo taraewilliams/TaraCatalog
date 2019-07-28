@@ -20,9 +20,9 @@ use TaraCatalog\Model\Game;
     Input: none
     Output: Game object array
 
-3. games/play/list/{play}
-    Gets all games on the play list or not on the play list for a user.
-    Input: play (0 or 1)
+3. games/todo/list/{todo}
+    Gets all games on the todo list or not on the todo list for a user.
+    Input: todo (0 or 1)
     Output: Game object array
 
 4. /limit/{offset}/{limit}
@@ -75,13 +75,13 @@ use TaraCatalog\Model\Game;
 1. games
     Creates a new game.
     Input: (required) title
-        (optional) platform, location, play_list, esrb_rating, notes, image
+        (optional) platform, location, todo_list, esrb_rating, notes, image
     Output: Game object
 
 2. games/{id}
     Updates a game.
     Input: (required) id (game ID)
-        (optional) title, platform, location, play_list, esrb_rating, notes, image
+        (optional) title, platform, location, todo_list, esrb_rating, notes, image
     Output: true or false (success or failure)
 */
 
@@ -127,13 +127,13 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* Get all games on the play list or not on the play list */
-        $app->get($resource . '/play/list/{play}', function ($request, $response, $args) use ($app)
+        /* Get all games on the todo list or not on the todo list */
+        $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $play = intval($args['play']);
-            $games = Game::get_all_on_play_list($user_id, $play);
+            $todo = intval($args['todo']);
+            $games = Game::get_all_on_todo_list($user_id, $todo);
             APIService::response_success($games);
         });
 
@@ -253,7 +253,7 @@ $app->group('/api', function () use ($app) {
             ), array(
                 "platform",
                 "location",
-                "play_list",
+                "todo_list",
                 "esrb_rating",
                 "notes"
             ));
@@ -265,7 +265,7 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(isset($files['image'])) {
-                $params['image'] = Game::set_image($files, $params["title"]);
+                $params['image'] = Media::set_image($files, $params["title"], '/games');
             }
 
             $game = Game::create_from_data($params);
@@ -291,7 +291,7 @@ $app->group('/api', function () use ($app) {
                 "title",
                 "platform",
                 "location",
-                "play_list",
+                "todo_list",
                 "esrb_rating",
                 "notes"
             ));
@@ -307,7 +307,7 @@ $app->group('/api', function () use ($app) {
             }
 
             if(isset($files['image'])) {
-                $params['image'] = Game::set_image($files, $title);
+                $params['image'] = Media::set_image($files, $title, '/games');
             }
 
             $game = Game::update($user_id, $id, $params);

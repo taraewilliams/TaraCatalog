@@ -200,18 +200,6 @@ class User
     * Public Functions
     * ===================================================== */
 
-    /* Set user profile image */
-    public static function set_image($files, $title)
-    {
-        $file_prefix = $title;
-        $dir = FileService::MAIN_DIR . '/users';
-        $file_name = FileService::upload_file($files['image'], $dir, $file_prefix);
-        if(!$file_name) {
-            APIService::response_fail("There was an error saving the picture.");
-        }
-        return $file_name;
-    }
-
     /* Check if user has unique username and email */
     public static function unique_username_and_email($id, $data, &$error = null)
     {

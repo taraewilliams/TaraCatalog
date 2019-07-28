@@ -14,19 +14,19 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
         if($scope.isActive(['/books_table/read'])){
             $scope.variables = {
                 item_type:"book",
-                get_url:CONFIG.api + '/books/read/list/1',
+                get_url:CONFIG.api + '/books/todo/list/1',
                 put_url: CONFIG.api + '/books/'
             };
         }else if ($scope.isActive(['/movies_table/watch'])){
             $scope.variables = {
                 item_type:"movie",
-                get_url: CONFIG.api + '/movies/watch/list/1',
+                get_url: CONFIG.api + '/movies/todo/list/1',
                 put_url: CONFIG.api + '/movies/'
             };
         }else{
             $scope.variables = {
                 item_type:"game",
-                get_url: CONFIG.api + '/games/play/list/1',
+                get_url: CONFIG.api + '/games/todo/list/1',
                 put_url: CONFIG.api + '/games/'
             };
         }
@@ -59,15 +59,7 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
 
         for (i = 0; i < id_list.length; i++){
             var id = id_list[i];
-
-            if ($scope.variables.item_type == "book"){
-                var new_item = { read_list:0 };
-            }else if ($scope.variables.item_type == "movie"){
-                var new_item = { watch_list:0 };
-            }else{
-                var new_item = { play_list:0 };
-            }
-
+            var new_item = { todo_list:0 };
             var url = $scope.variables.put_url + id;
 
             update_num = 0;

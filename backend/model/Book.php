@@ -20,7 +20,7 @@ class Book
     public $content_type;
     public $notes;
     public $location;
-    public $read_list;
+    public $todo_list;
     public $image;
 
     public $type;
@@ -41,7 +41,7 @@ class Book
         $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Novel";
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
-        $this->read_list       = isset($data['read_list']) ? (boolean) $data['read_list'] : false;
+        $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
 
         $this->type            = "book";
@@ -74,7 +74,7 @@ class Book
             "content_type"   => $book->content_type,
             "notes"          => $book->notes,
             "location"       => $book->location,
-            "read_list"      => $book->read_list,
+            "todo_list"      => $book->todo_list,
             "image"          => $book->image,
             "created"        => $book->created,
             "updated"        => $book->updated,
@@ -101,81 +101,35 @@ class Book
     /* Get a single book */
     public static function get_from_id($user_id, $id)
     {
-        $where = array("id" => $id, "user_id" => $user_id);
-        $result = DatabaseService::get(Config::DBTables()->book, $where);
-        if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the book.", 500);
-        }
-        return new Book($result[0]);
+        $result = Media::get_from_id($user_id, $id, Config::DBTables()->book);
+        return new Book($result);
     }
 
     /* Get all books for a user */
     public static function get_all($user_id)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,author,volume";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->book, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the books.", 500);
-        }else{
-            $books = array();
-            foreach( $result as $row ) {
-                $books[] = new Book($row);
-            }
-            return $books;
-        }
+        return Media::get_all($user_id, CONFIG::DBTables()->book, $order_by);
     }
 
-    /* Get all books on the read list or not on the read list */
-    public static function get_all_on_read_list($user_id, $read)
+    /* Get all books on the todo list or not on the todo list */
+    public static function get_all_on_todo_list($user_id, $todo)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id . " AND read_list = " . $read;
         $order_by = "ORDER BY title,author,volume";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->book, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the books.", 500);
-        }else{
-            $books = array();
-            foreach( $result as $row ) {
-                $books[] = new Book($row);
-            }
-            return $books;
-        }
+        return Media::get_all_on_todo_list($user_id, $todo, CONFIG::DBTables()->book, $order_by);
     }
 
     /* Get a set number of books */
     public static function get_all_with_limit($user_id, $offset = 0, $limit = 50)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
         $order_by = "ORDER BY title,author,volume";
-        $limit_sql = "LIMIT " . $offset . ", " . $limit;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->book, $where, $order_by, $limit_sql);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the books.", 500);
-        }else{
-            $books = array();
-            foreach( $result as $row ) {
-                $books[] = new Book($row);
-            }
-            return $books;
-        }
+        return Media::get_all_with_limit($user_id, CONFIG::DBTables()->book, $order_by, $offset, $limit);
     }
 
     /* Get all books ordered by a specific field */
     public static function get_all_with_order($user_id, $order)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY ". $order;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->book, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the books.", 500);
-        }else{
-            $books = array();
-            foreach( $result as $row ) {
-                $books[] = new Book($row);
-            }
-            return $books;
-        }
+        return Media::get_all_with_order($user_id, CONFIG::DBTables()->book, $order);
     }
 
     /* Get books for search parameters */
@@ -183,27 +137,9 @@ class Book
     /* OR for search all columns */
     public static function get_for_search($user_id, $data, $conj="AND", $order=null)
     {
-        $enum_keys = array("cover_type", "content_type", "location");
-        $where = "WHERE (";
-        $iter = 1;
-        foreach ($data as $key => $value) {
-            $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
-            $equality = in_array($key, $enum_keys) ? " = '" . $data[$key] . "'" : " LIKE '%" . $data[$key] . "%'";
-            $where = $where . (isset($data[$key]) ? $conj_full . $key . $equality : "");
-            $iter += 1;
-        }
-        $where = $where . ") AND active = 1 AND user_id = " . $user_id;
         $order_by = is_null($order) ? "ORDER BY title,author,volume" : "ORDER BY " . $order;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->book, $where, $order_by);
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the books.", 500);
-        }else{
-            $books = array();
-            foreach( $result as $row ) {
-                $books[] = new Book($row);
-            }
-            return $books;
-        }
+        $enum_keys = array("cover_type", "content_type", "location");
+        return Media::get_for_search($user_id, CONFIG::DBTables()->book, $data, $order_by, $enum_keys, $conj);
     }
 
     /* ========================================================== *
@@ -213,17 +149,7 @@ class Book
     /* Count all books */
     public static function count_books($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id;;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetch(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem counting the books.", 500);
-        }else{
-            return $result;
-        }
+        return Media::count_media($user_id, CONFIG::DBTables()->book);
     }
 
     /* Count books with different content types */
@@ -257,33 +183,15 @@ class Book
     /* Get all authors */
     public static function get_authors($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT DISTINCT author FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " ORDER BY author";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the authors.", 500);
-        }else{
-            return $result;
-        }
+        $column_name = "author";
+        return Media::get_distinct_for_column($user_id, CONFIG::DBTables()->book, $column_name);
     }
 
     /* Get all titles */
     public static function get_titles($user_id)
     {
-        $database = Database::instance();
-        $sql = "SELECT DISTINCT title FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND user_id = " . $user_id . " ORDER BY title";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the titles.", 500);
-        }else{
-            return $result;
-        }
+        $column_name = "title";
+        return Media::get_distinct_for_column($user_id, CONFIG::DBTables()->book, $column_name);
     }
 
     /* ========================================================== *
@@ -292,17 +200,8 @@ class Book
 
     /* Get a book's title for its ID */
     public static function get_title_for_id($user_id, $id){
-        $database = Database::instance();
-        $sql = "SELECT title FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND id = " . $id . " AND user_id = " . $user_id;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetch(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the title.", 500);
-        }else{
-            return $result["title"];
-        }
+        $column_name = "title";
+        return Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->book, $column_name);
     }
 
     /* ========================================================== *
@@ -336,41 +235,5 @@ class Book
     /* ===================================================== *
     * Public Functions
     * ===================================================== */
-
-    /* Set book image */
-    public static function set_image($files, $title)
-    {
-        $file_prefix = $title;
-        $dir = FileService::MAIN_DIR . '/books';
-        $file_name = FileService::upload_file($files['image'], $dir, $file_prefix);
-        if(!$file_name) {
-            APIService::response_fail("There was an error saving the picture.");
-        }
-        return $file_name;
-    }
-
-    /* Sort all media by title */
-    public static function sort_all($a, $b){
-        return strtolower($a->title) > strtolower($b->title);
-    }
-
-    public static function get_all_media_location_counts($user_id){
-        $column_name = "location";
-        $header = "media_locations";
-
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type, 'book' as media FROM " . CONFIG::DBTables()->book . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
-        $sql .= " UNION SELECT COUNT(*) as num, " . $column_name . " as type, 'movie' as media FROM " . CONFIG::DBTables()->movie . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
-        $sql .= " UNION SELECT COUNT(*) as num, " . $column_name . " as type, 'game' as media FROM " . CONFIG::DBTables()->game . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false || $result === null){
-            APIService::response_fail("There was a problem getting the counts.", 500);
-        }else{
-            return array($header => $result);
-        }
-    }
 
 }

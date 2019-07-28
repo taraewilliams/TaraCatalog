@@ -14,21 +14,21 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
         if($scope.isActive('/books_table/read_add')){
             $scope.variables = {
                 item_type:"book",
-                get_url:CONFIG.api + '/books/read/list/0',
+                get_url:CONFIG.api + '/books/todo/list/0',
                 put_url: CONFIG.api + '/books/',
                 redirect_url: "/books_table/read"
             };
         }else if ($scope.isActive('/movies_table/watch_add')){
             $scope.variables = {
                 item_type:"movie",
-                get_url:CONFIG.api + '/movies/watch/list/0',
+                get_url:CONFIG.api + '/movies/todo/list/0',
                 put_url:CONFIG.api + "/movies/",
                 redirect_url: "/movies_table/watch"
             };
         }else{
             $scope.variables = {
                 item_type:"game",
-                get_url:CONFIG.api + '/games/play/list/0',
+                get_url:CONFIG.api + '/games/todo/list/0',
                 put_url:CONFIG.api + '/games/',
                 redirect_url: "/games_table/play"
             };
@@ -59,15 +59,7 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
 
         for (i = 0; i < id_list.length; i++){
             var id = id_list[i];
-
-            if ($scope.variables.item_type == "book"){
-                var new_item = { read_list:1 };
-            }else if ($scope.variables.item_type == "movie"){
-                var new_item = { watch_list:1 };
-            }else{
-                var new_item = { play_list:1 };
-            }
-
+            var new_item = { todo_list:1 };
             var url = $scope.variables.put_url + id;
 
             update_num = 0;

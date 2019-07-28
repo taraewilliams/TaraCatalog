@@ -20,9 +20,9 @@ use TaraCatalog\Model\Book;
     Input: none
     Output: Book object array
 
-3. books/read/list/{read}
-    Gets all books on the read list or not on the read list for a user.
-    Input: read (0 or 1)
+3. books/todo/list/{todo}
+    Gets all books on the todo list or not on the todo list for a user.
+    Input: todo (0 or 1)
     Output: Book object array
 
 4. /limit/{offset}/{limit}
@@ -80,13 +80,13 @@ use TaraCatalog\Model\Book;
 1. books
     Creates a new book.
     Input: (required) title
-        (optional) author, volume, isbn, cover_type, content_type, notes, location, read_list, image
+        (optional) author, volume, isbn, cover_type, content_type, notes, location, todo_list, image
     Output: Book object
 
 2. books/{id}
     Updates a book.
     Input: (required) id (book ID)
-        (optional) title, author, volume, isbn, cover_type, content_type, notes, location, read_list, image
+        (optional) title, author, volume, isbn, cover_type, content_type, notes, location, todo_list, image
     Output: true or false (success or failure)
 */
 
@@ -132,13 +132,13 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* Get all books on the read list or not on the read list */
-        $app->get($resource . '/read/list/{read}', function ($request, $response, $args) use ($app)
+        /* Get all books on the todo list or not on the todo list */
+        $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $read = intval($args['read']);
-            $books = Book::get_all_on_read_list($user_id, $read);
+            $todo = intval($args['todo']);
+            $books = Book::get_all_on_todo_list($user_id, $todo);
             APIService::response_success($books);
         });
 
@@ -278,7 +278,7 @@ $app->group('/api', function () use ($app) {
                 "content_type",
                 "notes",
                 "location",
-                "read_list"
+                "todo_list"
             ));
             $params["user_id"] = $user_id;
 
@@ -287,7 +287,7 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(isset($files['image'])) {
-                $params['image'] = Book::set_image($files, $params["title"]);
+                $params['image'] = Media::set_image($files, $params["title"], '/books');
             }
 
             $book = Book::create_from_data($params);
@@ -318,7 +318,7 @@ $app->group('/api', function () use ($app) {
                 "content_type",
                 "notes",
                 "location",
-                "read_list"
+                "todo_list"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
@@ -332,7 +332,7 @@ $app->group('/api', function () use ($app) {
             }
 
             if(isset($files['image'])) {
-                $params['image'] = Book::set_image($files, $title);
+                $params['image'] = Media::set_image($files, $title, '/books');
             }
 
             $book = Book::update($user_id, $id, $params);

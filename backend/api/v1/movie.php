@@ -20,9 +20,9 @@ use TaraCatalog\Model\Movie;
     Input: none
     Output: Movie object array
 
-3. movies/watch/list/{watch}
-    Gets all movies on the watch list or not on the watch list for a user.
-    Input: watch (0 or 1)
+3. movies/todo/list/{todo}
+    Gets all movies on the todo list or not on the todo list for a user.
+    Input: todo (0 or 1)
     Output: Movie object array
 
 4. /limit/{offset}/{limit}
@@ -80,13 +80,13 @@ use TaraCatalog\Model\Movie;
 1. movies
     Creates a new movie.
     Input: (required) title, format
-        (optional) edition, content_type, mpaa_rating, location, season, watch_list, notes, image
+        (optional) edition, content_type, mpaa_rating, location, season, todo_list, notes, image
     Output: Movie object
 
 2. movies/{id}
     Updates a movie.
     Input: (required) id (movie ID)
-        (optional) title, format, edition, content_type, mpaa_rating, location, season, watch_list, notes, image
+        (optional) title, format, edition, content_type, mpaa_rating, location, season, todo_list, notes, image
     Output: true or false (success or failure)
 */
 
@@ -133,13 +133,13 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* Get all movies on the watch list */
-        $app->get($resource . '/watch/list/{watch}', function ($request, $response, $args) use ($app)
+        /* Get all movies on the todo list */
+        $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $watch = intval($args['watch']);
-            $movies = Movie::get_all_on_watch_list($user_id, $watch);
+            $todo = intval($args['todo']);
+            $movies = Movie::get_all_on_todo_list($user_id, $todo);
             APIService::response_success($movies);
         });
 
@@ -274,7 +274,7 @@ $app->group('/api', function () use ($app) {
                 "mpaa_rating",
                 "location",
                 "season",
-                "watch_list",
+                "todo_list",
                 "notes"
             ));
             $params["user_id"] = $user_id;
@@ -284,7 +284,7 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(isset($files['image'])) {
-                $params['image'] = Movie::set_image($files, $params["title"]);
+                $params['image'] = Media::set_image($files, $params["title"], '/movies');
             }
 
             $movie = Movie::create_from_data($params);
@@ -314,7 +314,7 @@ $app->group('/api', function () use ($app) {
                 "mpaa_rating",
                 "location",
                 "season",
-                "watch_list",
+                "todo_list",
                 "notes"
             ));
 
@@ -329,7 +329,7 @@ $app->group('/api', function () use ($app) {
             }
 
             if(isset($files['image'])) {
-                $params['image'] = Movie::set_image($files, $title);
+                $params['image'] = Media::set_image($files, $title, '/movies');
             }
 
             $movie = Movie::update($user_id, $id, $params);

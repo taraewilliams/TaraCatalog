@@ -4,6 +4,7 @@ use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Book;
 use TaraCatalog\Model\Movie;
 use TaraCatalog\Model\Game;
+use TaraCatalog\Model\Media;
 
 /* Requests */
 
@@ -34,7 +35,7 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
 
-            $media_counts = Book::get_all_media_location_counts($user_id);
+            $media_counts = Media::get_all_media_location_counts($user_id);
             $total_books = intval(Book::count_books($user_id)["num"]);
             $total_movies = intval(Movie::count_movies($user_id)["num"]);
             $total_games = intval(Game::count_games($user_id)["num"]);

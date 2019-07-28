@@ -145,7 +145,7 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(isset($files['image'])) {
-                $params['image'] = User::set_image($files, $params["username"]);
+                $params['image'] = Media::set_image($files, $params["username"], '/users');
             }
 
             $user = User::create_from_data($params);
@@ -191,7 +191,7 @@ $app->group('/api', function () use ($app) {
             }
 
             if(isset($files['image'])) {
-                $params['image'] = User::set_image($files, $username);
+                $params['image'] = Media::set_image($files, $username, '/users');
             }
 
             $user = User::update($id, $params);
