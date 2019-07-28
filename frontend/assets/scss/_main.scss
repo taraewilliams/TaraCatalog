@@ -22,11 +22,11 @@ button{
         top: 100px;
 
         form{
-            input{
+            input, textarea{
                 width: 100%;
             }
             label{
-                input{
+                input, textarea{
                     width: 100%;
                 }
             }
@@ -85,11 +85,11 @@ button{
         width: calc(100% - 200px);
 
         form{
-            input{
+            input, textarea{
                 width: 50%;
             }
             label{
-                input{
+                input, textarea{
                     width: 50%;
                 }
             }
@@ -196,6 +196,18 @@ main{
                 height: 30px;
                 margin: 10px;
                 font-size:15px;
+            }
+
+            textarea{
+                height: 200px;
+                border-radius: 5px;
+                font-size:15px;
+                padding:10px;
+                box-sizing: border-box;
+            }
+
+            textarea:focus{
+                outline:none;
             }
 
         }

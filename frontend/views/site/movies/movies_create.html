@@ -54,6 +54,10 @@
       <input type="radio" ng-model="media.location" value="Home"> Home<br>
     </label>
 
+    <label for="notes">Notes<br>
+        <textarea name="text" ng-model="media.notes" placeholder="Notes..."></textarea>
+    </label>
+
     <label for="image">Image<br>
         <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
         <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Movie Image" />

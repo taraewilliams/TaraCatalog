@@ -91,7 +91,8 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 cover_type:"",
                 content_type:"",
                 location:"",
-                image:""
+                image:"",
+                notes:""
             };
         }else if ($scope.variables.media_type == "movie"){
             return {
@@ -102,7 +103,8 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 content_type:"",
                 mpaa_rating:"none",
                 location:"",
-                image:""
+                image:"",
+                notes:""
             };
         }else{
             return {
@@ -111,7 +113,8 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 old_platform:"",
                 esrb_rating:"none",
                 location:"",
-                image:""
+                image:"",
+                notes:""
             };
         }
     };
