@@ -119,10 +119,12 @@ $app->group('/api', function () use ($app) {
                 "viewer_id"
             ), array());
 
+            $params["status"] = "pending";
+
             if ($user_id == $params["creator_id"]){
-                $params["status"] = "approved";
+                $params["requested_by"] = "creator";
             }else if ($user_id == $params["viewer_id"]){
-                $params["status"] = "pending";
+                $params["requested_by"] = "viewer";
             }else{
                 APIService::response_fail("There was a problem creating the viewer.", 500);
             }

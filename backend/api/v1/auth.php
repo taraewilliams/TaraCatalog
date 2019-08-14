@@ -7,7 +7,7 @@ use TaraCatalog\Service\AuthService;
 
 /* POST */
 
-/* 
+/*
 
 1. auth/login
     Logs a user in to the website.
@@ -33,7 +33,7 @@ $app->group('/api', function () use ($app) {
                 "username",
                 "password"
             ));
-
+            
             $session = AuthService::login($params['username'], $params['password']);
             APIService::response_success($session);
         });

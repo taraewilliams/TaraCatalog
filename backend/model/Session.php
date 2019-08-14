@@ -121,9 +121,6 @@ class Session
     public static function delete($where)
     {
         $result = DatabaseService::delete(Config::DBTables()->session, $where);
-        if( $result === false || $result === null) {
-            APIService::response_fail("There was an error deleting the session.", 500);
-        }
         return $result;
     }
 }

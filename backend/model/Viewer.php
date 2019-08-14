@@ -13,6 +13,7 @@ class Viewer
     public $id;
     public $creator_id;
     public $viewer_id;
+    public $requested_by;
     public $status;
     public $c_username;
 
@@ -26,7 +27,8 @@ class Viewer
         $this->id              = isset($data['id']) ? intval($data['id']) : null;
         $this->creator_id      = isset($data['creator_id']) ? intval($data['creator_id']) : null;
         $this->viewer_id       = isset($data['viewer_id']) ? intval($data['viewer_id']) : null;
-        $this->status          = isset($data['status']) ? $data['status'] : "Pending";
+        $this->status          = isset($data['status']) ? $data['status'] : "pending";
+        $this->requested_by    = isset($data['requested_by']) ? $data['requested_by'] : "viewer";
         $this->c_username      = User::get_username_for_id($this->creator_id);
 
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
@@ -51,6 +53,7 @@ class Viewer
         $data = array(
             "creator_id"     => $viewer->creator_id,
             "viewer_id"      => $viewer->viewer_id,
+            "requested_by"   => $viewer->requested_by,
             "status"         => $viewer->status,
             "created"        => $viewer->created,
             "updated"        => $viewer->updated,
@@ -78,8 +81,8 @@ class Viewer
     public static function get_all($user_id, $status)
     {
         $where = "WHERE viewer.active = 1 AND viewer.creator_id = " . $user_id . " AND viewer.status = '" . $status . "'";
-        $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.creator_id " . $where . ")";
-        $sql = "SELECT views.username as c_username, views.image as c_image, user.username as v_username, user.image as v_image, views.id, views.creator_id, views.viewer_id, views.status FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.viewer_id";
+        $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.requested_by, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.creator_id " . $where . ")";
+        $sql = "SELECT views.username as c_username, views.image as c_image, user.username as v_username, user.image as v_image, views.id, views.creator_id, views.viewer_id, views.status, views.requested_by FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.viewer_id";
         $database = Database::instance();
         $query = $database->prepare($sql);
         $query->execute();
@@ -96,8 +99,8 @@ class Viewer
     public static function get_all_user_views($user_id, $status)
     {
         $where = "WHERE viewer.active = 1 AND viewer.viewer_id = " . $user_id. " AND viewer.status = '" . $status . "'";
-        $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.viewer_id " . $where . ")";
-        $sql = "SELECT views.username as v_username, views.image as v_image, user.username as c_username, user.image as c_image, views.id, views.creator_id, views.viewer_id, views.status FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.creator_id";
+        $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.requested_by, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.viewer_id " . $where . ")";
+        $sql = "SELECT views.username as v_username, views.image as v_image, user.username as c_username, user.image as c_image, views.id, views.creator_id, views.viewer_id, views.status, views.requested_by FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.creator_id";
         $database = Database::instance();
         $query = $database->prepare($sql);
         $query->execute();
@@ -141,19 +144,35 @@ class Viewer
     /* Update a viewer */
     public static function update($user_id, $id, $data)
     {
-        /* Check if a viewer exists with this id and creator id */
+        /* Check if a viewer exists with this id, creator id, and was requested by the viewer */
         /* Creator must be the one approving the viewer */
-        $where = "WHERE active = 1 AND creator_id = " . $user_id . " AND id = " . $id;
+        $is_creator = true;
+        $where = "WHERE active = 1 AND creator_id = " . $user_id . " AND id = " . $id . " AND requested_by = 'viewer'";
         $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("Invalid viewer.", 500);
+            $is_creator = false;
         }
+
+        /* Check if a viewer exists with this id, viewer id, and was requested by the creator */
+        /* Viewer must be the one approving the creator */
+        $is_viewer = true;
+        $where = "WHERE active = 1 AND viewer_id = " . $user_id . " AND id = " . $id . " AND requested_by = 'creator'";
+        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        if($result === false || $result === null || count($result) === 0) {
+            $is_creator = false;
+        }
+
+        /* If viewer does not exist for creator id or viewer id, then it is invalid */
+        if ($is_creator===false && $is_viewer===false){
+            APIService::response_fail("Invalid request.", 500);
+        }
+
+        /* If status is the same as updated status, return that it is the same. */
         if($result[0]["status"] === $data["status"]){
             APIService::response_fail("Already " . $data["status"], 500);
         }
 
         $result = DatabaseService::update(Config::DBTables()->viewer, $id, $data);
-
         if ($result === false || $result === null){
             APIService::response_fail("Update failed.", 500);
         }
