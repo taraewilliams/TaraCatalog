@@ -43,6 +43,11 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
             });
         }
 
+        $http.get(CONFIG.api + '/' + $scope.variables.media_type + 's/genres/all')
+        .then(function(response) {
+            $scope.genres = response.data;
+        });
+
         $scope.media = getEmptyMedia();
 
     }
@@ -57,14 +62,15 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
         }else if ($scope.variables.media_type == "game"){
             delete $scope.media.old_platform;
         }
+        delete $scope.media.old_genre;
 
         RequestService.post(url, $scope.media, function(data) {
             alert($scope.variables.media_type + " was created.")
             $scope.media = getEmptyMedia();
             window.scrollTo(0,0);
 
-        }, function(error, status) {
-            console.log(error.message);
+        }, function(data) {
+            console.log(data);
         });
 
     };
@@ -76,6 +82,8 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
             $scope.media.author = old_item;
         }else if (field === "platform"){
             $scope.media.platform = old_item;
+        }else if (field === "genre"){
+            $scope.media.genre = old_item;
         }
     };
 
@@ -92,7 +100,9 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 content_type:"",
                 location:"",
                 image:"",
-                notes:""
+                notes:"",
+                genre:"",
+                old_genre:""
             };
         }else if ($scope.variables.media_type == "movie"){
             return {
@@ -104,7 +114,9 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 mpaa_rating:"none",
                 location:"",
                 image:"",
-                notes:""
+                notes:"",
+                genre:"",
+                old_genre:""
             };
         }else{
             return {
@@ -114,7 +126,9 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 esrb_rating:"none",
                 location:"",
                 image:"",
-                notes:""
+                notes:"",
+                genre:"",
+                old_genre:""
             };
         }
     };

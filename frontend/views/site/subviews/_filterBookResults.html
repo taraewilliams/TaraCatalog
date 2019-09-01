@@ -1,4 +1,4 @@
-<h6 ng-click="toggleFilter()">Filter Results</h6>
+<h6 ng-click="toggleFilter()" ng-class="{ 'selected': showFilter }">Filter Results</h6>
 
 <form ng-submit="sortBy(sortVal, filter)" ng-if="showFilter">
 
@@ -9,6 +9,10 @@
 
         <label for="author">Author<br>
             <input type="text" name="author" id="author" ng-model="filter.author" placeholder="Author..."><br>
+        </label>
+
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
         </label>
     </section>
 

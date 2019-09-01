@@ -19,6 +19,7 @@
                     <option value="format">Format</option>
                     <option value="content_type">Content Type</option>
                     <option value="mpaa_rating">MPAA/TV Rating</option>
+                    <option value="genre">Genre</option>
                     <option value="location">Location</option>
                 </select>
             </label>
@@ -37,6 +38,7 @@
             <th>Edition</th>
             <th>Format</th>
             <th>Content Type</th>
+            <th>Genre</th>
             <th>MPAA/TV Rating</th>
             <th>Notes</th>
             <th colspan="2">Location</th>
@@ -44,7 +46,7 @@
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="12">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="13">{{ item.title }}</th>
 
             <td ng-if="!item.isHeader">{{item.row_number}}</td>
             <td ng-if="!item.isHeader">
@@ -56,12 +58,13 @@
             <td ng-if="!item.isHeader">{{item.edition}}</td>
             <td ng-if="!item.isHeader">{{item.format}}</td>
             <td ng-if="!item.isHeader">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader">{{item.genre}}</td>
             <td ng-if="!item.isHeader">{{item.mpaa_rating}}</td>
             <td ng-if="!item.isHeader">{{item.notes}}</td>
             <td ng-if="!item.isHeader">{{item.location}}</td>
             <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
             <td ng-if="!item.isHeader">
-                <button class="basic-button table-button" ng-click="goToPath('/movies_update/', item.id)">Update</button>
+                <button class="basic-button table-button" ng-click="goToPath('/movies_update/', item.id)">Edit</button>
                 <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
 
                 <button ng-if="!item.isHeader && item.todo_list" class="basic-button table-button-2 on-todo-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>

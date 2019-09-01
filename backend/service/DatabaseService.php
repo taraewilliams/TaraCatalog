@@ -62,22 +62,6 @@ class DatabaseService
         return $result;
     }
 
-    /* Get counts grouped by a column */
-    public static function get_counts_for_column($table, $user_id, $column_name, $header = "counts")
-    {
-        $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . $table . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if ($result === false){
-            return false;
-        }else{
-            return array($header => $result);
-        }
-    }
-
     /* Update Function */
     public static function update($table, $id, $data)
     {

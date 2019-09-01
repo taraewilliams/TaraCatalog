@@ -1,10 +1,8 @@
 <?php
 
 use TaraCatalog\Service\APIService;
-use TaraCatalog\Model\Book;
-use TaraCatalog\Model\Movie;
-use TaraCatalog\Model\Game;
 use TaraCatalog\Model\Media;
+use TaraCatalog\Config\Config;
 
 /* Requests */
 
@@ -36,9 +34,9 @@ $app->group('/api', function () use ($app) {
             $user_id = $session->user->id;
 
             $media_counts = Media::get_all_media_location_counts($user_id);
-            $total_books = intval(Book::count_books($user_id)["num"]);
-            $total_movies = intval(Movie::count_movies($user_id)["num"]);
-            $total_games = intval(Game::count_games($user_id)["num"]);
+            $total_books = intval(Media::count_media($user_id, Config::DBTables()->book)["num"]);
+            $total_movies = intval(Media::count_media($user_id, Config::DBTables()->movie)["num"]);
+            $total_games = intval(Media::count_media($user_id, Config::DBTables()->game)["num"]);
 
             $location_strings = array();
             $row_order = array("book", "movie", "game");

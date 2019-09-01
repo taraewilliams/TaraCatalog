@@ -19,12 +19,13 @@
             <th>Image</th>
             <th>Title</th>
             <th>Platform</th>
+            <th>Genre</th>
             <th>ESRB Rating</th>
             <th colspan="2">Location</th>
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="7">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="8">{{ item.title }}</th>
 
             <td class="table-toggle-box" ng-if="!item.isHeader && editOn"><input ng-click="toggleRemovedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
 
@@ -35,6 +36,7 @@
             </td>
             <td ng-if="!item.isHeader">{{item.title}}</td>
             <td ng-if="!item.isHeader">{{item.platform}}</td>
+            <td ng-if="!item.isHeader">{{item.genre}}</td>
             <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
             <td ng-if="!item.isHeader">{{item.location}}</td>
             <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>

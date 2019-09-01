@@ -42,6 +42,11 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
             });
         }
 
+        $http.get(CONFIG.api + '/' + $scope.variables.media_type + 's/genres/all')
+        .then(function(response) {
+            $scope.genres = response.data;
+        });
+
         /* Get the media to be updated */
         $http.get($scope.variables.get_put_url)
         .then(function(response) {
@@ -62,6 +67,7 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
         }else if ($scope.variables.media_type == "game"){
             delete media_clone.old_platform;
         }
+        delete media_clone.old_genre;
 
         var new_media = removeNotUpdatedFields(media_clone, $scope.media);
         var url = $scope.variables.get_put_url;
@@ -81,6 +87,8 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
             $scope.media_clone.author = old_item;
         }else if (field === "platform"){
             $scope.media_clone.platform = old_item;
+        }else if (field === "genre"){
+            $scope.media_clone.genre = old_item;
         }
     };
 

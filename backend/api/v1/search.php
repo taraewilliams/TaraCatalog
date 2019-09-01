@@ -1,10 +1,10 @@
 <?php
 
 use TaraCatalog\Service\APIService;
-use TaraCatalog\Model\Book;
-use TaraCatalog\Model\Movie;
-use TaraCatalog\Model\Game;
+use TaraCatalog\Model\Media;
 use TaraCatalog\Model\Viewer;
+use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 /* Requests */
 
@@ -73,9 +73,11 @@ $app->group('/api', function () use ($app) {
             );
 
             $conj = "OR";
-            $books = Book::get_for_search($user_id, $book_params, $conj);
-            $movies = Movie::get_for_search($user_id, $movie_params, $conj);
-            $games = Game::get_for_search($user_id, $game_params, $conj);
+
+            $books = Media::get_for_search($user_id, Config::DBTables()->book, $book_params, Constants::default_order()->book, Constants::enum_columns()->book, $conj);
+            $movies = Media::get_for_search($user_id, Config::DBTables()->movie, $movie_params, Constants::default_order()->movie, Constants::enum_columns()->movie, $conj);
+            $games = Media::get_for_search($user_id, Config::DBTables()->game, $game_params, Constants::default_order()->game, Constants::enum_columns()->game, $conj);
+
 
             $merge = array_merge($books, $movies);
             $media = array_merge($merge, $games);
@@ -108,9 +110,10 @@ $app->group('/api', function () use ($app) {
             $game_params = array( "title" => $searchTerm );
 
             $conj = "OR";
-            $books = Book::get_for_search($creator_id, $book_params, $conj);
-            $movies = Movie::get_for_search($creator_id, $movie_params, $conj);
-            $games = Game::get_for_search($creator_id, $game_params, $conj);
+
+            $books = Media::get_for_search($creator_id, Config::DBTables()->book, $book_params, Constants::default_order()->book, Constants::enum_columns()->book, $conj);
+            $movies = Media::get_for_search($creator_id, Config::DBTables()->movie, $movie_params, Constants::default_order()->movie, Constants::enum_columns()->movie, $conj);
+            $games = Media::get_for_search($creator_id, Config::DBTables()->game, $game_params, Constants::default_order()->game, Constants::enum_columns()->game, $conj);
 
             $merge = array_merge($books, $movies);
             $media = array_merge($merge, $games);

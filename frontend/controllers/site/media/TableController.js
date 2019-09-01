@@ -161,7 +161,8 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 isbn:"",
                 cover_type:"",
                 content_type:"",
-                location:""
+                location:"",
+                genre:""
             };
         }else if ($scope.variables.item_type == "movie"){
             return {
@@ -171,14 +172,16 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 format:"",
                 content_type:"",
                 mpaa_rating:"",
-                location:""
+                location:"",
+                genre:""
             };
         }else{
             return {
                 title:"",
                 platform:"",
                 esrb_rating:"",
-                location:""
+                location:"",
+                genre:""
             };
         }
     };

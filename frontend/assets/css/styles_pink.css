@@ -513,6 +513,10 @@ main {
   .filter-form h6:hover {
     cursor: pointer;
     color: #ffccee; }
+  .filter-form .selected {
+    color: #ffccee; }
+  .filter-form .selected:hover {
+    color: black; }
   .filter-form form section {
     display: inline-block;
     vertical-align: top; }

@@ -1,8 +1,10 @@
 <?php
 
 use TaraCatalog\Service\APIService;
-use TaraCatalog\Model\Book;
+use TaraCatalog\Model\Media;
 use TaraCatalog\Model\Viewer;
+use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 /* Requests */
 
@@ -37,7 +39,7 @@ $app->group('/api', function () use ($app) {
                 APIService::response_fail("There was a problem getting the books.", 500);
             }
 
-            $books = Book::get_all($creator_id);
+            $books = Media::get_all($creator_id, Config::DBTables()->book, Constants::default_order()->book);
             APIService::response_success($books);
         });
 

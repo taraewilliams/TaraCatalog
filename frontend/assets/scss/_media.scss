@@ -103,6 +103,12 @@
     cursor:pointer;
     color: $lighter-red;
   }
+  .selected{
+      color: $lighter-red;
+  }
+  .selected:hover{
+      color: black;
+  }
 
   form{
 

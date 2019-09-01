@@ -2,6 +2,9 @@
 
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Book;
+use TaraCatalog\Model\Media;
+use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 /* Requests */
 
@@ -37,13 +40,13 @@ use TaraCatalog\Model\Book;
 
 6. books/filter
     Gets books that match the filter options for each field for a user.
-    Input: (optional) title, author, volume, isbn, cover_type, content_type, location
+    Input: (optional) title, author, volume, isbn, cover_type, content_type, location, genre
     Output: Book object array
 
 7. books/filter/{order}
     Gets books that match the filter options for each field ordered by a specific field for a user.
     Input: (required) order
-        (optional) title, author, volume, isbn, cover_type, content_type, location
+        (optional) title, author, volume, isbn, cover_type, content_type, location, genre
     Output: Book object array
 
 8. books/count/all
@@ -70,6 +73,11 @@ use TaraCatalog\Model\Book;
     Gets all distinct titles from all books for a user.
     Input: none
     Output: Array of titles
+
+13. books/genres/all
+    Gets all distinct genres from all books for a user.
+    Input: none
+    Output: Array of genres
 */
 
 
@@ -80,13 +88,13 @@ use TaraCatalog\Model\Book;
 1. books
     Creates a new book.
     Input: (required) title
-        (optional) author, volume, isbn, cover_type, content_type, notes, location, todo_list, image
+        (optional) author, volume, isbn, cover_type, content_type, notes, location, todo_list, image, genre
     Output: Book object
 
 2. books/{id}
     Updates a book.
     Input: (required) id (book ID)
-        (optional) title, author, volume, isbn, cover_type, content_type, notes, location, todo_list, image
+        (optional) title, author, volume, isbn, cover_type, content_type, notes, location, todo_list, image, genre
     Output: true or false (success or failure)
 */
 
@@ -113,57 +121,60 @@ $app->group('/api', function () use ($app) {
         * GET BOOKS
         * ========================================================== */
 
-        /* Get a single book */
+        /* 1. Get a single book */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $id = intval($args['id']);
-            $book = Book::get_from_id($user_id, $id);
+            $book = Media::get_from_id($user_id, $id, Config::DBTables()->book);
             APIService::response_success($book);
         });
 
-        /* Get all books for a user */
+        /* 2. Get all books for a user */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $books = Book::get_all($user_id);
+            $order_by = Constants::default_order()->book;
+            $books = Media::get_all($user_id, Config::DBTables()->book, $order_by);
             APIService::response_success($books);
         });
 
-        /* Get all books on the todo list or not on the todo list */
+        /* 3. Get all books on the todo list or not on the todo list */
         $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $todo = intval($args['todo']);
-            $books = Book::get_all_on_todo_list($user_id, $todo);
+            $order_by = Constants::default_order()->book;
+            $books = Media::get_all_on_todo_list($user_id, $todo, Config::DBTables()->book, $order_by);
             APIService::response_success($books);
         });
 
-        /* Get a set number of books */
+        /* 4. Get a set number of books */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $offset = intval($args['offset']);
             $limit = intval($args['limit']);
-            $books = Book::get_all_with_limit($user_id, $offset, $limit);
+            $order_by = Constants::default_order()->book;
+            $books = Media::get_all_with_limit($user_id, Config::DBTables()->book, $order_by, $offset, $limit);
             APIService::response_success($books);
         });
 
-        /* Get all books ordered by a specific field */
+        /* 5. Get all books ordered by a specific field */
         $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $order = $args['order'];
-            $books = Book::get_all_with_order($user_id, $order);
+            $books = Media::get_all_with_order($user_id, Config::DBTables()->book, $order);
             APIService::response_success($books);
         });
 
-        /* Get books for multiple filters */
+        /* 6. Get books for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -176,19 +187,21 @@ $app->group('/api', function () use ($app) {
                 "isbn",
                 "cover_type",
                 "content_type",
-                "location"
+                "location",
+                "genre"
             ));
 
-            $book = Book::get_for_search($user_id, $params);
-            APIService::response_success($book);
+            $order_by = Constants::default_order()->book;
+            $enum_keys = Constants::enum_columns()->book;
+            $books = Media::get_for_search($user_id, Config::DBTables()->book, $params, $order_by, $enum_keys);
+            APIService::response_success($books);
         });
 
-        /* Get books for multiple filters with order */
+        /* 7. Get books for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $conj = "AND";
 
             $order = $args['order'];
             $params = APIService::build_params($_REQUEST, null, array(
@@ -198,41 +211,48 @@ $app->group('/api', function () use ($app) {
                 "isbn",
                 "cover_type",
                 "content_type",
-                "location"
+                "location",
+                "genre"
             ));
 
-            $book = Book::get_for_search($user_id, $params, $conj, $order);
-            APIService::response_success($book);
+            $order_by = "ORDER BY " . $order;
+            $enum_keys = Constants::enum_columns()->book;
+            $books = Media::get_for_search($user_id, Config::DBTables()->book, $params, $order_by, $enum_keys);
+            APIService::response_success($books);
         });
 
         /* ========================================================== *
         * GET BOOK COUNTS
         * ========================================================== */
 
-        /* Count all books */
+        /* 8. Count all books */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $books = Book::count_books($user_id);
+            $books = Media::count_media($user_id, Config::DBTables()->book);
             APIService::response_success($books);
         });
 
-        /* Count books with different content types */
+        /* 9. Count books with different content types */
         $app->get($resource . '/content_type/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $books = Book::get_all_content_type_counts($user_id);
+            $column_name = "content_type";
+            $header = "book_content_type";
+            $books = Media::get_counts_for_column(Config::DBTables()->book, $user_id, $column_name, $header);
             APIService::response_success($books);
         });
 
-        /* Count books with different cover types */
+        /* 10. Count books with different cover types */
         $app->get($resource . '/cover_type/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $books = Book::get_all_cover_type_counts($user_id);
+            $column_name = "cover_type";
+            $header = "book_cover_type";
+            $books = Media::get_counts_for_column(Config::DBTables()->book, $user_id, $column_name, $header);
             APIService::response_success($books);
         });
 
@@ -240,29 +260,41 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* Get all authors */
+        /* 11. Get all authors */
         $app->get($resource . '/authors/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $authors = Book::get_authors($user_id);
+            $column_name = "author";
+            $authors = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
             APIService::response_success($authors);
         });
 
-        /* Get all titles */
+        /* 12. Get all titles */
         $app->get($resource . '/titles/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $titles = Book::get_titles($user_id);
+            $column_name = "title";
+            $titles = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
             APIService::response_success($titles);
+        });
+
+        /* 13. Get all genres */
+        $app->get($resource . '/genres/all', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $column_name = "genre";
+            $genres = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
+            APIService::response_success($genres);
         });
 
         /* ========================================================== *
         * POST
         * ========================================================== */
 
-        /* Create a book */
+        /* 1. Create a book */
         $app->post($resource, function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -278,7 +310,8 @@ $app->group('/api', function () use ($app) {
                 "content_type",
                 "notes",
                 "location",
-                "todo_list"
+                "todo_list",
+                "genre"
             ));
             $params["user_id"] = $user_id;
 
@@ -298,14 +331,14 @@ $app->group('/api', function () use ($app) {
         * PUT
         * ========================================================== */
 
-        /* Update a book */
+        /* 2. Update a book */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
             $id = intval($args["id"]);
-            if (!Book::get_from_id($user_id, $id)){
+            if (!Media::get_from_id($user_id, $id, Config::DBTables()->book)){
                 APIService::response_fail("There was a problem updating the book.", 500);
             }
 
@@ -318,7 +351,8 @@ $app->group('/api', function () use ($app) {
                 "content_type",
                 "notes",
                 "location",
-                "todo_list"
+                "todo_list",
+                "genre"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
@@ -328,14 +362,15 @@ $app->group('/api', function () use ($app) {
             if(isset($params["title"])){
                 $title = $params["title"];
             }else{
-                $title = Book::get_title_for_id($user_id, $id);
+                /* Get the book's title for it's ID */
+                $title = Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->book, "title");
             }
 
             if(isset($files['image'])) {
                 $params['image'] = Media::set_image($files, $title, '/books');
             }
 
-            $book = Book::update($user_id, $id, $params);
+            $book = Media::update($user_id, $id, $params, Config::DBTables()->book);
             APIService::response_success($book);
         });
 
@@ -344,18 +379,18 @@ $app->group('/api', function () use ($app) {
         * DELETE
         * ========================================================== */
 
-        /* Delete a book */
+        /* 1. Delete a book */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $id = intval($args['id']);
 
-            if (!Book::get_from_id($user_id, $id)){
+            if (!Media::get_from_id($user_id, $id, Config::DBTables()->book)){
                 APIService::response_fail("There was a problem deleting the book.", 500);
             }
 
-            $result = Book::set_active($id, 0);
+            $result = Media::set_active($id, 0, Config::DBTables()->book);
             APIService::response_success(true);
         });
     });

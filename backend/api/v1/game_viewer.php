@@ -1,8 +1,10 @@
 <?php
 
 use TaraCatalog\Service\APIService;
-use TaraCatalog\Model\Game;
+use TaraCatalog\Model\Media;
 use TaraCatalog\Model\Viewer;
+use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 /* Requests */
 
@@ -37,7 +39,7 @@ $app->group('/api', function () use ($app) {
                 APIService::response_fail("There was a problem getting the games.", 500);
             }
 
-            $games = Game::get_all($creator_id);
+            $games = Media::get_all($creator_id, Config::DBTables()->game, Constants::default_order()->game);
             APIService::response_success($games);
         });
 

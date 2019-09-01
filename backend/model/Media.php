@@ -27,7 +27,7 @@ class Media
         if($result === false || $result === null || count($result) === 0) {
             APIService::response_fail("There was a problem getting the media.", 500);
         }
-        return $result[0];
+        return Media::build_media_item($table, $result[0]);
     }
 
     /* Get all media items */
@@ -123,6 +123,22 @@ class Media
         }
     }
 
+    /* Get counts grouped by a column */
+    public static function get_counts_for_column($table, $user_id, $column_name, $header = "counts")
+    {
+        $database = Database::instance();
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . $table . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return array($header => $result);
+        }
+    }
+
     /* Count all media locations (grouped by location) */
     public static function get_all_media_location_counts($user_id){
         $column_name = "location";
@@ -151,7 +167,7 @@ class Media
     public static function get_distinct_for_column($user_id, $table, $column_name)
     {
         $database = Database::instance();
-        $sql = "SELECT DISTINCT " . $column_name . " FROM " . $table . " WHERE active = 1 AND user_id = " . $user_id . " ORDER BY " . $column_name;
+        $sql = "SELECT DISTINCT " . $column_name . " FROM " . $table . " WHERE active = 1 AND user_id = " . $user_id . " AND " . $column_name . " IS NOT NULL AND " . $column_name . " <> ''" . " ORDER BY " . $column_name;
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -184,6 +200,35 @@ class Media
     }
 
 
+    /* ========================================================== *
+    * UPDATE
+    * ========================================================== */
+
+    /* Update a media item */
+    public static function update($user_id, $id, $data, $table)
+    {
+        $result = DatabaseService::update($table, $id, $data);
+        if ($result === false || $result === null){
+            APIService::response_fail("Update failed.", 500);
+        }
+        return $result ? (Media::get_from_id($user_id, $id, $table)) : false;
+    }
+
+    /* ========================================================== *
+    * DELETE
+    * ========================================================== */
+
+    /* Delete a media item */
+    public static function set_active($id, $active, $table)
+    {
+        $result = DatabaseService::set_active($table, $id, $active);
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error deleting the " . $table, 500);
+        }
+        return $result;
+    }
+
+
     /* ===================================================== *
     * Public Functions
     * ===================================================== */
@@ -208,6 +253,11 @@ class Media
     /* ========================================================== *
     * PRIVATE FUNCTIONS
     * ========================================================== */
+
+    private static function build_media_item($table, $result){
+        $media = ($table == "book") ? new Book($result) : (($table == "movie") ? new Movie($result) : new Game($result));
+        return $media;
+    }
 
     private static function build_media_array($table, $result){
         $media = array();

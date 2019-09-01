@@ -2,6 +2,9 @@
 
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Movie;
+use TaraCatalog\Model\Media;
+use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 /* Requests */
 
@@ -70,6 +73,12 @@ use TaraCatalog\Model\Movie;
     Gets the count of all movies grouped by MPAA ratings under and over PG.
     Input: none
     Output: Movie counts
+
+13. movies/genres/all
+    Gets all distinct genres from all movies for a user.
+    Input: none
+    Output: Array of genres
+
 */
 
 
@@ -114,57 +123,60 @@ $app->group('/api', function () use ($app) {
         * GET MOVIES
         * ========================================================== */
 
-        /* Get a single movie */
+        /* 1. Get a single movie */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $id = intval($args['id']);
-            $movie = Movie::get_from_id($user_id, $id);
+            $movie = Media::get_from_id($user_id, $id, Config::DBTables()->movie);
             APIService::response_success($movie);
         });
 
-        /* Get all movies */
+        /* 2. Get all movies */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Movie::get_all($user_id);
+            $order_by = Constants::default_order()->movie;
+            $movies = Media::get_all($user_id, CONFIG::DBTables()->movie, $order_by);
             APIService::response_success($movies);
         });
 
-        /* Get all movies on the todo list */
+        /* 3. Get all movies on the todo list */
         $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $todo = intval($args['todo']);
-            $movies = Movie::get_all_on_todo_list($user_id, $todo);
+            $order_by = Constants::default_order()->movie;
+            $movies = Media::get_all_on_todo_list($user_id, $todo, CONFIG::DBTables()->movie, $order_by);
             APIService::response_success($movies);
         });
 
-        /* Get a set number of movies */
+        /* 4. Get a set number of movies */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $offset = intval($args['offset']);
             $limit = intval($args['limit']);
-            $movies = Movie::get_all_with_limit($user_id, $offset, $limit);
+            $order_by = Constants::default_order()->movie;
+            $movies = Media::get_all_with_limit($user_id, CONFIG::DBTables()->movie, $order_by, $offset, $limit);
             APIService::response_success($movies);
         });
 
-        /* Get all movies ordered by a specific field */
+        /* 5. Get all movies ordered by a specific field */
         $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $order = $args['order'];
-            $movies = Movie::get_all_with_order($user_id, $order);
+            $movies = Media::get_all_with_order($user_id, CONFIG::DBTables()->movie, $order);
             APIService::response_success($movies);
         });
 
-        /* Get movies for multiple filters */
+        /* 6. Get movies for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -177,19 +189,21 @@ $app->group('/api', function () use ($app) {
                 "content_type",
                 "mpaa_rating",
                 "location",
-                "season"
+                "season",
+                "genre"
             ));
 
-            $movie = Movie::get_for_search($user_id, $params);
-            APIService::response_success($movie);
+            $order_by = Constants::default_order()->movie;
+            $enum_keys = Constants::enum_columns()->movie;
+            $movies = Media::get_for_search($user_id, CONFIG::DBTables()->movie, $params, $order_by, $enum_keys);
+            APIService::response_success($movies);
         });
 
-        /* Get movies for multiple filters with order */
+        /* 7. Get movies for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $conj = "AND";
 
             $order = $args['order'];
             $params = APIService::build_params($_REQUEST, null, array(
@@ -199,54 +213,63 @@ $app->group('/api', function () use ($app) {
                 "content_type",
                 "mpaa_rating",
                 "location",
-                "season"
+                "season",
+                "genre"
             ));
 
-            $movie = Movie::get_for_search($user_id, $params, $conj, $order);
-            APIService::response_success($movie);
+            $order_by = "ORDER BY " . $order;
+            $enum_keys = Constants::enum_columns()->movie;
+            $movies = Media::get_for_search($user_id, CONFIG::DBTables()->movie, $params, $order_by, $enum_keys);
+            APIService::response_success($movies);
         });
 
         /* ========================================================== *
         * GET MOVIE COUNTS
         * ========================================================== */
 
-        /* Count all movies */
+        /* 8. Count all movies */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Movie::count_movies($user_id);
+            $movies = Media::count_media($user_id, CONFIG::DBTables()->movie);
             APIService::response_success($movies);
         });
 
-        /* Count movies with different content types */
+        /* 9. Count movies with different content types */
         $app->get($resource . '/content_type/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Movie::get_all_content_type_counts($user_id);
+            $column_name = "content_type";
+            $header = "movie_content_type";
+            $movies =  Media::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
             APIService::response_success($movies);
         });
 
-        /* Count movies with different formats */
+        /* 10. Count movies with different formats */
         $app->get($resource . '/format/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Movie::get_all_format_counts($user_id);
+            $column_name = "format";
+            $header = "movie_format_type";
+            $movies = Media::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
             APIService::response_success($movies);
         });
 
-        /* Count movies with different mpaa ratings */
+        /* 11. Count movies with different mpaa ratings */
         $app->get($resource . '/mpaa_rating/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Movie::get_all_mpaa_rating_counts($user_id);
+            $column_name = "mpaa_rating";
+            $header = "movie_mpaa_rating_type";
+            $movies = Media::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
             APIService::response_success($movies);
         });
 
-        /* Count movies with different mpaa ratings, grouped by under PG and above PG */
+        /* 12. Count movies with different mpaa ratings, grouped by under PG and above PG */
         $app->get($resource . '/mpaa_rating_grouped/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -256,10 +279,24 @@ $app->group('/api', function () use ($app) {
         });
 
         /* ========================================================== *
+        * GET ALL DISTINCT VALUES FOR A COLUMN
+        * ========================================================== */
+
+        /* 13. Get all genres */
+        $app->get($resource . '/genres/all', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $column_name = "genre";
+            $genres =  Media::get_distinct_for_column($user_id, CONFIG::DBTables()->movie, $column_name);
+            APIService::response_success($genres);
+        });
+
+        /* ========================================================== *
         * POST
         * ========================================================== */
 
-        /* Create a movie */
+        /* 1. Create a movie */
         $app->post($resource, function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -275,7 +312,8 @@ $app->group('/api', function () use ($app) {
                 "location",
                 "season",
                 "todo_list",
-                "notes"
+                "notes",
+                "genre"
             ));
             $params["user_id"] = $user_id;
 
@@ -295,14 +333,14 @@ $app->group('/api', function () use ($app) {
         * PUT
         * ========================================================== */
 
-        /* Update a movie */
+        /* 2. Update a movie */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
             $id = intval($args["id"]);
-            if (!Movie::get_from_id($user_id, $id)){
+            if (!Media::get_from_id($user_id, $id, Config::DBTables()->movie)){
                 APIService::response_fail("There was a problem updating the movie.", 500);
             }
 
@@ -315,7 +353,8 @@ $app->group('/api', function () use ($app) {
                 "location",
                 "season",
                 "todo_list",
-                "notes"
+                "notes",
+                "genre"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
@@ -325,14 +364,14 @@ $app->group('/api', function () use ($app) {
             if(isset($params["title"])){
                 $title = $params["title"];
             }else{
-                $title = Movie::get_title_for_id($user_id, $id);
+                $title = Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->movie, "title");
             }
 
             if(isset($files['image'])) {
                 $params['image'] = Media::set_image($files, $title, '/movies');
             }
 
-            $movie = Movie::update($user_id, $id, $params);
+            $movie = Media::update($user_id, $id, $params, Config::DBTables()->movie);
             APIService::response_success($movie);
         });
 
@@ -341,18 +380,18 @@ $app->group('/api', function () use ($app) {
         * DELETE
         * ========================================================== */
 
-        /* Delete a movie */
+        /* 1. Delete a movie */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $id = intval($args['id']);
 
-            if (!Movie::get_from_id($user_id, $id)){
+            if (!Media::get_from_id($user_id, $id, Config::DBTables()->movie)){
                 APIService::response_fail("There was a problem deleting the movie.", 500);
             }
 
-            $result = Movie::set_active($id, 0);
+            $result = Media::set_active($id, 0, Config::DBTables()->movie);
             APIService::response_success(true);
         });
     });

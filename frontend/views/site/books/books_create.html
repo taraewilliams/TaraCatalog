@@ -39,6 +39,12 @@
             <input type="radio" ng-model="media.content_type" value="Comic Book"> Comic Book<br>
         </label>
 
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
+            Select From Existing:
+            <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
+        </label>
+
         <label for="location">Location<br>
             <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
             <input type="radio" ng-model="media.location" value="Home"> Home<br>

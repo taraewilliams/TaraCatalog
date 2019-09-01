@@ -2,6 +2,9 @@
 
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Game;
+use TaraCatalog\Model\Media;
+use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 /* Requests */
 
@@ -37,13 +40,13 @@ use TaraCatalog\Model\Game;
 
 6. games/filter
     Gets games that match the filter options for each field for a user.
-    Input: (optional) title, platform, location, esrb_rating
+    Input: (optional) title, platform, location, esrb_rating, genre
     Output: Game object array
 
 7. games/filter/{order}
     Gets games that match the filter options for each field ordered by a specific field for a user.
     Input: (required) order
-        (optional) title, platform, location, esrb_rating
+        (optional) title, platform, location, esrb_rating, genre
     Output: Game object array
 
 8. games/count/all
@@ -65,6 +68,11 @@ use TaraCatalog\Model\Game;
     Gets all distinct platforms from all games for a user.
     Input: none
     Output: Array of platforms
+
+12. games/genres/all
+    Gets all distinct genres from all games for a user.
+    Input: none
+    Output: Array of genres
 */
 
 
@@ -75,13 +83,13 @@ use TaraCatalog\Model\Game;
 1. games
     Creates a new game.
     Input: (required) title
-        (optional) platform, location, todo_list, esrb_rating, notes, image
+        (optional) platform, location, todo_list, esrb_rating, notes, image, genre
     Output: Game object
 
 2. games/{id}
     Updates a game.
     Input: (required) id (game ID)
-        (optional) title, platform, location, todo_list, esrb_rating, notes, image
+        (optional) title, platform, location, todo_list, esrb_rating, notes, image, genre
     Output: true or false (success or failure)
 */
 
@@ -108,57 +116,60 @@ $app->group('/api', function () use ($app) {
         * GET GAMES
         * ========================================================== */
 
-        /* Get a single game */
+        /* 1. Get a single game */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $id = intval($args['id']);
-            $game = Game::get_from_id($user_id, $id);
+            $game = Media::get_from_id($user_id, $id, Config::DBTables()->game);
             APIService::response_success($game);
         });
 
-        /* Get all games */
+        /* 2. Get all games */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $games = Game::get_all($user_id);
+            $order_by = Constants::default_order()->game;
+            $games = Media::get_all($user_id, CONFIG::DBTables()->game, $order_by);
             APIService::response_success($games);
         });
 
-        /* Get all games on the todo list or not on the todo list */
+        /* 3. Get all games on the todo list or not on the todo list */
         $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $todo = intval($args['todo']);
-            $games = Game::get_all_on_todo_list($user_id, $todo);
+            $order_by = Constants::default_order()->game;
+            $games = Media::get_all_on_todo_list($user_id, $todo, CONFIG::DBTables()->game, $order_by);
             APIService::response_success($games);
         });
 
-        /* Get a set number of games */
+        /* 4. Get a set number of games */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $offset = intval($args['offset']);
             $limit = intval($args['limit']);
-            $games = Game::get_all_with_limit($user_id, $offset, $limit);
+            $order_by = Constants::default_order()->game;
+            $games = Media::get_all_with_limit($user_id, CONFIG::DBTables()->game, $order_by, $offset, $limit);
             APIService::response_success($games);
         });
 
-        /* Get all games ordered by a specific field */
+        /* 5. Get all games ordered by a specific field */
         $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $order = $args['order'];
-            $games = Game::get_all_with_order($user_id, $order);
+            $games = Media::get_all_with_order($user_id, CONFIG::DBTables()->game, $order);
             APIService::response_success($games);
         });
 
-        /* Get games for multiple filters */
+        /* 6. Get games for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -168,60 +179,69 @@ $app->group('/api', function () use ($app) {
                 "title",
                 "platform",
                 "location",
-                "esrb_rating"
+                "esrb_rating",
+                "genre"
             ));
 
-            $game = Game::get_for_search($user_id, $params);
-            APIService::response_success($game);
+            $order_by = Constants::default_order()->game;
+            $enum_keys = Constants::enum_columns()->game;
+            $games = Media::get_for_search($user_id, CONFIG::DBTables()->game, $params, $order_by, $enum_keys);
+            APIService::response_success($games);
         });
 
-        /* Get games for multiple filters with order */
+        /* 7. Get games for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $conj = "AND";
 
             $order = $args['order'];
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
                 "platform",
                 "location",
-                "esrb_rating"
+                "esrb_rating",
+                "genre"
             ));
 
-            $game = Game::get_for_search($user_id, $params, $conj, $order);
-            APIService::response_success($game);
+            $order_by = "ORDER BY " . $order;
+            $enum_keys = Constants::enum_columns()->game;
+            $games = Media::get_for_search($user_id, CONFIG::DBTables()->game, $params, $order_by, $enum_keys);
+            APIService::response_success($games);
         });
 
         /* ========================================================== *
         * GET GAME COUNTS
         * ========================================================== */
 
-        /* Count all games */
+        /* 8. Count all games */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $games = Game::count_games($user_id);
+            $games = Media::count_media($user_id, CONFIG::DBTables()->game);
             APIService::response_success($games);
         });
 
-        /* Count games with different platforms */
+        /* 9. Count games with different platforms */
         $app->get($resource . '/platform/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $games = Game::get_all_platform_counts($user_id);
+            $column_name = "platform";
+            $header = "game_platform_type";
+            $games = Media::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
             APIService::response_success($games);
         });
 
-        /* Count games with different esrb ratings */
+        /* 10. Count games with different esrb ratings */
         $app->get($resource . '/esrb_rating/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $games = Game::get_all_esrb_rating_counts($user_id);
+            $column_name = "esrb_rating";
+            $header = "game_esrb_rating_type";
+            $games = Media::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
             APIService::response_success($games);
         });
 
@@ -229,20 +249,31 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* Get all platforms */
+        /* 11. Get all platforms */
         $app->get($resource . '/platforms/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $authors = Game::get_platforms($user_id);
-            APIService::response_success($authors);
+            $column_name = "platform";
+            $platforms = Media::get_distinct_for_column($user_id, CONFIG::DBTables()->game, $column_name);
+            APIService::response_success($platforms);
+        });
+
+        /* 12. Get all genres */
+        $app->get($resource . '/genres/all', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $column_name = "genre";
+            $genres = Media::get_distinct_for_column($user_id, CONFIG::DBTables()->game, $column_name);
+            APIService::response_success($genres);
         });
 
         /* ========================================================== *
         * POST
         * ========================================================== */
 
-        /* Create a game */
+        /* 1. Create a game */
         $app->post($resource, function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -255,7 +286,8 @@ $app->group('/api', function () use ($app) {
                 "location",
                 "todo_list",
                 "esrb_rating",
-                "notes"
+                "notes",
+                "genre"
             ));
             $params["user_id"] = $user_id;
 
@@ -276,14 +308,14 @@ $app->group('/api', function () use ($app) {
         * PUT
         * ========================================================== */
 
-        /* Update a game */
+        /* 2. Update a game */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
             $id = intval($args["id"]);
-            if (!Game::get_from_id($user_id, $id)){
+            if (!Media::get_from_id($user_id, $id, Config::DBTables()->game)){
                 APIService::response_fail("There was a problem updating the game.", 500);
             }
 
@@ -293,7 +325,8 @@ $app->group('/api', function () use ($app) {
                 "location",
                 "todo_list",
                 "esrb_rating",
-                "notes"
+                "notes",
+                "genre"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
@@ -303,14 +336,14 @@ $app->group('/api', function () use ($app) {
             if(isset($params["title"])){
                 $title = $params["title"];
             }else{
-                $title = Game::get_title_for_id($user_id, $id);
+                $title = Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->game, "title");
             }
 
             if(isset($files['image'])) {
                 $params['image'] = Media::set_image($files, $title, '/games');
             }
 
-            $game = Game::update($user_id, $id, $params);
+            $game = Media::update($user_id, $id, $params, Config::DBTables()->game);
             APIService::response_success($game);
         });
 
@@ -319,18 +352,18 @@ $app->group('/api', function () use ($app) {
         * DELETE
         * ========================================================== */
 
-        /* Delete a game */
+        /* 1. Delete a game */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $id = intval($args['id']);
 
-            if (!Game::get_from_id($user_id, $id)){
+            if (!Media::get_from_id($user_id, $id, Config::DBTables()->game)){
                 APIService::response_fail("There was a problem deleting the game.", 500);
             }
 
-            $result = Game::set_active($id, 0);
+            $result = Media::set_active($id, 0, Config::DBTables()->game);
             APIService::response_success(true);
         });
     });
