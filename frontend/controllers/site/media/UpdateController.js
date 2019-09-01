@@ -12,15 +12,16 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
         if($scope.isActive('/books_update/:id')){
             $scope.variables = {
                 media_type:"book",
-                get_put_url:CONFIG.api + '/books/' + $routeParams.id,
+                get_put_url:CONFIG.api + CONFIG.api_routes.get_single_book + $routeParams.id,
+                get_genre_url:CONFIG.api + CONFIG.api_routes.get_book_column_values + 'genre'
             };
 
-            $http.get(CONFIG.api + '/books/authors/all')
+            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'author')
             .then(function(response) {
                 $scope.authors = response.data;
             });
 
-            $http.get(CONFIG.api + '/books/titles/all')
+            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'title')
             .then(function(response) {
                 $scope.titles = response.data;
             });
@@ -28,21 +29,23 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
         }else if ($scope.isActive('/movies_update/:id')){
             $scope.variables = {
                 media_type:"movie",
-                get_put_url:CONFIG.api + '/movies/' + $routeParams.id,
+                get_put_url:CONFIG.api + CONFIG.api_routes.get_single_movie + $routeParams.id,
+                get_genre_url:CONFIG.api + CONFIG.api_routes.get_movie_column_values + 'genre'
             };
         }else{
             $scope.variables = {
                 media_type:"game",
-                get_put_url:CONFIG.api + '/games/' + $routeParams.id,
+                get_put_url:CONFIG.api + CONFIG.api_routes.get_single_game + $routeParams.id,
+                get_genre_url:CONFIG.api + CONFIG.api_routes.get_game_column_values + 'genre'
             };
 
-            $http.get(CONFIG.api + '/games/platforms/all')
+            $http.get(CONFIG.api + CONFIG.api_routes.get_game_column_values + 'platform')
             .then(function(response) {
                 $scope.platforms = response.data;
             });
         }
 
-        $http.get(CONFIG.api + '/' + $scope.variables.media_type + 's/genres/all')
+        $http.get($scope.variables.get_genre_url)
         .then(function(response) {
             $scope.genres = response.data;
         });

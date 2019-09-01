@@ -54,30 +54,20 @@ use TaraCatalog\Config\Constants;
     Input: none
     Output: Movie count
 
-9. movies/content_type/count
-    Gets the count of all movies grouped by distinct content type for a user.
-    Input: none
+9. movies/column_count/{column}
+    Gets the count of all movies grouped by distinct column for a user.
+    Input: column name
     Output: Movie counts
 
-10. movies/format/count
-    Gets the count of all movies grouped by distinct format for a user.
-    Input: none
-    Output: Movie counts
-
-11. movies/mpaa_rating/count
-    Gets the count of all movies grouped by distinct MPAA rating for a user.
-    Input: none
-    Output: Movie counts
-
-12. movies/mpaa_rating_grouped/count
+10. movies/mpaa_rating_grouped/count
     Gets the count of all movies grouped by MPAA ratings under and over PG.
     Input: none
     Output: Movie counts
 
-13. movies/genres/all
-    Gets all distinct genres from all movies for a user.
-    Input: none
-    Output: Array of genres
+11. movies/column_values/{column}
+    Gets all distinct column values from all movies for a user.
+    Input: column name
+    Output: Array of column values
 
 */
 
@@ -236,40 +226,18 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 9. Count movies with different content types */
-        $app->get($resource . '/content_type/count', function ($request, $response, $args) use ($app)
+        /* 9. Count movies with different column values */
+        $app->get($resource . '/column_count/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = "content_type";
-            $header = "movie_content_type";
-            $movies =  Media::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
+            $column_name = $args["column"];
+            $header = "movie_" . $column_name;
+            $movies = Media::get_counts_for_column(Config::DBTables()->movie, $user_id, $column_name, $header);
             APIService::response_success($movies);
         });
 
-        /* 10. Count movies with different formats */
-        $app->get($resource . '/format/count', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "format";
-            $header = "movie_format_type";
-            $movies = Media::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
-            APIService::response_success($movies);
-        });
-
-        /* 11. Count movies with different mpaa ratings */
-        $app->get($resource . '/mpaa_rating/count', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "mpaa_rating";
-            $header = "movie_mpaa_rating_type";
-            $movies = Media::get_counts_for_column(CONFIG::DBTables()->movie, $user_id, $column_name, $header);
-            APIService::response_success($movies);
-        });
-
-        /* 12. Count movies with different mpaa ratings, grouped by under PG and above PG */
+        /* 10. Count movies with different mpaa ratings, grouped by under PG and above PG */
         $app->get($resource . '/mpaa_rating_grouped/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -282,14 +250,14 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* 13. Get all genres */
-        $app->get($resource . '/genres/all', function ($request, $response, $args) use ($app)
+        /* 11. Get all distinct values for a column */
+        $app->get($resource . '/column_values/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = "genre";
-            $genres =  Media::get_distinct_for_column($user_id, CONFIG::DBTables()->movie, $column_name);
-            APIService::response_success($genres);
+            $column_name = $args["column"];
+            $column_values = Media::get_distinct_for_column($user_id, Config::DBTables()->movie, $column_name);
+            APIService::response_success($column_values);
         });
 
         /* ========================================================== *

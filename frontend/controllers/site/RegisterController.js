@@ -21,7 +21,7 @@ app.controller('RegisterController', function($scope, AuthService, $location, Re
 
     $scope.createUser = function(new_user) {
 
-        var url = CONFIG.api + "/users";
+        var url = CONFIG.api + CONFIG.api_routes.create_user;
 
         RequestService.post(url, new_user, function(data) {
             alert("Profile was created.");

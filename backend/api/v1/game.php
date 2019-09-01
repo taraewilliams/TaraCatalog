@@ -54,25 +54,16 @@ use TaraCatalog\Config\Constants;
     Input: none
     Output: Game count
 
-9. games/platform/count
-    Gets the count of all games grouped by distinct platform for a user.
-    Input: none
+9. games/column_count/{column}
+    Gets the count of all games grouped by distinct column for a user.
+    Input: column name
     Output: Game counts
 
-10. games/esrb_rating/count
-    Gets the count of all games grouped by distinct ESRB rating for a user.
-    Input: none
-    Output: Game counts
+10. games/column_values/{column}
+    Gets all distinct column values from all games for a user.
+    Input: column name
+    Output: Array of column values
 
-11. games/platforms/all
-    Gets all distinct platforms from all games for a user.
-    Input: none
-    Output: Array of platforms
-
-12. games/genres/all
-    Gets all distinct genres from all games for a user.
-    Input: none
-    Output: Array of genres
 */
 
 
@@ -223,25 +214,14 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 9. Count games with different platforms */
-        $app->get($resource . '/platform/count', function ($request, $response, $args) use ($app)
+        /* 9. Count games with different column values */
+        $app->get($resource . '/column_count/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = "platform";
-            $header = "game_platform_type";
-            $games = Media::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
-            APIService::response_success($games);
-        });
-
-        /* 10. Count games with different esrb ratings */
-        $app->get($resource . '/esrb_rating/count', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "esrb_rating";
-            $header = "game_esrb_rating_type";
-            $games = Media::get_counts_for_column(CONFIG::DBTables()->game, $user_id, $column_name, $header);
+            $column_name = $args["column"];
+            $header = "game_" . $column_name;
+            $games = Media::get_counts_for_column(Config::DBTables()->game, $user_id, $column_name, $header);
             APIService::response_success($games);
         });
 
@@ -249,24 +229,14 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* 11. Get all platforms */
-        $app->get($resource . '/platforms/all', function ($request, $response, $args) use ($app)
+        /* 10. Get all distinct values for a column */
+        $app->get($resource . '/column_values/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = "platform";
-            $platforms = Media::get_distinct_for_column($user_id, CONFIG::DBTables()->game, $column_name);
-            APIService::response_success($platforms);
-        });
-
-        /* 12. Get all genres */
-        $app->get($resource . '/genres/all', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "genre";
-            $genres = Media::get_distinct_for_column($user_id, CONFIG::DBTables()->game, $column_name);
-            APIService::response_success($genres);
+            $column_name = $args["column"];
+            $column_values = Media::get_distinct_for_column($user_id, Config::DBTables()->game, $column_name);
+            APIService::response_success($column_values);
         });
 
         /* ========================================================== *

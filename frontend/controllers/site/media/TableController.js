@@ -15,30 +15,30 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
             $scope.variables = {
                 item_type:"book",
                 path: "/books_table/",
-                get_url: CONFIG.api + '/books',
-                get_url_order:CONFIG.api + '/books/order_by/',
-                get_url_filter:CONFIG.api + '/books/filter',
-                put_url: CONFIG.api + '/books/',
+                get_url: CONFIG.api + CONFIG.api_routes.get_books,
+                get_url_order:CONFIG.api + CONFIG.api_routes.get_books_order,
+                get_url_filter:CONFIG.api + CONFIG.api_routes.get_books_filter,
+                put_url: CONFIG.api + CONFIG.api_routes.update_book,
                 delete_text: "Delete this book?"
             };
         }else if ($scope.isActive(['/movies_table'])){
             $scope.variables = {
                 item_type:"movie",
                 path: "/movies_table/",
-                get_url: CONFIG.api + '/movies',
-                get_url_order: CONFIG.api + "/movies/order_by/",
-                get_url_filter:CONFIG.api + '/movies/filter',
-                put_url: CONFIG.api + '/movies/',
+                get_url: CONFIG.api + CONFIG.api_routes.get_movies,
+                get_url_order: CONFIG.api + CONFIG.api_routes.get_movies_order,
+                get_url_filter:CONFIG.api + CONFIG.api_routes.get_movies_filter,
+                put_url: CONFIG.api + CONFIG.api_routes.update_movie,
                 delete_text: "Delete this movie?"
             };
         }else{
             $scope.variables = {
                 item_type:"game",
                 path: "/games_table/",
-                get_url: CONFIG.api + '/games',
-                get_url_order: CONFIG.api + "/games/order_by/",
-                get_url_filter:CONFIG.api + '/games/filter',
-                put_url: CONFIG.api + '/games/',
+                get_url: CONFIG.api + CONFIG.api_routes.get_games,
+                get_url_order: CONFIG.api + CONFIG.api_routes.get_games_order,
+                get_url_filter:CONFIG.api + CONFIG.api_routes.get_games_filter,
+                put_url: CONFIG.api + CONFIG.api_routes.update_game,
                 delete_text: "Delete this game?"
             };
         }

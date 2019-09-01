@@ -16,7 +16,7 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             });
         }
 
-        $http.get(CONFIG.api + '/media/location/count')
+        $http.get(CONFIG.api + CONFIG.api_routes.get_media_location_count)
         .then(function(response) {
 
             var dataArray = [['Location', 'Books', 'Movies', 'Games']];
@@ -88,14 +88,14 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
     };
 
     var getCountUrls = function(){
-        return ['/books/content_type/count',
-        '/books/cover_type/count',
-        '/movies/format/count',
-        '/movies/content_type/count',
-        '/movies/mpaa_rating/count',
-        '/movies/mpaa_rating_grouped/count',
-        '/games/esrb_rating/count',
-        '/games/platform/count'];
+        return [ CONFIG.api_routes.get_book_column_count + 'content_type',
+        CONFIG.api_routes.get_book_column_count + 'cover_type',
+        CONFIG.api_routes.get_movie_column_count + 'format',
+        CONFIG.api_routes.get_movie_column_count + 'content_type',
+        CONFIG.api_routes.get_movie_column_count + 'mpaa_rating',
+        CONFIG.api_routes.get_movie_mpaa_count_grouped,
+        CONFIG.api_routes.get_game_column_count + 'esrb_rating',
+        CONFIG.api_routes.get_game_column_count + 'platform' ];
     };
 
     var getPieChartItems = function(itemKey){
@@ -107,7 +107,7 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Book Cover Type', 'Number of Books']];
             var title = 'Cover';
             var html_element = 'BookCoverTypeChart';
-        }else if(itemKey == 'movie_format_type'){
+        }else if(itemKey == 'movie_format'){
             var dataArray = [['Movie Format', 'Number of Movies']];
             var title = 'Format';
             var html_element = 'MovieFormatChart';
@@ -115,7 +115,7 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Movie Content Type', 'Number of Movies']];
             var title = 'Content';
             var html_element = 'MovieContentTypeChart';
-        }else if(itemKey == 'movie_mpaa_rating_type'){
+        }else if(itemKey == 'movie_mpaa_rating'){
             var dataArray = [['Movie MPAA/TV Rating', 'Number of Movies']];
             var title = 'MPAA/TV Rating';
             var html_element = 'MovieMPAARatingTypeChart';
@@ -123,7 +123,7 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Movie MPAA/TV Rating', 'Number of Movies']];
             var title = 'MPAA/TV Rating Under/Over PG';
             var html_element = 'MovieMPAARatingGroupedTypeChart';
-        }else if(itemKey == "game_esrb_rating_type"){
+        }else if(itemKey == "game_esrb_rating"){
             var dataArray = [['Game ESRB Rating', 'Number of Games']];
             var title = 'ESRB Rating';
             var html_element = 'GameESRBRatingTypeChart';

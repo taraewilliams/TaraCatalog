@@ -14,22 +14,22 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
         if($scope.isActive('/books_table/read_add')){
             $scope.variables = {
                 item_type:"book",
-                get_url:CONFIG.api + '/books/todo/list/0',
-                put_url: CONFIG.api + '/books/',
+                get_url:CONFIG.api + CONFIG.api_routes.get_books_todo + '0',
+                put_url: CONFIG.api + CONFIG.api_routes.update_book,
                 redirect_url: "/books_table/read"
             };
         }else if ($scope.isActive('/movies_table/watch_add')){
             $scope.variables = {
                 item_type:"movie",
-                get_url:CONFIG.api + '/movies/todo/list/0',
-                put_url:CONFIG.api + "/movies/",
+                get_url:CONFIG.api + CONFIG.api_routes.get_movies_todo + '0',
+                put_url:CONFIG.api + CONFIG.api_routes.update_book,
                 redirect_url: "/movies_table/watch"
             };
         }else{
             $scope.variables = {
                 item_type:"game",
-                get_url:CONFIG.api + '/games/todo/list/0',
-                put_url:CONFIG.api + '/games/',
+                get_url:CONFIG.api + CONFIG.api_routes.get_games_todo + '0',
+                put_url:CONFIG.api + CONFIG.api_routes.update_game,
                 redirect_url: "/games_table/play"
             };
         }

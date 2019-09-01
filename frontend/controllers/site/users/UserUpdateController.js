@@ -8,7 +8,7 @@ app.controller('UserUpdateController', function($scope, AuthService, Session, $h
             return;
         }
 
-        $http.get(CONFIG.api + '/users/' + $scope.user.id)
+        $http.get(CONFIG.api + CONFIG.api_routes.get_single_user + $scope.user.id)
         .then(function(response) {
             $scope.user_orig = response.data;
             $scope.user_clone = $scope.clone($scope.user_orig);
@@ -20,7 +20,7 @@ app.controller('UserUpdateController', function($scope, AuthService, Session, $h
     $scope.updateUser = function(user_clone){
 
         var new_user = removeNotUpdatedFields(user_clone, $scope.user_orig);
-        var url = CONFIG.api + '/users/' + $scope.user_orig.id;
+        var url = CONFIG.api + CONFIG.api_routes.update_user + $scope.user_orig.id;
 
         if (!$scope.isEmptyObj(new_user)){
             RequestService.post(url, new_user, function(data) {

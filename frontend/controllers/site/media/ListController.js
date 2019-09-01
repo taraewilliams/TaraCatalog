@@ -23,35 +23,35 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         if ($scope.isActive('/books/:offset/:limit')){
             $scope.variables = {
                 path: "/books/",
-                get_url: CONFIG.api + '/books/limit/' + offset + "/" + limit,
-                get_count_url: CONFIG.api + '/books/count/all',
-                delete_url: CONFIG.api + '/books/',
+                get_url: CONFIG.api + CONFIG.api_routes.get_books_limit + offset + "/" + limit,
+                get_count_url: CONFIG.api + CONFIG.api_routes.get_book_count,
+                delete_url: CONFIG.api + CONFIG.api_routes.delete_book,
                 delete_text: "Delete this book?"
             };
             if (limit == all_limit){
-                $scope.variables.get_url = CONFIG.api + '/books';
+                $scope.variables.get_url = CONFIG.api + CONFIG.api_routes.get_books;
             }
         } else if ($scope.isActive('/movies/:offset/:limit')) {
             $scope.variables = {
                 path: "/movies/",
-                get_url: CONFIG.api + '/movies/limit/' + offset + "/" + limit,
-                get_count_url: CONFIG.api + '/movies/count/all',
-                delete_url: CONFIG.api + '/movies/',
+                get_url: CONFIG.api + CONFIG.api_routes.get_movies_limit + offset + "/" + limit,
+                get_count_url: CONFIG.api + CONFIG.api_routes.get_movie_count,
+                delete_url: CONFIG.api + CONFIG.api_routes.delete_movie,
                 delete_text: "Delete this movie?"
             };
             if (limit == all_limit){
-                $scope.variables.get_url = CONFIG.api + '/movies';
+                $scope.variables.get_url = CONFIG.api + CONFIG.api_routes.get_movies;
             }
         }else{
             $scope.variables = {
                 path: "/games/",
-                get_url: CONFIG.api + '/games/limit/' + offset + "/" + limit,
-                get_count_url: CONFIG.api + '/games/count/all',
-                delete_url: CONFIG.api + '/games/',
+                get_url: CONFIG.api + CONFIG.api_routes.get_games_limit + offset + "/" + limit,
+                get_count_url: CONFIG.api + CONFIG.api_routes.get_game_count,
+                delete_url: CONFIG.api + CONFIG.api_routes.delete_game,
                 delete_text: "Delete this game?"
             };
             if (limit == all_limit){
-                $scope.variables.get_url = CONFIG.api + '/games';
+                $scope.variables.get_url = CONFIG.api + CONFIG.api_routes.get_games;
             }
         }
 

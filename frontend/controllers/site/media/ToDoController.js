@@ -14,20 +14,20 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
         if($scope.isActive(['/books_table/read'])){
             $scope.variables = {
                 item_type:"book",
-                get_url:CONFIG.api + '/books/todo/list/1',
-                put_url: CONFIG.api + '/books/'
+                get_url:CONFIG.api + CONFIG.api_routes.get_books_todo + '1',
+                put_url: CONFIG.api + CONFIG.api_routes.update_book
             };
         }else if ($scope.isActive(['/movies_table/watch'])){
             $scope.variables = {
                 item_type:"movie",
-                get_url: CONFIG.api + '/movies/todo/list/1',
-                put_url: CONFIG.api + '/movies/'
+                get_url: CONFIG.api + CONFIG.api_routes.get_movies_todo + '1',
+                put_url: CONFIG.api + CONFIG.api_routes.update_movie
             };
         }else{
             $scope.variables = {
                 item_type:"game",
-                get_url: CONFIG.api + '/games/todo/list/1',
-                put_url: CONFIG.api + '/games/'
+                get_url: CONFIG.api + CONFIG.api_routes.get_games_todo + '1',
+                put_url: CONFIG.api + CONFIG.api_routes.update_game
             };
         }
 

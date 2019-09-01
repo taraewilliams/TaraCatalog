@@ -9,7 +9,7 @@ app.controller('ViewerController', function($scope, AuthService, Session, $http,
 
         $scope.creatorID = $routeParams.id;
 
-        $http.get(CONFIG.api + '/viewers/' + $scope.creatorID)
+        $http.get(CONFIG.api + CONFIG.api_routes.get_single_viewer + $scope.creatorID)
         .then(function(response) {
             $scope.viewer = response.data;
         }, function(response){
@@ -18,17 +18,17 @@ app.controller('ViewerController', function($scope, AuthService, Session, $http,
         });
 
         if($scope.isActive('/book_view/:id')){
-            $http.get(CONFIG.api + '/book_viewers/' + $scope.creatorID)
+            $http.get(CONFIG.api + CONFIG.api_routes.get_books_viewer + $scope.creatorID)
             .then(function(response) {
                 $scope.books = response.data;
             });
         }else if ($scope.isActive('/movie_view/:id')){
-            $http.get(CONFIG.api + '/movie_viewers/' + $scope.creatorID)
+            $http.get(CONFIG.api + CONFIG.api_routes.get_movies_viewer  + $scope.creatorID)
             .then(function(response) {
                 $scope.movies = response.data;
             });
         }else if ($scope.isActive('/game_view/:id')){
-            $http.get(CONFIG.api + '/game_viewers/' + $scope.creatorID)
+            $http.get(CONFIG.api + CONFIG.api_routes.get_games_viewer + $scope.creatorID)
             .then(function(response) {
                 $scope.games = response.data;
             });
@@ -40,7 +40,7 @@ app.controller('ViewerController', function($scope, AuthService, Session, $http,
 
         var search = { search: searchTerm };
 
-        RequestService.post(CONFIG.api + "/search/" + $scope.creatorID, search, function(response) {
+        RequestService.post(CONFIG.api + CONFIG.api_routes.get_media_search_viewer + $scope.creatorID, search, function(response) {
             $scope.items = response.data;
         }, function(response){
             console.log(response.data.message);

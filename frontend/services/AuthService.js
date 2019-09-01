@@ -2,7 +2,7 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
 {
     this.login = function(credentials) {
         var _this = this;
-        var url = CONFIG.api + '/auth/login';
+        var url = CONFIG.api + CONFIG.api_routes.login;
 
         RequestService.post(url, credentials, function(response) {
             Session.create(response.data.id, response.data.token, response.data.user.id);
@@ -18,7 +18,7 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
     };
 
     this.logout = function() {
-        var url = CONFIG.api + '/auth/logout';
+        var url = CONFIG.api + CONFIG.api_routes.logout;
 
         RequestService.post(url, {session_id: Session.id}, function(response) {
             Session.destroy();

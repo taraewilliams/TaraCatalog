@@ -15,7 +15,7 @@ app.controller('ProfileController', function($scope, AuthService, Session, $http
     $scope.deleteUser = function(userID){
 
         if (confirm("Delete your profile?")){
-            var url = CONFIG.api + "/users/" + userID;
+            var url = CONFIG.api + CONFIG.api_routes.delete_user + userID;
 
             $http.delete(url)
             .then(function(response) {

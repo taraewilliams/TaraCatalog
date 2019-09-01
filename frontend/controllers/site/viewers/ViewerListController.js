@@ -13,16 +13,16 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
 
         if($scope.isActive('/viewer_list')){
             $scope.variables = {
-                get_url:CONFIG.api + '/viewers/list/',
-                put_url:CONFIG.api + '/viewers/',
-                delete_url:CONFIG.api + '/viewers/',
+                get_url:CONFIG.api + CONFIG.api_routes.get_viewers_status,
+                put_url:CONFIG.api + CONFIG.api_routes.update_viewer,
+                delete_url:CONFIG.api + CONFIG.api_routes.delete_viewer,
                 delete_text:"Delete this viewer?"
             };
         }else if ($scope.isActive('/view_list')){
             $scope.variables = {
-                get_url:CONFIG.api + '/viewers/view/list/',
-                put_url:CONFIG.api + '/viewers/',
-                delete_url:CONFIG.api + '/viewers/',
+                get_url:CONFIG.api + CONFIG.api_routes.get_can_view_status,
+                put_url:CONFIG.api + CONFIG.api_routes.update_viewer,
+                delete_url:CONFIG.api + CONFIG.api_routes.delete_viewer,
                 delete_text:"Stop viewing this catalog?"
             };
         }

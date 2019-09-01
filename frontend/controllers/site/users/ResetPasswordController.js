@@ -15,7 +15,7 @@ app.controller('ResetPasswordController', function($scope, AuthService, Session,
     $scope.updateUser = function(new_password, new_password_2){
 
         var new_user = {password: new_password};
-        var url = CONFIG.api + '/users/' + $scope.user.id;
+        var url = CONFIG.api + CONFIG.api_routes.update_user + $scope.user.id;
 
         if (new_password != new_password_2){
             alert("Passwords do not match");

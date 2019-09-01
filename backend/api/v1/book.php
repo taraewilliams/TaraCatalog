@@ -54,30 +54,16 @@ use TaraCatalog\Config\Constants;
     Input: none
     Output: Book count
 
-9. books/content_type/count
-    Gets the count of all books grouped by distinct content type for a user.
-    Input: none
+9. books/column_count/{column}
+    Gets the count of all books grouped by distinct column for a user.
+    Input: column name
     Output: Book counts
 
-10. books/cover_type/count
-    Gets the count of all books grouped by distinct cover type for a user.
-    Input: none
-    Output: Book counts
+10. books/column_values/{column}
+    Gets all distinct column values from all books for a user.
+    Input: column name
+    Output: Array of column values
 
-11. books/authors/all
-    Gets all distinct authors from all books for a user.
-    Input: none
-    Output: Array of authors
-
-12. books/titles/all
-    Gets all distinct titles from all books for a user.
-    Input: none
-    Output: Array of titles
-
-13. books/genres/all
-    Gets all distinct genres from all books for a user.
-    Input: none
-    Output: Array of genres
 */
 
 
@@ -234,24 +220,13 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 9. Count books with different content types */
-        $app->get($resource . '/content_type/count', function ($request, $response, $args) use ($app)
+        /* 9. Count books with different column values */
+        $app->get($resource . '/column_count/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = "content_type";
-            $header = "book_content_type";
-            $books = Media::get_counts_for_column(Config::DBTables()->book, $user_id, $column_name, $header);
-            APIService::response_success($books);
-        });
-
-        /* 10. Count books with different cover types */
-        $app->get($resource . '/cover_type/count', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "cover_type";
-            $header = "book_cover_type";
+            $column_name = $args["column"];
+            $header = "book_" . $column_name;
             $books = Media::get_counts_for_column(Config::DBTables()->book, $user_id, $column_name, $header);
             APIService::response_success($books);
         });
@@ -260,34 +235,14 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* 11. Get all authors */
-        $app->get($resource . '/authors/all', function ($request, $response, $args) use ($app)
+        /* 10. Get all distinct values for a column */
+        $app->get($resource . '/column_values/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = "author";
-            $authors = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
-            APIService::response_success($authors);
-        });
-
-        /* 12. Get all titles */
-        $app->get($resource . '/titles/all', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "title";
-            $titles = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
-            APIService::response_success($titles);
-        });
-
-        /* 13. Get all genres */
-        $app->get($resource . '/genres/all', function ($request, $response, $args) use ($app)
-        {
-            $session = APIService::authenticate_request($_GET);
-            $user_id = $session->user->id;
-            $column_name = "genre";
-            $genres = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
-            APIService::response_success($genres);
+            $column_name = $args["column"];
+            $column_values = Media::get_distinct_for_column($user_id, Config::DBTables()->book, $column_name);
+            APIService::response_success($column_values);
         });
 
         /* ========================================================== *

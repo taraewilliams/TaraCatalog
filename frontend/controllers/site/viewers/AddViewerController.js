@@ -12,14 +12,14 @@ app.controller('AddViewerController', function($scope, RequestService, CONFIG, A
 
         if($scope.isActive('/add_viewers')){
             $scope.variables = {
-                get_url:CONFIG.api + '/users/non/viewers/all',
-                put_url: CONFIG.api + '/viewers',
+                get_url:CONFIG.api + CONFIG.api_routes.get_users_not_viewing,
+                post_url: CONFIG.api + CONFIG.api_routes.create_viewer,
                 redirect_url: "/viewer_list"
             };
         }else{
             $scope.variables = {
-                get_url:CONFIG.api + '/users/non/views/all',
-                put_url:CONFIG.api + '/viewers',
+                get_url:CONFIG.api + CONFIG.api_routes.get_users_cant_view,
+                post_url:CONFIG.api + CONFIG.api_routes.create_viewer,
                 redirect_url: "/view_list"
             };
         }
@@ -62,7 +62,7 @@ app.controller('AddViewerController', function($scope, RequestService, CONFIG, A
                 };
             }
 
-            RequestService.post($scope.variables.put_url, new_viewer, function(data) {
+            RequestService.post($scope.variables.post_url, new_viewer, function(data) {
                 /* Redirect to the viewers page once all viewers are updated */
                 update_num = update_num + 1;
                 if (update_num == id_list.length){
