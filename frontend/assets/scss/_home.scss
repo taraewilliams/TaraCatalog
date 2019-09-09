@@ -34,27 +34,29 @@
     }
 }
 
-.home-section{
-    h2{
-        text-align:center;
+@media screen{
+    .home-section{
+        h2{
+            text-align:center;
+        }
     }
-}
 
-#home-filter{
-    form{
-        section{
-            margin-right:10px;
-            text-align: center;
-            width: 100%;
-        }
-        input{
-            font-size: 15px;
-            height: 25px;
-        }
-        button{
-            min-height:30px;
-            vertical-align:top;
-            margin-top: 0;
+    #home-filter{
+        form{
+            section{
+                margin-right:10px;
+                text-align: center;
+                width: 100%;
+            }
+            input{
+                font-size: 15px;
+                height: 25px;
+            }
+            button{
+                min-height:30px;
+                vertical-align:top;
+                margin-top: 0;
+            }
         }
     }
 }

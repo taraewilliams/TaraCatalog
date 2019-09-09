@@ -62,16 +62,16 @@ app.constant('CONFIG', {
         get_single_user: '/users/',
         get_single_user_username_password: '/users/',
         get_users_not_viewing: '/users/non/viewers/all',
-        get_users_cant_view: 'users/non/views/all',
+        get_users_cant_view: '/users/non/views/all',
         create_user: '/users',
         update_user: '/users/',
         delete_user: '/users/',
         /* viewers */
-        get_viewers_status: '/viewers/list/',
-        get_can_view_status: '/viewers/view/list/',
+        get_viewers_status: '/viewers/list',
+        get_can_view_status: '/viewers/view_list',
         get_single_viewer: '/viewers/',
         create_viewer: '/viewers',
         update_viewer: '/viewers/',
-        delete_viewer: 'viewers/'
+        delete_viewer: '/viewers/'
     }
 });

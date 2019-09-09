@@ -129,6 +129,9 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         }
     };
 
+    $scope.printPage = function(){
+        window.print();
+    };
 
     /* Filter functions */
     $scope.clearFilter = function(sortVal, filter){

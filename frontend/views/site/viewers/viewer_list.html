@@ -28,15 +28,30 @@
         <!-- Pending users -->
         <h3>Pending</h3>
 
-        <p ng-if="pending_viewers.length <= 0">No users</p>
+        <h5>You Requested</h5>
+
+        <p ng-if="pending_viewers_creator.length <= 0">No users</p>
 
         <ul class="view-list">
-            <li ng-repeat="viewer in pending_viewers">
+            <li ng-repeat="viewer in pending_viewers_creator">
                 <img class="profile-pic" ng-if="!isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.v_image}}"/>
                 <img class="profile-pic" ng-if="isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/profile_saver.jpg"/>
                 <p>{{viewer.v_username}}</p>
-                <button ng-if="viewer.requested_by == 'viewer'" class="basic-button positive" ng-click="updateViewer(viewer.id, 'approved')">Approve</button>
-                <button ng-if="viewer.requested_by == 'viewer'" class="basic-button negative" ng-click="updateViewer(viewer.id, 'rejected')">Reject</button>
+                <button class="basic-button negative big-button" ng-click="deleteViewer(viewer.viewer_id, viewer.creator_id)">Remove</button>
+            </li>
+        </ul>
+
+        <h5>Viewer Requested</h5>
+
+        <p ng-if="pending_viewers_viewer.length <= 0">No users</p>
+
+        <ul class="view-list">
+            <li ng-repeat="viewer in pending_viewers_viewer">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.v_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.v_username}}</p>
+                <button class="basic-button positive" ng-click="updateViewer(viewer.id, viewer.requested_by, 'approved')">Approve</button>
+                <button class="basic-button negative" ng-click="updateViewer(viewer.id, viewer.requested_by, 'rejected')">Reject</button>
             </li>
         </ul>
 
@@ -66,17 +81,33 @@
         <!-- Pending Users -->
         <h3>Pending</h3>
 
-        <p ng-if="pending_viewers.length <= 0">No users</p>
+        <h5>You Requested</h5>
+
+        <p ng-if="pending_viewers_viewer.length <= 0">No users</p>
 
         <ul class="view-list">
-            <li ng-repeat="viewer in pending_viewers">
+            <li ng-repeat="viewer in pending_viewers_viewer">
                 <img class="profile-pic" ng-if="!isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.c_image}}"/>
                 <img class="profile-pic" ng-if="isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/profile_saver.jpg"/>
                 <p>{{viewer.c_username}}</p>
-                <button ng-if="viewer.requested_by == 'creator'" class="basic-button positive" ng-click="updateViewer(viewer.id, 'approved')">Approve</button>
-                <button ng-if="viewer.requested_by == 'creator'" class="basic-button negative" ng-click="updateViewer(viewer.id, 'rejected')">Reject</button>
+                <button class="basic-button negative big-button" ng-click="deleteViewer(viewer.viewer_id, viewer.creator_id)">Remove</button>
             </li>
         </ul>
+
+        <h5>Creator Requested</h5>
+
+        <p ng-if="pending_viewers_creator.length <= 0">No users</p>
+
+        <ul class="view-list">
+            <li ng-repeat="viewer in pending_viewers_creator">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="../backend/public/{{viewer.c_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/frontend/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.c_username}}</p>
+                <button class="basic-button positive" ng-click="updateViewer(viewer.id, viewer.requested_by, 'approved')">Approve</button>
+                <button class="basic-button negative" ng-click="updateViewer(viewer.id, viewer.requested_by, 'rejected')">Reject</button>
+            </li>
+        </ul>
+
 
     </section>
 

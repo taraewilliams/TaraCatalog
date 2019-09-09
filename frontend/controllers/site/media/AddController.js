@@ -22,7 +22,7 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
             $scope.variables = {
                 item_type:"movie",
                 get_url:CONFIG.api + CONFIG.api_routes.get_movies_todo + '0',
-                put_url:CONFIG.api + CONFIG.api_routes.update_book,
+                put_url:CONFIG.api + CONFIG.api_routes.update_movie,
                 redirect_url: "/movies_table/watch"
             };
         }else{
@@ -72,8 +72,8 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
                 if (update_num == id_list.length){
                     $scope.goToPath($scope.variables.redirect_url);
                 }
-            }, function(error, status){
-                console.log(error.message);
+            }, function(response){
+                console.log(response);
             });
         }
     };

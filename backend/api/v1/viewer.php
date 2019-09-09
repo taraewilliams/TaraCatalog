@@ -62,28 +62,37 @@ $app->group('/api', function () use ($app) {
         * GET
         * ========================================================== */
 
-        /* Get all viewers for a creator for a specific status (approved, pending, rejected) */
-        $app->get($resource . "/list/{status}", function ($request, $response, $args) use ($app)
+        /* Get all viewers for a creator for a specific status (approved, pending, rejected)
+        and by who requested the relationship */
+        $app->post($resource. '/list', function () use ($app)
         {
-            $session = APIService::authenticate_request($_GET);
+            $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
-            $status = $args['status'];
 
-            $viewers = Viewer::get_all($user_id, $status);
+            $params = APIService::build_params($_REQUEST, null, array(
+                "status",
+                "requested_by"
+            ));
+
+            $viewers = Viewer::get_all($user_id, $params);
             usort($viewers, array("TaraCatalog\Model\Viewer", "sort_viewers"));
 
             APIService::response_success($viewers);
         });
 
-        /* Get all creator can view for a specific status */
-        $app->get($resource . "/view/list/{status}", function ($request, $response, $args) use ($app)
+        /* Get all user catalogs a creator can view for a specific status
+        and by who requested the relationship */
+        $app->post($resource. '/view_list', function () use ($app)
         {
-            $session = APIService::authenticate_request($_GET);
+            $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
-            $status = $args['status'];
 
-            $viewers = Viewer::get_all_user_views($user_id, $status);
+            $params = APIService::build_params($_REQUEST, null, array(
+                "status",
+                "requested_by"
+            ));
 
+            $viewers = Viewer::get_all_user_views($user_id, $params);
             usort($viewers, array("TaraCatalog\Model\Viewer", "sort_creators"));
 
             APIService::response_success($viewers);
@@ -169,6 +178,7 @@ $app->group('/api', function () use ($app) {
             $creator_id = intval($args["creator_id"]);
             $viewer_id = intval($args["viewer_id"]);
 
+            /* Allow either viewer or creator to delete a viewer object */
             if ($user_id !== $creator_id && $user_id !== $viewer_id){
                 APIService::response_fail("There was a problem deleting the viewer.", 500);
             }

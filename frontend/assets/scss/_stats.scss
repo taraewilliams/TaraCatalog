@@ -1,8 +1,10 @@
-.stat-section{
-    display: block;
-    margin-bottom: 40px;
-    box-sizing: border-box;
-    h2{
-        border-bottom:5px solid $dark-red;
+@media screen{
+    .stat-section{
+        display: block;
+        margin-bottom: 40px;
+        box-sizing: border-box;
+        h2{
+            border-bottom:5px solid $dark-red;
+        }
     }
 }

@@ -138,7 +138,8 @@ class User
     public static function get_nonviews($user_id){
         $database = Database::instance();
         $creator_ids = "SELECT DISTINCT creator_id FROM " . CONFIG::DBTables()->viewer . " WHERE viewer_id = " . $user_id;
-        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id != " . $user_id . " AND id NOT IN (" . $creator_ids . ")";
+        /* Only include users who are currently creators */
+        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND role = 'creator' AND id != " . $user_id . " AND id NOT IN (" . $creator_ids . ")";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -219,6 +220,18 @@ class User
             }
         }
         return true;
+    }
+
+    /* See if a user is a creator */
+    public static function is_creator($user_id)
+    {
+        $sql = "SELECT username FROM user WHERE active = 1 AND id = " . $user_id . " AND role = 'creator'";
+        $database = Database::instance();
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetch(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        return ($result !== false && $result !== null && count($result) !== 0);
     }
 
     public static function sort_viewers($a, $b){

@@ -8,7 +8,7 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
             return;
         }
 
-        var status = "approved";
+        var status_appr = "approved";
         var status_pend = "pending";
 
         if($scope.isActive('/viewer_list')){
@@ -28,16 +28,33 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
         }
 
         if($scope.isActive('/viewer_list') || $scope.isActive('/view_list')){
-            $http.get($scope.variables.get_url + status)
-            .then(function(response) {
+
+            var approv_vars = {
+                status:status_appr
+            };
+
+            RequestService.post($scope.variables.get_url, approv_vars, function(response) {
                 $scope.viewers = response.data;
             }, function(response){
                 console.log(response.data.message);
             });
 
-            $http.get($scope.variables.get_url + status_pend)
-            .then(function(response) {
-                $scope.pending_viewers = response.data;
+            var pend_vars = {
+                status:status_pend,
+                requested_by:'creator'
+            };
+
+            RequestService.post($scope.variables.get_url, pend_vars, function(response) {
+                $scope.pending_viewers_creator = response.data;
+                console.log($scope.pending_viewers_creator.length);
+            }, function(response){
+                console.log(response.data.message);
+            });
+
+            pend_vars.requested_by = 'viewer';
+
+            RequestService.post($scope.variables.get_url, pend_vars, function(response) {
+                $scope.pending_viewers_viewer = response.data;
             }, function(response){
                 console.log(response.data.message);
             });
@@ -60,16 +77,20 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
     };
 
     /* Update viewer */
-    $scope.updateViewer = function(id, status)
+    $scope.updateViewer = function(id, requested_by, status)
     {
-        var url = $scope.variables.put_url + id;
-        var new_viewer = { status: status };
+        if ((requested_by == 'viewer' && $scope.isActive('/viewer_list')) || (requested_by == 'creator' && $scope.isActive('/view_list'))){
+            var url = $scope.variables.put_url + id;
+            var new_viewer = { status: status };
 
-        RequestService.post(url, new_viewer, function(data) {
-            location.reload();
-        }, function(response){
-            console.log(response.data.message);
-        });
+            RequestService.post(url, new_viewer, function(data) {
+                location.reload();
+            }, function(response){
+                console.log(response);
+            });
+        }else{
+            alert("You don't have permission to update.")
+        }
     };
 
     $scope.user.$promise.then(init);

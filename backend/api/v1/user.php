@@ -2,6 +2,7 @@
 
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\User;
+use TaraCatalog\Model\Media;
 
 /* Requests */
 
@@ -192,6 +193,14 @@ $app->group('/api', function () use ($app) {
 
             if(isset($files['image'])) {
                 $params['image'] = Media::set_image($files, $username, '/users');
+            }
+
+            /* If role is changing to viewer, delete viewer objects for creator ID
+            so other users can no longer view this catalog */
+            if(isset($params['role'])){
+                if($params['role'] == 'viewer'){
+                    Viewer::delete_for_creator($id);
+                }
             }
 
             $user = User::update($id, $params);

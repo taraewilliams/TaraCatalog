@@ -65,6 +65,11 @@ class Viewer
             APIService::response_fail("A viewer already exists for this creator.", 500);
         }
 
+        /* Check that the creator ID belongs to a user that is  a creator */
+        if(!User::is_creator($data["creator_id"])){
+            APIService::response_fail("This user is not a creator.", 500);
+        }
+
         $id = DatabaseService::create(Config::DBTables()->viewer, $data);
         if($id === false || $id === null) {
             APIService::response_fail("There was a problem creating the viewer.", 500);
@@ -78,9 +83,11 @@ class Viewer
     * ========================================================== */
 
     /* Get all viewers for a creator */
-    public static function get_all($user_id, $status)
+    public static function get_all($user_id, $params)
     {
-        $where = "WHERE viewer.active = 1 AND viewer.creator_id = " . $user_id . " AND viewer.status = '" . $status . "'";
+        $status_where = isset($params["status"]) ? " AND viewer.status = '" . $params["status"] . "'" : "";
+        $request_where = isset($params["requested_by"]) ? " AND viewer.requested_by = '" . $params["requested_by"] . "'" : "";
+        $where = "WHERE viewer.active = 1 AND viewer.creator_id = " . $user_id . $status_where . $request_where;
         $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.requested_by, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.creator_id " . $where . ")";
         $sql = "SELECT views.username as c_username, views.image as c_image, user.username as v_username, user.image as v_image, views.id, views.creator_id, views.viewer_id, views.status, views.requested_by FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.viewer_id";
         $database = Database::instance();
@@ -96,9 +103,11 @@ class Viewer
     }
 
     /* Get all creator can view */
-    public static function get_all_user_views($user_id, $status)
+    public static function get_all_user_views($user_id, $params)
     {
-        $where = "WHERE viewer.active = 1 AND viewer.viewer_id = " . $user_id. " AND viewer.status = '" . $status . "'";
+        $status_where = isset($params["status"]) ? " AND viewer.status = '" . $params["status"] . "'" : "";
+        $request_where = isset($params["requested_by"]) ? " AND viewer.requested_by = '" . $params["requested_by"] . "'" : "";
+        $where = "WHERE viewer.active = 1 AND viewer.viewer_id = " . $user_id. $status_where . $request_where;
         $inner_sql = "(SELECT user.username, user.image, viewer.id, viewer.creator_id, viewer.viewer_id, viewer.requested_by, viewer.status FROM " . CONFIG::DBTables()->viewer . " JOIN " . CONFIG::DBTables()->user ." ON user.id=viewer.viewer_id " . $where . ")";
         $sql = "SELECT views.username as v_username, views.image as v_image, user.username as c_username, user.image as c_image, views.id, views.creator_id, views.viewer_id, views.status, views.requested_by FROM " . $inner_sql . " AS views JOIN " . CONFIG::DBTables()->user . " ON user.id=views.creator_id";
         $database = Database::instance();
@@ -148,8 +157,8 @@ class Viewer
         /* Creator must be the one approving the viewer */
         $is_creator = true;
         $where = "WHERE active = 1 AND creator_id = " . $user_id . " AND id = " . $id . " AND requested_by = 'viewer'";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
-        if($result === false || $result === null || count($result) === 0) {
+        $creator_result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        if($creator_result === false || $creator_result === null || count($creator_result) === 0) {
             $is_creator = false;
         }
 
@@ -157,9 +166,9 @@ class Viewer
         /* Viewer must be the one approving the creator */
         $is_viewer = true;
         $where = "WHERE active = 1 AND viewer_id = " . $user_id . " AND id = " . $id . " AND requested_by = 'creator'";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
-        if($result === false || $result === null || count($result) === 0) {
-            $is_creator = false;
+        $viewer_result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        if($viewer_result === false || $viewer_result === null || count($viewer_result) === 0) {
+            $is_viewer = false;
         }
 
         /* If viewer does not exist for creator id or viewer id, then it is invalid */
@@ -167,16 +176,11 @@ class Viewer
             APIService::response_fail("Invalid request.", 500);
         }
 
-        /* If status is the same as updated status, return that it is the same. */
-        if($result[0]["status"] === $data["status"]){
-            APIService::response_fail("Already " . $data["status"], 500);
-        }
-
         $result = DatabaseService::update(Config::DBTables()->viewer, $id, $data);
         if ($result === false || $result === null){
             APIService::response_fail("Update failed.", 500);
         }
-        return $result ? true : false;
+        return $result;
     }
 
     /* ========================================================== *
@@ -191,6 +195,17 @@ class Viewer
             APIService::response_fail("There was a problem deleting the viewer.", 500);
         }
         $where = array("creator_id" => $creator_id, "viewer_id" => $viewer_id);
+        $result = DatabaseService::delete(Config::DBTables()->viewer, $where);
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error deleting that viewer.", 500);
+        }
+        return $result;
+    }
+
+    /* Delete a viewer for creator ID */
+    public static function delete_for_creator($creator_id)
+    {
+        $where = array("creator_id" => $creator_id);
         $result = DatabaseService::delete(Config::DBTables()->viewer, $where);
         if( $result === false || $result === null) {
             APIService::response_fail("There was an error deleting that viewer.", 500);

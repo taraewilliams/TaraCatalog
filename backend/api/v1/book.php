@@ -163,7 +163,7 @@ $app->group('/api', function () use ($app) {
         /* 6. Get books for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
-            $session = APIService::authenticate_request($_GET);
+            $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
             $params = APIService::build_params($_REQUEST, null, array(
@@ -186,7 +186,7 @@ $app->group('/api', function () use ($app) {
         /* 7. Get books for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
-            $session = APIService::authenticate_request($_GET);
+            $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
             $order = $args['order'];
