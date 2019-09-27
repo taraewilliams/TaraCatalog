@@ -8,6 +8,31 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             return;
         }
 
+
+        /* Get total media counts */
+        $scope.counts = {
+            books:0,
+            movies:0,
+            games:0
+        };
+
+        $http.get(CONFIG.api + CONFIG.api_routes.get_book_count)
+        .then(function(response) {
+            $scope.counts.books = response.data.num;
+        });
+
+        $http.get(CONFIG.api + CONFIG.api_routes.get_movie_count)
+        .then(function(response) {
+            $scope.counts.movies = response.data.num;
+        });
+
+        $http.get(CONFIG.api + CONFIG.api_routes.get_game_count)
+        .then(function(response) {
+            $scope.counts.games = response.data.num;
+        });
+
+
+        /* Make Pie Charts */
         var urls = getCountUrls();
         for(i = 0; i < urls.length; i++){
             $http.get(CONFIG.api + urls[i])
@@ -16,6 +41,8 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             });
         }
 
+
+        /* Make Bar Chart */
         $http.get(CONFIG.api + CONFIG.api_routes.get_media_location_count)
         .then(function(response) {
 
@@ -90,15 +117,19 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
     var getCountUrls = function(){
         return [ CONFIG.api_routes.get_book_column_count + 'content_type',
         CONFIG.api_routes.get_book_column_count + 'cover_type',
+        CONFIG.api_routes.get_book_column_count + 'genre',
         CONFIG.api_routes.get_movie_column_count + 'format',
         CONFIG.api_routes.get_movie_column_count + 'content_type',
         CONFIG.api_routes.get_movie_column_count + 'mpaa_rating',
         CONFIG.api_routes.get_movie_mpaa_count_grouped,
+        CONFIG.api_routes.get_movie_column_count + 'genre',
         CONFIG.api_routes.get_game_column_count + 'esrb_rating',
-        CONFIG.api_routes.get_game_column_count + 'platform' ];
+        CONFIG.api_routes.get_game_column_count + 'platform',
+        CONFIG.api_routes.get_game_column_count + 'genre' ];
     };
 
     var getPieChartItems = function(itemKey){
+        /* Book Charts */
         if (itemKey == 'book_content_type'){
             var dataArray = [['Book Content Type', 'Number of Books']];
             var title = 'Content';
@@ -107,6 +138,11 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Book Cover Type', 'Number of Books']];
             var title = 'Cover';
             var html_element = 'BookCoverTypeChart';
+        }else if(itemKey == 'book_genre'){
+            var dataArray = [['Book Genre', 'Number of Books']];
+            var title = 'Genre';
+            var html_element = 'BookGenreChart';
+        /* Movie Charts */
         }else if(itemKey == 'movie_format'){
             var dataArray = [['Movie Format', 'Number of Movies']];
             var title = 'Format';
@@ -123,14 +159,23 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var dataArray = [['Movie MPAA/TV Rating', 'Number of Movies']];
             var title = 'MPAA/TV Rating Under/Over PG';
             var html_element = 'MovieMPAARatingGroupedTypeChart';
+        }else if(itemKey == 'movie_genre'){
+            var dataArray = [['Movie Genre', 'Number of Movies']];
+            var title = 'Genre';
+            var html_element = 'MovieGenreChart';
+        /* Game Charts */
         }else if(itemKey == "game_esrb_rating"){
             var dataArray = [['Game ESRB Rating', 'Number of Games']];
             var title = 'ESRB Rating';
             var html_element = 'GameESRBRatingTypeChart';
-        }else{
+        }else if(itemKey == "game_platform"){
             var dataArray = [['Game Platform Type', 'Number of Games']];
             var title = 'Platform';
             var html_element = 'GamePlatformTypeChart';
+        }else{
+            var dataArray = [['Game Genre', 'Number of Games']];
+            var title = 'Genre';
+            var html_element = 'GameGenreChart';
         }
 
         return {
