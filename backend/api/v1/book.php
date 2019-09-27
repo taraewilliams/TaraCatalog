@@ -168,6 +168,7 @@ $app->group('/api', function () use ($app) {
 
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
+                "series",
                 "author",
                 "volume",
                 "isbn",
@@ -192,6 +193,7 @@ $app->group('/api', function () use ($app) {
             $order = $args['order'];
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
+                "series",
                 "author",
                 "volume",
                 "isbn",
@@ -258,6 +260,7 @@ $app->group('/api', function () use ($app) {
             $params = APIService::build_params($_REQUEST, array(
                 "title"
             ), array(
+                "series",
                 "author",
                 "volume",
                 "isbn",
@@ -299,6 +302,7 @@ $app->group('/api', function () use ($app) {
 
             $params = APIService::build_params($_REQUEST, null, array(
                 "title",
+                "series",
                 "author",
                 "volume",
                 "isbn",

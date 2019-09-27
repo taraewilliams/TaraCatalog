@@ -11,6 +11,7 @@ class Book
     public $id;
     public $user_id;
     public $title;
+    public $series;
     public $author;
     public $volume;
     public $isbn;
@@ -33,6 +34,7 @@ class Book
         $this->id              = isset($data['id']) ? intval($data['id']) : null;
         $this->user_id         = isset($data['user_id']) ? intval($data['user_id']) : null;
         $this->title           = isset($data['title']) ? $data['title'] : null;
+        $this->series          = isset($data['series']) ? $data['series'] : null;
         $this->author          = isset($data['author']) ? $data['author'] : null;
         $this->volume          = isset($data['volume']) ? intval($data['volume']) : null;
         $this->isbn            = isset($data['isbn']) ? $data['isbn'] : null;
@@ -66,6 +68,7 @@ class Book
 
         $data = array(
             "title"          => $book->title,
+            "series"         => $book->series,
             "user_id"        => $book->user_id,
             "author"         => $book->author,
             "volume"         => $book->volume,

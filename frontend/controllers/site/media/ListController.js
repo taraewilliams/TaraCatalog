@@ -91,6 +91,23 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         }
     };
 
+    $scope.getDisplayTitle = function(media){
+
+        var displayTitle = "";
+
+        if (!$scope.isEmpty(media.series) && (media.series != media.title)){
+            displayTitle = displayTitle + media.series + ": ";
+        }
+
+        displayTitle = displayTitle + media.title;
+
+        if (!$scope.isEmpty(media.volume)){
+            displayTitle = displayTitle + ", Volume " + media.volume;
+        }
+
+        return displayTitle;
+    };
+
     /* Pagination Functions */
 
     $scope.switchPage = function(page, path){

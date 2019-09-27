@@ -14,6 +14,12 @@
             <select ng-model="media_clone.old_title" ng-options="title.title for title in titles" ng-change="updateForSelectValue(media_clone.old_title.title, 'title')"></select>
         </label>
 
+        <label for="series">Series<br>
+            <input type="text" name="series" id="series" ng-model="media_clone.series" placeholder="Series..."><br>
+            Select From Existing:
+            <select ng-model="media_clone.old_series" ng-options="single_series.series for single_series in series" ng-change="updateForSelectValue(media_clone.old_series.series, 'series')"></select>
+        </label>
+
         <label for="author">Author<br>
             <input type="text" name="author" id="author" ng-model="media_clone.author" placeholder="Author..."><br>
             Select From Existing:

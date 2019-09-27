@@ -26,6 +26,11 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
                 $scope.titles = response.data;
             });
 
+            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'series')
+            .then(function(response) {
+                $scope.series = response.data;
+            });
+
         }else if ($scope.isActive('/movies_update/:id')){
             $scope.variables = {
                 media_type:"movie",
@@ -67,6 +72,7 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
         if ($scope.variables.media_type == "book"){
             delete media_clone.old_author;
             delete media_clone.old_title;
+            delete media_clone.old_series;
         }else if ($scope.variables.media_type == "game"){
             delete media_clone.old_platform;
         }
@@ -84,15 +90,7 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
     };
 
     $scope.updateForSelectValue = function(old_item, field){
-        if (field === "title"){
-            $scope.media_clone.title = old_item;
-        }else if (field === "author"){
-            $scope.media_clone.author = old_item;
-        }else if (field === "platform"){
-            $scope.media_clone.platform = old_item;
-        }else if (field === "genre"){
-            $scope.media_clone.genre = old_item;
-        }
+        $scope.media_clone[field] = old_item;
     };
 
     $scope.hasChanged = function(image){

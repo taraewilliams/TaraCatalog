@@ -7,7 +7,7 @@ class Constants
     public static function default_order()
     {
         return (object) array(
-          "book"    => "ORDER BY title,author,volume",
+          "book"    => "ORDER BY COALESCE(NULLIF(series,''), title), volume, title, author",
           "movie"   => "ORDER BY title,season,mpaa_rating",
           "game"    => "ORDER BY title,platform,esrb_rating"
         );

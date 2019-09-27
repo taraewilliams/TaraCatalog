@@ -127,7 +127,7 @@ class Media
     public static function get_counts_for_column($table, $user_id, $column_name, $header = "counts")
     {
         $database = Database::instance();
-        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . $table . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND user_id = " . $user_id . " GROUP BY " . $column_name;
+        $sql = "SELECT COUNT(*) as num, " . $column_name . " as type FROM " . $table . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND " . $column_name . " <> '' AND user_id = " . $user_id . " GROUP BY " . $column_name;
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -246,9 +246,26 @@ class Media
 
     /* Sort all media by title */
     public static function sort_all($a, $b){
-        return strtolower($a->title) > strtolower($b->title);
+        if($a->type == "book" && $b->type == "book"){
+            if (!empty($a->series)){
+                if (!empty($b->series)){
+                    return (strtolower($a->series) == strtolower($b->series)) ? ($a->volume > $b->volume) : strtolower($a->series) > strtolower($b->series);
+                }else{
+                    return (strtolower($a->series) == strtolower($b->title)) ? ($a->volume > $b->volume) : strtolower($a->series) > strtolower($b->title);
+                }
+            }else{
+                if (!empty($b->series)){
+                    return (strtolower($a->title) == strtolower($b->series)) ? ($a->volume > $b->volume) : strtolower($a->title) > strtolower($b->series);
+                }else{
+                    return (strtolower($a->title) == strtolower($b->title)) ? ($a->volume > $b->volume) : strtolower($a->title) > strtolower($b->title);
+                }
+            }
+        }else if ($a->type == "movie" && $b->type == "movie"){
+            return (strtolower($a->title) == strtolower($b->title)) ? ($a->season > $b->season) : strtolower($a->title) > strtolower($b->title);
+        }else{
+            return strtolower($a->title) > strtolower($b->title);
+        }
     }
-
 
     /* ========================================================== *
     * PRIVATE FUNCTIONS

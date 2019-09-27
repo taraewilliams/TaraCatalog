@@ -23,6 +23,33 @@ app.controller('HomeController', function($scope, RequestService, CONFIG, AuthSe
 
     };
 
+    $scope.getDisplayTitle = function(media){
+
+        var displayTitle = "";
+
+        if (media.type == 'book'){
+            if (!$scope.isEmpty(media.series) && (media.series != media.title)){
+                displayTitle = displayTitle + media.series + ": ";
+            }
+
+            displayTitle = displayTitle + media.title;
+
+            if (!$scope.isEmpty(media.volume)){
+                displayTitle = displayTitle + ", Volume " + media.volume;
+            }
+        }else if (media.type == 'movie'){
+            if (!$scope.isEmpty(media.season)){
+                displayTitle = displayTitle + media.title + ", " + media.season;
+            }else{
+                displayTitle = displayTitle + media.title;
+            }
+        }else{
+            displayTitle = displayTitle + media.title;
+        }
+
+        return displayTitle;
+    };
+
     init();
 
 });

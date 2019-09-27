@@ -39,7 +39,7 @@ class Movie
         $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Live Action";
         $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->season          = isset($data['season']) ? $data['season'] : null;
-        $this->todo_list      = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
+        $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
         $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;

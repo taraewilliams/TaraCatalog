@@ -27,6 +27,11 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
                 $scope.titles = response.data;
             });
 
+            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'series')
+            .then(function(response) {
+                $scope.series = response.data;
+            });
+
         }else if ($scope.isActive('/movies_create')){
             $scope.variables = {
                 media_type:"movie",
@@ -62,6 +67,7 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
         if ($scope.variables.media_type == "book"){
             delete $scope.media.old_author;
             delete $scope.media.old_title;
+            delete $scope.media.old_series;
         }else if ($scope.variables.media_type == "game"){
             delete $scope.media.old_platform;
         }
@@ -79,15 +85,7 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
     };
 
     $scope.updateForSelectValue = function(old_item, field){
-        if (field === "title"){
-            $scope.media.title = old_item;
-        }else if (field === "author"){
-            $scope.media.author = old_item;
-        }else if (field === "platform"){
-            $scope.media.platform = old_item;
-        }else if (field === "genre"){
-            $scope.media.genre = old_item;
-        }
+        $scope.media[field] = old_item;
     };
 
     var getEmptyMedia = function(){
@@ -95,6 +93,8 @@ app.controller('CreateController', function($scope, CONFIG, RequestService, $htt
             return {
                 title:"",
                 old_title:"",
+                series:"",
+                old_series:"",
                 author:"",
                 old_author:"",
                 volume:null,

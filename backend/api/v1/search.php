@@ -47,12 +47,14 @@ $app->group('/api', function () use ($app) {
 
             $book_params = array(
                 "title"          => $searchTerm,
+                "series"         => $searchTerm,
                 "author"         => $searchTerm,
                 "volume"         => $searchTerm,
                 "isbn"           => $searchTerm,
                 "cover_type"     => $searchTerm,
                 "content_type"   => $searchTerm,
-                "location"       => $searchTerm
+                "location"       => $searchTerm,
+                "genre"          => $searchTerm
             );
 
             $movie_params = array(
@@ -62,14 +64,16 @@ $app->group('/api', function () use ($app) {
                 "content_type"  => $searchTerm,
                 "location"      => $searchTerm,
                 "season"        => $searchTerm,
-                "mpaa_rating"   => $searchTerm
+                "mpaa_rating"   => $searchTerm,
+                "genre"         => $searchTerm
             );
 
             $game_params = array(
                 "title"         => $searchTerm,
                 "platform"      => $searchTerm,
                 "location"      => $searchTerm,
-                "esrb_rating"   => $searchTerm
+                "esrb_rating"   => $searchTerm,
+                "genre"         => $searchTerm
             );
 
             $conj = "OR";

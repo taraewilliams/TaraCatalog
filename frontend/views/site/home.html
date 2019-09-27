@@ -40,9 +40,7 @@
             <img ng-if="isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
             <img ng-if="isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
             <img ng-if="isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
-            <h6 ng-if="!isEmpty(item.season)">{{item.title}}, {{item.season}}</h6>
-            <h6 ng-if="!isEmpty(item.volume)">{{item.title}}, Volume {{item.volume}}</h6>
-            <h6 ng-if="isEmpty(item.season) && isEmpty(item.volume)">{{item.title}}</h6>
+            <h6>{{getDisplayTitle(item)}}</h6>
         </li>
     </ul>
 

@@ -37,7 +37,7 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
             $scope.items = response.data;
             items_clone = $scope.clone($scope.items);
             $scope.item_length = items_clone.length;
-            $scope.items = $scope.addLettersToTitles($scope.items);
+            $scope.items = $scope.addLettersToTitles($scope.items, "none");
             $scope.items_resolved = true;
         }, function(response){
             console.log("Error");
