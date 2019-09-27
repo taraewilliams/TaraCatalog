@@ -52,7 +52,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
             $scope.items = response.data;
             items_clone = $scope.clone($scope.items);
             $scope.item_length = items_clone.length;
-            $scope.items = $scope.addLettersToTitles($scope.items);
+            $scope.items = $scope.addLettersToTitles($scope.items, "none");
             $scope.items_resolved = true;
         }, function(response){
             console.log("Error");
@@ -87,6 +87,41 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         }
     };
 
+    $scope.updateMedia = function(item){
+
+        delete item.editOn;
+        var new_media = removeNotUpdatedFields(item, item.orig);
+        var url = $scope.variables.put_url + item.id;
+        delete new_media.orig;
+
+        if (!$scope.isEmptyObj(new_media)){
+            RequestService.post(url, new_media, function(data) {
+                alert($scope.variables.item_type + " was updated.");
+            }, function(error, status){
+                console.log(error.message);
+            });
+        }
+    };
+
+    $scope.updateForSelectValue = function(old_item, field){
+        $scope.media_clone[field] = old_item;
+    };
+
+    $scope.hasChanged = function(image){
+        return ($scope.media.image != image);
+    }
+
+    $scope.printPage = function(){
+        window.print();
+    };
+
+    $scope.toggleEdit = function(item){
+        item.editOn = !item.editOn;
+        if (item.editOn){
+            item.orig = $scope.clone(item);
+        }
+    };
+
     /* Sort table items by a specific field */
     $scope.sortBy = function(sortVal, filter){
 
@@ -105,7 +140,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 items_clone = $scope.clone($scope.items);
                 $scope.item_length = items_clone.length;
                 if(sortVal=="none" || sortVal == "title"){
-                    $scope.items = $scope.addLettersToTitles($scope.items);
+                    $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
                 }
             }, function(response){
                 console.log("Error");
@@ -121,16 +156,12 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 items_clone = $scope.clone($scope.items);
                 $scope.item_length = items_clone.length;
                 if(sortVal=="none" || sortVal == "title"){
-                    $scope.items = $scope.addLettersToTitles($scope.items);
+                    $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
                 }
             }, function(error, status){
                 console.log(error.message);
             });
         }
-    };
-
-    $scope.printPage = function(){
-        window.print();
     };
 
     /* Filter functions */
@@ -145,6 +176,22 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
 
     //* Private Functions *//
 
+    var removeNotUpdatedFields = function(media_clone, media){
+
+        var new_media = {};
+
+        for (var prop in media_clone) {
+
+            if(!media_clone.hasOwnProperty(prop)) continue;
+
+            if(media_clone[prop] != media[prop]){
+                new_media[prop] = media_clone[prop];
+            }
+        }
+
+        return new_media;
+    };
+
     var removeEmptyFields = function(obj){
         for (var propName in obj) {
             if (obj[propName] === null || obj[propName] === undefined || obj[propName] == '') {
@@ -158,6 +205,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         if ($scope.variables.item_type == "book"){
             return {
                 title:"",
+                series:"",
                 author:"",
                 old_author:"",
                 volume:null,
