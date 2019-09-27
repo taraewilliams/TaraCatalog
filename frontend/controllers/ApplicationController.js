@@ -14,6 +14,13 @@ app.controller('ApplicationController', function ($scope, $route, $location, Aut
         alert("Your session either does not exist or has expired. Please login again.");
     });
 
+    var windowWidth = window.innerWidth;
+    if (windowWidth >= 800){
+        $scope.menuOpen = true;
+    }else{
+        $scope.menuOpen = false;
+    }
+
     $scope.changeStyle = function(color){
         $scope.color_scheme = color;
     }
@@ -63,28 +70,45 @@ app.controller('ApplicationController', function ($scope, $route, $location, Aut
     };
 
     /* Add alphabetical letters between the titles to organize */
-    $scope.addLettersToTitles = function(items){
+    $scope.addLettersToTitles = function(items, sortVal){
 
         var items_clone = $scope.clone(items);
         var added_letters = 0;
 
-        for (var i = 0; i < items.length; i++){
-            if (i !== items.length - 1){
-                var prev_letter = items[i].title.charAt(0).toUpperCase();
-                var curr_letter = items[i + 1].title.charAt(0).toUpperCase();
+        for (var i = 0; i < items.length - 1; i++){
+            var item = items[i];
+            var next_item = items[i + 1];
 
-                if (prev_letter !== curr_letter){
-                    var index = (i + 1) + added_letters;
-                    var letter = {
-                        title: curr_letter,
-                        isHeader: 1
-                    };
-                    items_clone.splice(index, 0, letter);
-                    added_letters += 1;
-                }
+            if (sortVal === "title"){
+                var prev_letter = item[sortVal].charAt(0).toUpperCase();
+                var curr_letter = next_item[sortVal].charAt(0).toUpperCase();
+            }else{
+                var prev_word = $scope.isEmpty(item.series) ? item.title : item.series;
+                var prev_letter = prev_word.charAt(0).toUpperCase();
+
+                var curr_word = $scope.isEmpty(next_item.series) ? next_item.title : next_item.series;
+                var curr_letter = curr_word.charAt(0).toUpperCase();
+            }
+
+            if (prev_letter !== curr_letter){
+                var index = (i + 1) + added_letters;
+                var letter = {
+                    title: curr_letter,
+                    isHeader: 1
+                };
+                items_clone.splice(index, 0, letter);
+                added_letters += 1;
             }
         }
         return items_clone;
+    };
+
+
+    /* Mobile function to toggle the hamburger menu */
+
+    $scope.toggleMenu = function(){
+        $scope.menuOpen = !$scope.menuOpen;
+
     };
 
 });

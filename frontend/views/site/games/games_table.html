@@ -4,7 +4,7 @@
 
     <h1 class="table-title">Games ( {{ item_length }} )</h1>
 
-    <button ng-click="printPage()" class="basic-button">Print</button>
+    <button ng-click="printPage()" class="basic-button print-button">Print</button>
 
     <!-- Game Filter -->
     <div class="filter-form" ng-include="'views/site/subviews/_filterGameResults.html'"></div>
@@ -30,22 +30,21 @@
 
     <table class="standard-table" ng-show="items.length > 0">
         <tr>
-            <th class="table-row-number"></th>
-            <th class="image-column">Image</th>
+            <th class="row-number-header"></th>
+            <th class="image-column-header">Image</th>
             <th>Title</th>
             <th>Platform</th>
             <th>Genre</th>
             <th>ESRB Rating</th>
             <th>Notes</th>
-            <th colspan="2" class="location-column">Location</th>
-            <th class="location-column-print">Location</th>
-            <th class="button-column"></th>
+            <th class="location-column-header">Location</th>
+            <th class="button-column-header"></th>
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="10">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="9">{{ item.title }}</th>
 
-            <td ng-if="!item.isHeader" class="table-row-number">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader" class="row-number">{{item.row_number}}</td>
             <td ng-if="!item.isHeader" class="image-column">
                 <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="../backend/public/{{item.image}}"/>
                 <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
@@ -55,8 +54,7 @@
             <td ng-if="!item.isHeader">{{item.genre}}</td>
             <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
             <td ng-if="!item.isHeader">{{item.notes}}</td>
-            <td ng-if="!item.isHeader">{{item.location}}</td>
-            <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+            <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
             <td ng-if="!item.isHeader" class="button-column">
                 <button class="basic-button table-button" ng-click="goToPath('/games_update/', item.id)">Edit</button>
                 <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>

@@ -46,80 +46,112 @@ table {
   border-spacing: 0; }
 
 @media screen and (max-width: 800px) {
-  .main-menu {
-    text-align: center;
-    width: 100%;
-    height: auto;
-    position: fixed; }
-    .main-menu .menu-item {
+  header h1 {
+    display: inline-block; }
+  header .main-menu, header .profile-menu {
+    display: block; }
+    header .main-menu li, header .profile-menu li {
+      display: block;
+      width: 100%;
       height: auto;
-      width: auto;
-      line-height: 20px;
-      display: inline-block; }
-    .main-menu .sub-menu li {
-      display: inline-block; } }
+      min-height: 30px;
+      line-height: 30px;
+      padding-top: 5px; }
+      header .main-menu li .sub-menu-mobile li a, header .profile-menu li .sub-menu-mobile li a {
+        color: #995c00; }
+      header .main-menu li .sub-menu-mobile li a:hover, header .profile-menu li .sub-menu-mobile li a:hover {
+        color: white; }
+      header .main-menu li .sub-menu-mobile li .sub-selected, header .profile-menu li .sub-menu-mobile li .sub-selected {
+        color: white; }
+  header .sub-menu-mobile {
+    display: none;
+    overflow: hidden;
+    background-color: #ffe0b3; }
+  header .sub-menu-selected-mobile {
+    display: block;
+    overflow: visible; }
+  header .sub-menu-selected {
+    display: none; }
+  header .sub-menu {
+    display: none; }
+  .mobile-hamburger {
+    box-sizing: border-box;
+    display: inline-block;
+    margin: 5px;
+    float: right;
+    display: inline-block; }
+    .mobile-hamburger div {
+      width: 35px;
+      height: 5px;
+      background-color: white;
+      margin: 6px 0; }
+  .hamburger-selected div {
+    background-color: #ff9900; } }
 
 @media screen and (min-width: 800px) {
-  .main-menu {
-    text-align: right;
-    width: 200px;
-    height: 100%;
-    position: fixed; }
-    .main-menu .menu-item {
-      height: 60px;
-      line-height: 35px;
-      display: block;
-      width: 100%; }
-    .main-menu .sub-menu li {
-      display: block; } }
-
-@media screen {
-  .main-menu {
-    background-color: #ffc266;
-    color: white;
-    box-sizing: border-box;
-    z-index: 100;
-    overflow-y: scroll; }
-    .main-menu .menu-item {
-      padding: 10px;
-      box-sizing: border-box;
-      -webkit-transition: background-color 0.5s;
-      transition: background-color 0.5s; }
-    .main-menu .menu-item:hover {
-      background-color: #ff9900; }
-      .main-menu .menu-item:hover .sub-menu {
-        display: block; }
-    .main-menu .selected {
-      background-color: #ff9900; }
-    .main-menu li {
-      display: inline-block; }
-      .main-menu li a {
+  header h1 {
+    display: block; }
+  header .main-menu, header .profile-menu {
+    display: inline-block; }
+    header .main-menu li, header .profile-menu li {
+      display: inline-block;
+      min-width: 75px;
+      height: 25px;
+      line-height: 25px;
+      padding: 5px 10px 5px 10px; }
+  header .profile-menu {
+    float: right; }
+  header .sub-menu {
+    display: none;
+    overflow: hidden;
+    background-color: #ffe0b3; }
+    header .sub-menu li {
+      display: inline-block;
+      padding: 10px 15px 10px 15px; }
+      header .sub-menu li a {
+        color: #995c00;
+        text-decoration: none;
         display: block;
         width: 100%;
         height: 100%;
         cursor: pointer;
-        color: white;
-        text-decoration: none; }
-    .main-menu .sub-menu-selected {
-      display: block !important;
-      overflow: visible !important; }
-    .main-menu .sub-menu {
-      display: none;
-      overflow: hidden;
-      background-color: #ffe0b3; }
-      .main-menu .sub-menu li {
-        height: 35px;
-        line-height: 25px;
-        padding: 5px 15px 5px 15px;
-        box-sizing: border-box; }
-        .main-menu .sub-menu li a {
-          font-size: 14px;
-          color: #995c00; }
-        .main-menu .sub-menu li a:hover {
-          color: white; }
-        .main-menu .sub-menu li .sub-selected {
+        font-size: 14px; }
+      header .sub-menu li a:hover {
+        color: white; }
+      header .sub-menu li .sub-selected {
+        color: white; }
+  header .sub-menu-selected {
+    display: block;
+    overflow: visible; }
+  header .sub-menu-mobile {
+    display: none; }
+  header .sub-menu-selected-mobile {
+    display: none; }
+  .mobile-hamburger {
+    display: none; } }
+
+@media screen {
+  header {
+    background-color: #ffc266;
+    color: white;
+    box-sizing: border-box;
+    position: relative; }
+    header .main-menu, header .profile-menu {
+      font-size: 0; }
+      header .main-menu li, header .profile-menu li {
+        text-align: center; }
+        header .main-menu li a, header .profile-menu li a {
           color: white;
-          padding-right: 10px; }
+          text-decoration: none;
+          display: block;
+          width: 100%;
+          height: 100%;
+          cursor: pointer;
+          font-size: 18px; }
+      header .main-menu li:hover, header .profile-menu li:hover {
+        background-color: #ff9900; }
+      header .main-menu .selected, header .profile-menu .selected {
+        background-color: #ff9900; }
   .viewer-menu div {
     display: inline-block; }
     .viewer-menu div a {
@@ -129,7 +161,9 @@ table {
       color: white; } }
 
 @media print {
-  .main-menu {
+  .main-menu, .profile-menu, .sub-menu {
+    display: none; }
+  .mobile-hamburger {
     display: none; } }
 
 body {
@@ -146,12 +180,13 @@ button {
 
 @media screen and (max-width: 800px) {
   main {
-    left: 0;
-    top: 100px; }
+    padding: 10px; }
     main form input, main form textarea {
       width: 100%; }
     main form label input, main form label textarea {
       width: 100%; }
+  .standard-table {
+    table-layout: auto; }
   h1 {
     font-size: 30px; }
   h2 {
@@ -175,12 +210,13 @@ button {
 
 @media screen and (min-width: 800px) {
   main {
-    left: 200px;
-    width: calc(100% - 200px); }
+    padding: 50px; }
     main form input, main form textarea {
       width: 50%; }
     main form label input, main form label textarea {
       width: 50%; }
+  .standard-table {
+    table-layout: fixed; }
   h1 {
     font-size: 40px; }
   h2 {
@@ -202,9 +238,9 @@ button {
 
 @media screen {
   main {
-    padding: 50px;
     position: relative;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    width: 100%; }
     main h1 {
       color: #4d2e00; }
     main form {
@@ -299,35 +335,68 @@ button {
     border-collapse: collapse;
     width: 100%;
     margin-top: 50px;
-    margin-bottom: 50px; }
+    margin-bottom: 50px;
+    word-wrap: break-word; }
     .standard-table th {
-      font-weight: bold; }
+      font-weight: bold;
+      font-size: 16px; }
+    .standard-table td {
+      font-size: 15px; }
     .standard-table td, .standard-table th {
       border: 1px solid #ffe0b3;
       text-align: left;
       padding: 8px;
-      vertical-align: top; }
+      vertical-align: top;
+      box-sizing: border-box; }
     .standard-table tr:nth-child(even) {
       background-color: #ffe0b3; }
     .standard-table img {
       width: 50px;
-      border: 1px solid #ffe0b3; }
+      border: 1px solid #ffe0b3;
+      box-sizing: border-box; }
     .standard-table tr .table-toggle-box {
       text-align: center;
-      vertical-align: middle; }
+      vertical-align: middle;
+      width: 65px; }
     .standard-table .location-dot {
       background-color: #8CEE7D; }
     .standard-table .location-dot-away {
       background-color: red; }
-    .standard-table .location-column-print {
-      display: none; }
-    .standard-table .table-row-number {
+    .standard-table .row-number {
       vertical-align: middle;
-      text-align: center; }
+      text-align: center;
+      width: 60px; }
+    .standard-table .row-number-header {
+      width: 60px; }
+    .standard-table .image-column {
+      width: 66px;
+      vertical-align: middle; }
+    .standard-table .image-column-header {
+      width: 66px; }
+    .standard-table .select-header {
+      width: 65px; }
+    .standard-table .location-column {
+      width: 100px; }
+    .standard-table .location-column-header {
+      width: 100px; }
+    .standard-table label {
+      font-size: 12px; }
+    .standard-table input {
+      width: 100%;
+      height: 25px;
+      line-height: 25px;
+      border-radius: 5px; }
+    .standard-table input[type="radio"] {
+      width: 15px;
+      vertical-align: middle; }
+    .standard-table textarea {
+      width: 100%;
+      height: 50px;
+      border-radius: 5px; }
   .loader {
     position: relative;
-    left: calc(50% + 50px);
-    top: 125px;
+    left: calc(50% - 25px);
+    top: 100px;
     border: 10px solid lightgray;
     border-radius: 50%;
     border-left: 10px solid #995c00;
@@ -442,7 +511,9 @@ button {
       display: none; }
     .standard-table .image-column {
       display: none; }
-    .standard-table .location-column {
+    .standard-table .button-column-header {
+      display: none; }
+    .standard-table .image-column-header {
       display: none; } }
 
 @media screen {
@@ -485,9 +556,6 @@ button {
     margin-top: 0; } }
 
 @media screen and (max-width: 800px) {
-  .add-button {
-    left: 0;
-    width: 100%; }
   .media-list-pic li {
     margin: 5px;
     width: 145px; }
@@ -499,19 +567,18 @@ button {
   .pagination a {
     padding: 8px 8px; }
   .filter-form form section {
-    width: 100%; } }
+    width: 100%; }
+  .print-button {
+    display: none; } }
 
 @media screen and (min-width: 800px) {
-  .add-button {
-    left: 200px;
-    width: calc(100% - 200px); }
   .media-list-pic li {
-    margin: 10px;
-    width: 260px; }
+    margin: 15px;
+    width: 300px; }
     .media-list-pic li img {
-      width: 260px; }
+      width: 300px; }
     .media-list-pic li h6 {
-      width: 260px;
+      width: 300px;
       font-size: 16px; }
   .pagination a {
     padding: 8px 16px; }
@@ -555,7 +622,7 @@ button {
       width: 48%;
       min-height: 25px;
       height: auto;
-      font-size: 12px;
+      font-size: 15px;
       display: inline-block;
       margin: 0; }
     .filter-form form label {
@@ -635,12 +702,17 @@ button {
     position: fixed;
     bottom: 0px;
     margin: 0;
-    box-shadow: 0px -5px 50px white; }
+    box-shadow: 0px -5px 50px white;
+    width: 100%;
+    left: 0; }
   .add-button:hover {
     background-color: #ffe0b3; }
   .table-title {
     width: 70%;
-    display: inline-block; } }
+    display: inline-block; }
+  .print-button {
+    margin: 0;
+    float: right; } }
 
 @media print {
   .filter-form {

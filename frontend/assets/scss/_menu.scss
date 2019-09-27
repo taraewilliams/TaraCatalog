@@ -1,106 +1,184 @@
 // Mobile CSS
 @media screen and (max-width: 800px) {
-    .main-menu{
-        text-align:center;
-        width:100%;
-        height:auto;
-        position:fixed;
 
-        .menu-item{
-            height: auto;
-            width: auto;
-            line-height:20px;
-            display:inline-block;
+    header{
+        h1{
+            display: inline-block;
         }
-        .sub-menu{
+
+        .main-menu, .profile-menu{
+            display:block;
+
             li{
-                display:inline-block;
+                display:block;
+                width: 100%;
+                height: auto;
+                min-height: 30px;
+                line-height: 30px;
+                padding-top:5px;
+
+                .sub-menu-mobile{
+                    li{
+                        a{
+                            color:$dark-red;
+                        }
+
+                        a:hover{
+                            color:$font-light;
+                        }
+
+                        .sub-selected{
+                            color:$font-light;
+                        }
+                    }
+                }
             }
+        }
+
+        .sub-menu-mobile{
+            display: none;
+            overflow: hidden;
+            background-color:$lighter-red;
+        }
+
+        .sub-menu-selected-mobile{
+            display:block;
+            overflow:visible;
+        }
+
+        .sub-menu-selected{
+            display: none;
+        }
+
+        .sub-menu{
+            display: none;
+        }
+    }
+
+    .mobile-hamburger{
+        box-sizing: border-box;
+        display: inline-block;
+        margin: 5px;
+        float: right;
+        div{
+            width: 35px;
+            height: 5px;
+            background-color: white;
+            margin: 6px 0;
+        }
+        display:inline-block;
+    }
+
+    .hamburger-selected{
+        div{
+            background-color: $medium-red;
         }
     }
 }
 
 // Web CSS
 @media screen and (min-width: 800px) {
-    .main-menu{
-        text-align: right;
-        width:200px;
-        height: 100%;
-        position:fixed;
 
-        .menu-item{
-            height: 60px;
-            line-height: 35px;
-            display:block;
-            width:100%;
+    header{
+        h1{
+            display: block;
         }
-        .sub-menu{
+
+        .main-menu, .profile-menu{
+            display:inline-block;
+
             li{
-                display:block;
+                display: inline-block;
+                min-width: 75px;
+                height: 25px;
+                line-height: 25px;
+                padding: 5px 10px 5px 10px;
             }
         }
+
+        .profile-menu{
+            float: right;
+        }
+
+        .sub-menu{
+            display: none;
+            overflow: hidden;
+            background-color:$lighter-red;
+
+            li{
+                display: inline-block;
+                padding: 10px 15px 10px 15px;
+
+                a{
+                    color:$dark-red;
+                    text-decoration: none;
+                    display:block;
+                    width:100%;
+                    height:100%;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+
+                a:hover{
+                    color: $font-light;
+                }
+
+                .sub-selected{
+                    color: $font-light;
+                }
+            }
+        }
+
+        .sub-menu-selected{
+            display:block;
+            overflow:visible;
+        }
+
+        .sub-menu-mobile{
+            display: none;
+        }
+
+        .sub-menu-selected-mobile{
+            display: none;
+        }
+    }
+
+    .mobile-hamburger{
+        display:none;
     }
 }
 
 @media screen{
 
-    .main-menu{
+    header{
         background-color: $light-red;
         color: $font-light;
         box-sizing: border-box;
-        z-index:100;
-        overflow-y:scroll;
+        position: relative;
 
-        .menu-item{
-            padding: 10px;
-            box-sizing: border-box;
-            -webkit-transition: background-color 0.5s;
-            transition: background-color 0.5s;
-        }
-        .menu-item:hover{
-            background-color:$medium-red;
-            .sub-menu{
-                display:block;
-            }
-        }
-        .selected{
-            background-color:$medium-red;
-        }
-        li{
-            display:inline-block;
-            a{
-                display:block;
-                width:100%;
-                height:100%;
-                cursor: pointer;
-                color: $font-light;
-                text-decoration:none;
-            }
-        }
-        .sub-menu-selected{
-            display:block !important;
-            overflow:visible !important;
-        }
-        .sub-menu{
-            display: none;
-            overflow: hidden;
-            background-color:$lighter-red;
+        .main-menu, .profile-menu{
+            font-size:0;
+
             li{
-                height: 35px;
-                line-height: 25px;
-                padding: 5px 15px 5px 15px;
-                box-sizing: border-box;
+                text-align: center;
+
                 a{
-                    font-size:14px;
-                    color:$dark-red;
-                }
-                a:hover{
                     color: $font-light;
+                    text-decoration: none;
+                    display:block;
+                    width:100%;
+                    height:100%;
+                    cursor: pointer;
+                    font-size:18px;
                 }
-                .sub-selected{
-                    color: $font-light;
-                    padding-right: 10px;
-                }
+            }
+
+            li:hover{
+                background-color:$medium-red;
+            }
+
+            .selected{
+                background-color:$medium-red;
             }
         }
     }
@@ -121,7 +199,11 @@
 
 @media print{
 
-    .main-menu{
+    .main-menu, .profile-menu, .sub-menu{
+        display:none;
+    }
+
+    .mobile-hamburger{
         display:none;
     }
 }

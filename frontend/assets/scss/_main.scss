@@ -18,9 +18,7 @@ button{
 // Mobile CSS
 @media screen and (max-width: 800px) {
     main{
-        left: 0;
-        top: 100px;
-
+        padding:10px;
         form{
             input, textarea{
                 width: 100%;
@@ -31,6 +29,10 @@ button{
                 }
             }
         }
+    }
+
+    .standard-table{
+        table-layout:auto;
     }
 
     h1{
@@ -81,9 +83,7 @@ button{
 // Web CSS
 @media screen and (min-width: 800px) {
     main{
-        left: 200px;
-        width: calc(100% - 200px);
-
+        padding:50px;
         form{
             input, textarea{
                 width: 50%;
@@ -94,6 +94,10 @@ button{
                 }
             }
         }
+    }
+
+    .standard-table{
+        table-layout:fixed;
     }
 
     h1{
@@ -138,10 +142,11 @@ button{
 }
 
 @media screen{
+
     main{
-        padding: 50px;
         position: relative;
         box-sizing: border-box;
+        width: 100%;
 
         h1{
             color: $darker-red;
@@ -282,9 +287,15 @@ button{
         width: 100%;
         margin-top: 50px;
         margin-bottom: 50px;
+        word-wrap: break-word;
 
         th{
             font-weight:bold;
+            font-size: 16px;
+        }
+
+        td{
+            font-size: 15px;
         }
 
         td, th{
@@ -292,6 +303,7 @@ button{
             text-align: left;
             padding: 8px;
             vertical-align:top;
+            box-sizing:border-box;
         }
 
         tr:nth-child(even){
@@ -301,12 +313,14 @@ button{
         img{
             width:50px;
             border: 1px solid $lighter-red;
+            box-sizing:border-box;
         }
 
         tr{
             .table-toggle-box{
                 text-align: center;
                 vertical-align: middle;
+                width:65px;
             }
         }
 
@@ -317,21 +331,65 @@ button{
             background-color: red;
         }
 
-        .location-column-print{
-            display:none;
-        }
-
-        .table-row-number{
+        .row-number{
             vertical-align:middle;
             text-align:center;
+            width: 60px;
+        }
+
+        .row-number-header{
+            width: 60px;
+        }
+
+        .image-column{
+            width:66px;
+            vertical-align:middle;
+        }
+
+        .image-column-header{
+            width:66px;
+        }
+
+        .select-header{
+            width:65px;
+        }
+
+        .location-column{
+            width: 100px;
+        }
+
+        .location-column-header{
+            width: 100px;
+        }
+
+        label{
+            font-size:12px;
+        }
+
+        input{
+            width: 100%;
+            height: 25px;
+            line-height: 25px;
+            border-radius: 5px;
+        }
+
+        input[type="radio"]{
+            width: 15px;
+            vertical-align: middle;
+        }
+
+        textarea{
+            width: 100%;
+            height: 50px;
+            border-radius: 5px;
         }
 
     }
 
     .loader {
         position: relative;
-        left: calc(50% + 50px);
-        top: 125px;
+        left: calc(50% - 25px);
+        top: 100px;
         border: 10px solid lightgray;
         border-radius: 50%;
         border-left: 10px solid $dark-red;
@@ -478,6 +536,7 @@ button{
                 vertical-align: middle;
             }
         }
+
         .button-column{
             display:none;
         }
@@ -486,7 +545,11 @@ button{
             display:none;
         }
 
-        .location-column{
+        .button-column-header{
+            display:none;
+        }
+
+        .image-column-header{
             display:none;
         }
     }

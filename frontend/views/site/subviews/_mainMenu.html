@@ -1,66 +1,125 @@
-<ul class="main-menu">
+<header>
 
-    <!-- Home Page -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/']) }">
-        <a ng-href="#">Home</a>
-    </li>
+    <h1>Media Catalog</h1>
 
-    <!-- Book Pages -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }" ng-if="user.role == 'creator'">
-        <a ng-href="#/books/0/25">Books</a>
-    </li>
-    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }">
+    <button class="mobile-hamburger" ng-class="{ 'hamburger-selected': menuOpen }" ng-click="toggleMenu()">
+        <div></div>
+        <div></div>
+        <div></div>
+    </button>
+
+    <!-- Main Menu -->
+    <ul class="main-menu" ng-if="menuOpen">
+
+        <!-- Home Page -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/']) }">
+            <a ng-href="#">Home</a>
+        </li>
+
+        <!-- Book Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/books/0/25">Books</a>
+
+            <!-- Books Sub Menu for Mobile -->
+            <ul class="sub-menu-mobile" ng-class="{ 'sub-menu-selected-mobile': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }">
+                <li><a ng-class="{ 'sub-selected': isActive(['/books_create']) }" ng-href="#/books_create">New</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/books/:offset/:limit']) }" ng-href="#/books/0/25">See Books</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/books_table','/books_table/order_by/:order_by']) }" ng-href="#/books_table">See Books List</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/books_table/read']) }" ng-href="#/books_table/read">To Read List</a></li>
+            </ul>
+        </li>
+
+        <!-- Movie Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/movies/0/25">Movies</a>
+
+            <!-- Movies Sub Menu for Mobile-->
+            <ul class="sub-menu-mobile" ng-class="{ 'sub-menu-selected-mobile': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }">
+                <li><a ng-class="{ 'sub-selected': isActive(['/movies_create']) }" ng-href="#/movies_create">New</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/movies/:offset/:limit']) }" ng-href="#/movies/0/25">See Movies</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/movies_table', '/movies_table/order_by/:order_by']) }" ng-href="#/movies_table">See Movies List</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/movies_table/watch']) }" ng-href="#/movies_table/watch">To Watch List</a></li>
+            </ul>
+        </li>
+
+        <!-- Game Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/games/0/25">Games</a>
+
+            <!-- Games Sub Menu for Mobile -->
+            <ul class="sub-menu-mobile" ng-class="{ 'sub-menu-selected-mobile': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }">
+                <li><a ng-class="{ 'sub-selected': isActive(['/games_create']) }" ng-href="#/games_create">New</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/games/:offset/:limit']) }" ng-href="#/games/0/25">See Games</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/games_table', '/games_table/order_by/:order_by']) }" ng-href="#/games_table">See Games List</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/games_table/play']) }" ng-href="#/games_table/play">To Play List</a></li>
+            </ul>
+
+        </li>
+
+        <!-- Viewer Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
+            <a ng-href="#/view_list">View Catalogs</a>
+
+            <!-- Viewers Sub Menu for Mobile -->
+            <ul class="sub-menu-mobile" ng-class="{ 'sub-menu-selected-mobile': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
+                <li ng-if="user.role == 'creator'"><a ng-class="{ 'sub-selected': isActive(['/viewer_list']) }" ng-href="#/viewer_list">Viewers of your Catalog</a></li>
+                <li ng-if="user.role == 'creator'"><a ng-class="{ 'sub-selected': isActive(['/add_viewers']) }" ng-href="#/add_viewers">Add Viewers</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/view_list']) }" ng-href="#/view_list">View Other Catalogs</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/request_view']) }" ng-href="#/request_view">Request to View Catalogs</a></li>
+            </ul>
+        </li>
+
+        <!-- Statistics Page -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/stats']) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/stats">Stats</a>
+        </li>
+    </ul>
+
+    <ul class="profile-menu" ng-if="menuOpen">
+        <!-- Profile Page -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/profile', '/user_update', '/reset_password']) }">
+            <a ng-href="#/profile">Profile</a>
+        </li>
+
+        <!-- Logout -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/logout']) }">
+            <a ng-href="#/logout">Logout</a>
+        </li>
+    </ul>
+
+
+    <!-- Sub Menus for Website -->
+
+    <!-- Books -->
+    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }">
         <li><a ng-class="{ 'sub-selected': isActive(['/books_create']) }" ng-href="#/books_create">New</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/books/:offset/:limit']) }" ng-href="#/books/0/25">See Books</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/books_table','/books_table/order_by/:order_by']) }" ng-href="#/books_table">See Books List</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/books_table/read']) }" ng-href="#/books_table/read">To Read List</a></li>
     </ul>
 
-    <!-- Movie Pages -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }" ng-if="user.role == 'creator'">
-        <a ng-href="#/movies/0/25">Movies</a>
-    </li>
-    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }">
+    <!-- Movies -->
+    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }">
         <li><a ng-class="{ 'sub-selected': isActive(['/movies_create']) }" ng-href="#/movies_create">New</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/movies/:offset/:limit']) }" ng-href="#/movies/0/25">See Movies</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/movies_table', '/movies_table/order_by/:order_by']) }" ng-href="#/movies_table">See Movies List</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/movies_table/watch']) }" ng-href="#/movies_table/watch">To Watch List</a></li>
     </ul>
 
-    <!-- Game Pages -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }" ng-if="user.role == 'creator'">
-        <a ng-href="#/games/0/25">Games</a>
-    </li>
-    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }">
+    <!-- Games -->
+    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }">
         <li><a ng-class="{ 'sub-selected': isActive(['/games_create']) }" ng-href="#/games_create">New</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/games/:offset/:limit']) }" ng-href="#/games/0/25">See Games</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/games_table', '/games_table/order_by/:order_by']) }" ng-href="#/games_table">See Games List</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/games_table/play']) }" ng-href="#/games_table/play">To Play List</a></li>
     </ul>
 
-    <!-- Viewer Pages -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
-        <a ng-href="#/view_list">View Catalogs</a>
-    </li>
-    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
+    <!-- Viewers -->
+    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
         <li ng-if="user.role == 'creator'"><a ng-class="{ 'sub-selected': isActive(['/viewer_list']) }" ng-href="#/viewer_list">Viewers of your Catalog</a></li>
         <li ng-if="user.role == 'creator'"><a ng-class="{ 'sub-selected': isActive(['/add_viewers']) }" ng-href="#/add_viewers">Add Viewers</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/view_list']) }" ng-href="#/view_list">View Other Catalogs</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/request_view']) }" ng-href="#/request_view">Request to View Catalogs</a></li>
     </ul>
 
-    <!-- Statistics Page -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/stats']) }" ng-if="user.role == 'creator'">
-        <a ng-href="#/stats">Stats</a>
-    </li>
-
-    <!-- Profile Page -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/profile', '/user_update', '/reset_password']) }">
-        <a ng-href="#/profile">Profile</a>
-    </li>
-
-    <!-- Logout -->
-    <li class="menu-item" ng-class="{ 'selected': isActive(['/logout']) }">
-        <a ng-href="#/logout">Logout</a>
-    </li>
-</ul>
+</header>

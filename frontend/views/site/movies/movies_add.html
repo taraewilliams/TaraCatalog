@@ -9,8 +9,8 @@
   <!-- Movie Table -->
   <table ng-show="items.length > 0" class="standard-table">
       <tr>
-          <th>Select</th>
-          <th>Image</th>
+          <th class="select-header">Select</th>
+          <th class="image-column-header">Image</th>
           <th>Title</th>
           <th>Season</th>
           <th>Edition</th>
@@ -18,14 +18,14 @@
           <th>Content Type</th>
           <th>Genre</th>
           <th>MPAA/TV Rating</th>
-          <th colspan="2">Location</th>
+          <th class="location-column-header">Location</th>
       </tr>
       <tr ng-repeat="item in items">
 
-          <th ng-if="item.isHeader" colspan="11">{{ item.title }}</th>
+          <th ng-if="item.isHeader" colspan="10">{{ item.title }}</th>
 
           <td class="table-toggle-box" ng-if="!item.isHeader"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
-          <td ng-if="!item.isHeader">
+          <td ng-if="!item.isHeader" class="image-column">
               <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="../backend/public/{{item.image}}"/>
               <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
           </td>
@@ -36,8 +36,7 @@
           <td ng-if="!item.isHeader">{{item.content_type}}</td>
           <td ng-if="!item.isHeader">{{item.genre}}</td>
           <td ng-if="!item.isHeader">{{item.mpaa_rating}}</td>
-          <td ng-if="!item.isHeader">{{item.location}}</td>
-          <td ng-if="!item.isHeader" class="location-dot" ng-class="{'location-dot-away': item.location != 'Apartment'}"></td>
+          <td ng-if="!item.isHeader" class="location-dot location-header" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
       </tr>
   </table>
 

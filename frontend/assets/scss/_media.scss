@@ -1,10 +1,6 @@
 
 // Mobile CSS
 @media screen and (max-width: 800px) {
-    .add-button{
-        left:0;
-        width:100%;
-    }
 
     .media-list-pic{
         li{
@@ -32,24 +28,24 @@
             }
         }
     }
+
+    .print-button{
+        display:none;
+    }
 }
 
 // Web CSS
 @media screen and (min-width: 800px) {
-    .add-button{
-        left: 200px;
-        width: calc(100% - 200px);
-    }
 
     .media-list-pic{
         li{
-            margin: 10px;
-            width: 260px;
+            margin: 15px;
+            width: 300px;
             img{
-                width: 260px;
+                width: 300px;
             }
             h6{
-                width: 260px;
+                width: 300px;
                 font-size: 16px;
             }
         }
@@ -123,7 +119,7 @@
           width: 48%;
           min-height: 25px;
           height: auto;
-          font-size: 12px;
+          font-size: 15px;
           display: inline-block;
           margin:0;
         }
@@ -231,6 +227,8 @@
         bottom: 0px;
         margin: 0;
         box-shadow: 0px -5px 50px white;
+        width:100%;
+        left:0;
     }
 
     .add-button:hover{
@@ -240,6 +238,11 @@
     .table-title{
         width:70%;
         display:inline-block;
+    }
+
+    .print-button{
+        margin:0;
+        float:right;
     }
 }
 
