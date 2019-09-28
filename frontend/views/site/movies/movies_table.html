@@ -52,13 +52,12 @@
 
             <th ng-if="item.isHeader" colspan="12">{{ item.title }}</th>
 
+            <!-- Regular Table -->
             <td ng-if="!item.isHeader && !item.editOn" class="row-number">{{item.row_number}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="image-column">
                 <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="../backend/public/{{item.image}}"/>
                 <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
             </td>
-
-            <!-- Regular Table -->
             <td ng-if="!item.isHeader && !item.editOn">{{item.title}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.season}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.edition}}</td>

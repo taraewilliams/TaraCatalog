@@ -44,24 +44,79 @@
 
             <th ng-if="item.isHeader" colspan="9">{{ item.title }}</th>
 
-            <td ng-if="!item.isHeader" class="row-number">{{item.row_number}}</td>
-            <td ng-if="!item.isHeader" class="image-column">
+            <!-- Regular Table -->
+            <td ng-if="!item.isHeader && !item.editOn" class="row-number">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="image-column">
                 <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="../backend/public/{{item.image}}"/>
                 <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
             </td>
-            <td ng-if="!item.isHeader">{{item.title}}</td>
-            <td ng-if="!item.isHeader">{{item.platform}}</td>
-            <td ng-if="!item.isHeader">{{item.genre}}</td>
-            <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
-            <td ng-if="!item.isHeader">{{item.notes}}</td>
-            <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
-            <td ng-if="!item.isHeader" class="button-column">
-                <button class="basic-button table-button" ng-click="goToPath('/games_update/', item.id)">Edit</button>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.title}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.platform}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.genre}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.esrb_rating}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.notes}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="button-column">
+                <button class="basic-button table-button" ng-click="toggleEdit(item)">Edit</button>
                 <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
 
                 <button ng-if="!item.isHeader && item.todo_list" class="basic-button table-button-2 on-todo-list" ng-click="toggleReadList(item.id,0)">Remove from Play List</button>
                 <button ng-if="!item.isHeader && !item.todo_list" class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Play List</button>
             </td>
+
+
+            <!-- Edit Table -->
+            <td ng-if="!item.isHeader && item.editOn" class="row-number">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader && item.editOn" class="image-column">
+                <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="../backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/frontend/assets/images/game_saver.jpg"/>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="title">
+                    <input type="text" name="title" id="title" ng-model="item.title" placeholder="Title..."><br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="platform">
+                    <input type="text" name="platform" id="platform" ng-model="item.platform" placeholder="Platform...">
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="genre">
+                    <input type="text" name="genre" id="genre" ng-model="item.genre" placeholder="Genre...">
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="esrb_rating">
+                    <select ng-model="item.esrb_rating">
+                        <option value="none">None</option>
+                        <option value="RP">RP (Rating Pending)</option>
+                        <option value="EC">EC (Early Childhood)</option>
+                        <option value="E">E (Everyone)</option>
+                        <option value="E10+">E10+ (Everyone 10+)</option>
+                        <option value="KA">KA (Kids to Adults)</option>
+                        <option value="T">T (Teen)</option>
+                        <option value="M">M (Mature)</option>
+                        <option value="AO">AO (Adults Only)</option>
+                    </select>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="notes">
+                    <textarea name="text" ng-model="item.notes" placeholder="Notes..."></textarea>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn" class="location-column">
+                <label for="location">
+                    <input type="radio" ng-model="item.location" value="Apartment"> Apartment<br>
+                    <input type="radio" ng-model="item.location" value="Home"> Home<br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn" class="button-column">
+                <button class="basic-button table-button" ng-click="updateMedia(item)">Update</button>
+                <button class="basic-button table-button" ng-click="toggleEdit(item)">Cancel</button>
+            </td>
+
         </tr>
     </table>
 
