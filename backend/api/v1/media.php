@@ -4,21 +4,6 @@ use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Media;
 use TaraCatalog\Config\Config;
 
-/* Requests */
-
-
-/* GET */
-
-/*
-
-1. media/location/count
-    Gets the count of all media grouped by distinct location for a user.
-    Input: none
-    Output: Media counts
-
-*/
-
-
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
         $resource = "/media";

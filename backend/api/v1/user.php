@@ -3,64 +3,7 @@
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\User;
 use TaraCatalog\Model\Media;
-
-/* Requests */
-
-
-/* GET */
-
-/*
-
-1. users/{id}
-    Gets a single user for its ID.
-    Input: id (user ID)
-    Output: User object
-
-2. users/{username}/{password}
-    Gets a single user for its username and password.
-    Input: username, password
-    Output: User object
-
-3. users/non/viewers/all
-    Gets users that are not viewing a creator's catalog.
-    Input: none
-    Output: User object array (with id, username, and image)
-
-4. users/non/views/all
-    Gets users whose catalogs a creator can't view.
-    Input: none
-    Output: User object array (with id, username, and image)
-*/
-
-
-/* POST */
-
-/*
-
-1. users
-    Creates a new user.
-    Input: (required) username, password, email
-        (optional) first_name, last_name, color_scheme, role, image
-    Output: User object
-
-2. users/{id}
-    Updates a user.
-    Input: (required) id (user ID)
-        (optional) username, password, email, first_name, last_name, color_scheme, role, image
-    Output: true or false (success or failure)
-*/
-
-
-/* DELETE */
-
-/*
-
-1. users/{id}
-    Deletes a user.
-    Input: id (user ID)
-    Output: true or false (success or failure)
-*/
-
+use TaraCatalog\Model\Viewer;
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {

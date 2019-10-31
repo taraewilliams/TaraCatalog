@@ -6,18 +6,6 @@ use TaraCatalog\Model\Viewer;
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Constants;
 
-/* Requests */
-
-/* GET */
-
-/*
-
-1. book_viewers/{id}
-    Get all of a creator's books for a viewer, given the viewer's and creator's IDs.
-    Input: id (creator ID)
-    Output: Book object array
-*/
-
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
         $resource = "/book_viewers";
