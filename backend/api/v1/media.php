@@ -46,5 +46,19 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($location_types);
         });
 
+        /* ========================================================== *
+        * DELETE
+        * ========================================================== */
+
+        /* 1. Delete unused media images */
+        $app->delete($resource . '/images', function ($response, $request, $args) use ($app)
+        {
+            /* Make an admin request */
+            $session = APIService::authenticate_request($_DELETE);
+
+            $deleted_images = Media::delete_unused_images();
+            APIService::response_success($deleted_images);
+        });
+
     });
 });

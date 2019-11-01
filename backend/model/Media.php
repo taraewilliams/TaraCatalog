@@ -244,6 +244,59 @@ class Media
         return $file_name;
     }
 
+    /* Delete unused images */
+    public static function delete_unused_images(){
+
+        $deleted_books = Media::delete_unused_images_for_table(CONFIG::DBTables()->book);
+        $deleted_movies = Media::delete_unused_images_for_table(CONFIG::DBTables()->movie);
+        $deleted_games = Media::delete_unused_images_for_table(CONFIG::DBTables()->game);
+        $deleted_users = Media::delete_unused_images_for_table(CONFIG::DBTables()->user);
+
+        $deleted_images = array(
+            "books"     => $deleted_books,
+            "movies"    => $deleted_movies,
+            "games"     => $deleted_games,
+            "users"     => $deleted_users
+        );
+
+        return $deleted_images;
+    }
+
+    /* Delete unused images for table */
+    public static function delete_unused_images_for_table($table)
+    {
+        /* Get media images in database */
+        $database = Database::instance();
+        $sql = "SELECT DISTINCT image FROM " . $table . " WHERE image IS NOT NULL";
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error getting images.", 500);
+        }
+        $media_images = array();
+        foreach ($result as $image){
+            array_push($media_images, $image["image"]);
+        }
+
+        /* Get media images currently stored */
+        $path = FileService::MAIN_DIR . '/' . $table . 's';
+        $files = array_diff(scandir($path), array('.', '..'));
+
+        /* Delete images stored that are not in database */
+        $deleted_images = array();
+        foreach( $files as $file ) {
+            $full_file = $path . "/" . $file;
+
+            if (!in_array($full_file,$media_images)){
+                array_push($deleted_images, $full_file);
+                FileService::delete_file($full_file);
+            }
+        }
+        return $deleted_images;
+    }
+
     /* Sort all media by title */
     public static function sort_all($a, $b){
         if($a->type == "book" && $b->type == "book"){

@@ -40,4 +40,8 @@ class FileService
         return $relative_path;
     }
 
+    public static function delete_file($file_name){
+        unlink($file_name);
+    }
+
 }
