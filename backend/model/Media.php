@@ -207,6 +207,21 @@ class Media
     /* Update a media item */
     public static function update($user_id, $id, $data, $table)
     {
+        /* If new image is set, delete the old image */
+        if (isset($data["image"])){
+            $database = Database::instance();
+            $sql = "SELECT image FROM " . $table . " WHERE active = 1 AND id = " . $id . " AND user_id = " . $user_id;
+            $query = $database->prepare($sql);
+            $query->execute();
+            $result = $query->fetch(\PDO::FETCH_ASSOC);
+            $query->closeCursor();
+            if( $result !== false && $result !== null && $result !== "" ) {
+                $old_image = $result["image"];
+                FileService::delete_file($old_image);
+            }
+        }
+
+        /* Update media item */
         $result = DatabaseService::update($table, $id, $data);
         if ($result === false || $result === null){
             APIService::response_fail("Update failed.", 500);
