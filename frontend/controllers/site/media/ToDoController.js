@@ -1,4 +1,4 @@
-app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
+app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService, $route)
 {
 
     function init(){
@@ -11,25 +11,14 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
         $scope.removedItems = [];
         $scope.editOn = false;
 
-        if($scope.isActive(['/books_table/read'])){
-            $scope.variables = {
-                item_type:"book",
-                get_url:CONFIG.api + CONFIG.api_routes.get_books_todo + '1',
-                put_url: CONFIG.api + CONFIG.api_routes.update_book
-            };
-        }else if ($scope.isActive(['/movies_table/watch'])){
-            $scope.variables = {
-                item_type:"movie",
-                get_url: CONFIG.api + CONFIG.api_routes.get_movies_todo + '1',
-                put_url: CONFIG.api + CONFIG.api_routes.update_movie
-            };
-        }else{
-            $scope.variables = {
-                item_type:"game",
-                get_url: CONFIG.api + CONFIG.api_routes.get_games_todo + '1',
-                put_url: CONFIG.api + CONFIG.api_routes.update_game
-            };
-        }
+        var media_string = $route.current.originalPath.split("_")[0];
+        var media_type = media_string.substring(1, media_string.length - 1);
+
+        $scope.variables = {
+            item_type:media_type,
+            get_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_todo"] + '1',
+            put_url: CONFIG.api + CONFIG.api_routes["update_" + media_type]
+        };
 
         /* Get the items to display in the table */
         $http.get($scope.variables.get_url)

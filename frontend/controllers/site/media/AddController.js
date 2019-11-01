@@ -1,4 +1,4 @@
-app.controller('AddController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
+app.controller('AddController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService, $route)
 {
 
     function init(){
@@ -10,29 +10,17 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
 
         $scope.addedItems = [];
 
-        /* Set the variables for books/movies/games */
-        if($scope.isActive('/books_table/read_add')){
-            $scope.variables = {
-                item_type:"book",
-                get_url:CONFIG.api + CONFIG.api_routes.get_books_todo + '0',
-                put_url: CONFIG.api + CONFIG.api_routes.update_book,
-                redirect_url: "/books_table/read"
-            };
-        }else if ($scope.isActive('/movies_table/watch_add')){
-            $scope.variables = {
-                item_type:"movie",
-                get_url:CONFIG.api + CONFIG.api_routes.get_movies_todo + '0',
-                put_url:CONFIG.api + CONFIG.api_routes.update_movie,
-                redirect_url: "/movies_table/watch"
-            };
-        }else{
-            $scope.variables = {
-                item_type:"game",
-                get_url:CONFIG.api + CONFIG.api_routes.get_games_todo + '0',
-                put_url:CONFIG.api + CONFIG.api_routes.update_game,
-                redirect_url: "/games_table/play"
-            };
-        }
+        var media_string = $route.current.originalPath.split("_")[0];
+        var media_type = media_string.substring(1, media_string.length - 1);
+
+        $scope.variables = {
+            item_type:media_type,
+            get_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_todo"] + "0",
+            put_url: CONFIG.api + CONFIG.api_routes["update_" + media_type],
+            redirect_url: '/' + media_type + "s_table/"
+        };
+
+        $scope.variables.redirect_url += (media_type == "book") ? "read" : ((media_type == "movie") ? "watch" : "play");
 
         /* Get the items to display in the table */
         $http.get($scope.variables.get_url)

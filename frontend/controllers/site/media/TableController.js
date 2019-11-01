@@ -1,4 +1,4 @@
-app.controller('TableController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService)
+app.controller('TableController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService, $route)
 {
 
     function init(){
@@ -11,37 +11,18 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         $scope.is_todo_list = false;
         $scope.sortVal = "none";
 
-        if($scope.isActive(['/books_table'])){
-            $scope.variables = {
-                item_type:"book",
-                path: "/books_table/",
-                get_url: CONFIG.api + CONFIG.api_routes.get_books,
-                get_url_order:CONFIG.api + CONFIG.api_routes.get_books_order,
-                get_url_filter:CONFIG.api + CONFIG.api_routes.get_books_filter,
-                put_url: CONFIG.api + CONFIG.api_routes.update_book,
-                delete_text: "Delete this book?"
-            };
-        }else if ($scope.isActive(['/movies_table'])){
-            $scope.variables = {
-                item_type:"movie",
-                path: "/movies_table/",
-                get_url: CONFIG.api + CONFIG.api_routes.get_movies,
-                get_url_order: CONFIG.api + CONFIG.api_routes.get_movies_order,
-                get_url_filter:CONFIG.api + CONFIG.api_routes.get_movies_filter,
-                put_url: CONFIG.api + CONFIG.api_routes.update_movie,
-                delete_text: "Delete this movie?"
-            };
-        }else{
-            $scope.variables = {
-                item_type:"game",
-                path: "/games_table/",
-                get_url: CONFIG.api + CONFIG.api_routes.get_games,
-                get_url_order: CONFIG.api + CONFIG.api_routes.get_games_order,
-                get_url_filter:CONFIG.api + CONFIG.api_routes.get_games_filter,
-                put_url: CONFIG.api + CONFIG.api_routes.update_game,
-                delete_text: "Delete this game?"
-            };
-        }
+        var media_string = $route.current.originalPath.split("_")[0];
+        var media_type = media_string.substring(1, media_string.length - 1);
+
+        $scope.variables = {
+            item_type:media_type,
+            path: "/" + media_type + "s_table/",
+            get_url: CONFIG.api + CONFIG.api_routes["get_" + media_type + "s"],
+            get_url_order:CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_order"],
+            get_url_filter:CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_filter"],
+            put_url: CONFIG.api + CONFIG.api_routes["update_" + media_type],
+            delete_text: "Delete this " + media_type + "?"
+        };
 
         $scope.filter = getFilter();
         $scope.showFilter = false;

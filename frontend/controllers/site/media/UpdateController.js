@@ -1,4 +1,4 @@
-app.controller('UpdateController', function($scope, $routeParams, CONFIG, RequestService, $http, AuthService)
+app.controller('UpdateController', function($scope, $routeParams, CONFIG, RequestService, $http, AuthService, $route)
 {
 
     function init(){
@@ -8,13 +8,17 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
             return;
         }
 
-        /* Set the variables for books/movies/games */
-        if($scope.isActive('/books_update/:id')){
-            $scope.variables = {
-                media_type:"book",
-                get_put_url:CONFIG.api + CONFIG.api_routes.get_single_book + $routeParams.id,
-                get_genre_url:CONFIG.api + CONFIG.api_routes.get_book_column_values + 'genre'
-            };
+        var media_string = $route.current.originalPath.split("_")[0];
+        var media_type = media_string.substring(1, media_string.length - 1);
+
+        $scope.variables = {
+            media_type:media_type,
+            get_put_url:CONFIG.api + CONFIG.api_routes["get_single_" + media_type] + $routeParams.id,
+            get_genre_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "_column_values"] + 'genre'
+        };
+
+        /* Get the select lists for specific columns */
+        if(media_type == "book"){
 
             $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'author')
             .then(function(response) {
@@ -31,19 +35,7 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
                 $scope.series = response.data;
             });
 
-        }else if ($scope.isActive('/movies_update/:id')){
-            $scope.variables = {
-                media_type:"movie",
-                get_put_url:CONFIG.api + CONFIG.api_routes.get_single_movie + $routeParams.id,
-                get_genre_url:CONFIG.api + CONFIG.api_routes.get_movie_column_values + 'genre'
-            };
-        }else{
-            $scope.variables = {
-                media_type:"game",
-                get_put_url:CONFIG.api + CONFIG.api_routes.get_single_game + $routeParams.id,
-                get_genre_url:CONFIG.api + CONFIG.api_routes.get_game_column_values + 'genre'
-            };
-
+        }else if (media_type == "game"){
             $http.get(CONFIG.api + CONFIG.api_routes.get_game_column_values + 'platform')
             .then(function(response) {
                 $scope.platforms = response.data;
