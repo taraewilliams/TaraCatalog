@@ -3,8 +3,10 @@
 namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;
+use TaraCatalog\Model\Media;
 
 class Book
 {
@@ -39,14 +41,28 @@ class Book
         $this->author          = isset($data['author']) ? $data['author'] : null;
         $this->volume          = isset($data['volume']) ? intval($data['volume']) : null;
         $this->isbn            = isset($data['isbn']) ? $data['isbn'] : null;
-        $this->cover_type      = isset($data['cover_type']) ? $data['cover_type'] : "Paperback";
-        $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Novel";
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
-        $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->genre           = isset($data['genre']) ? $data['genre'] : null;
         $this->image           = isset($data['image']) ? $data['image'] : null;
-        $this->complete_series = isset($data['complete_series']) ? $data['complete_series'] : "Incomplete";
+
+        /* Set Enums */
+        $this->cover_type      = (isset($data['cover_type'])
+            && Media::is_valid_enum(Constants::book_cover_type(), $data["cover_type"]))
+            ? $data['cover_type']
+            : Constants::book_cover_type()->paperback;
+        $this->content_type    = (isset($data['content_type'])
+            && Media::is_valid_enum(Constants::book_content_type(), $data["content_type"]))
+            ? $data['content_type']
+            : Constants::book_content_type()->novel;
+        $this->location        = (isset($data['location'])
+            && Media::is_valid_enum(Constants::media_location(), $data["location"]))
+            ? $data['location']
+            : Constants::media_location()->home;
+        $this->complete_series = (isset($data['complete_series'])
+            && Media::is_valid_enum(Constants::media_complete_series(), $data["complete_series"]))
+            ? $data['complete_series']
+            : Constants::media_complete_series()->incomplete;
 
         $this->type            = "book";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;

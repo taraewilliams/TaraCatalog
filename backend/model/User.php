@@ -33,8 +33,6 @@ class User
         $this->first_name       = isset($data['first_name']) ? $data['first_name'] : null;
         $this->last_name        = isset($data['last_name']) ? $data['last_name'] : null;
         $this->image            = isset($data['image']) ? $data['image'] : null;
-        $this->color_scheme     = isset($data['color_scheme']) ? $data['color_scheme'] : 'red';
-        $this->role             = isset($data['role']) ? $data['role'] : 'viewer';
         $this->is_admin         = isset($data['is_admin']) ? (boolean) $data['is_admin'] : false;
 
         if(isset($data['password'])) {
@@ -44,6 +42,16 @@ class User
         } else {
             $this->hashed_password = null;
         }
+
+        /* Set Enums */
+        $this->color_scheme     = (isset($data['color_scheme'])
+            && Media::is_valid_enum(Constants::user_color_scheme(), $data["color_scheme"]))
+            ? $data['color_scheme']
+            : Constants::user_color_scheme()->red;
+        $this->role             = (isset($data['role'])
+            && Media::is_valid_enum(Constants::user_role(), $data["role"]))
+            ? $data['role']
+            : Constants::user_role()->viewer;
 
         $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
         $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');

@@ -32,13 +32,24 @@ class Game
         $this->user_id         = isset($data['user_id']) ? intval($data['user_id']) : null;
         $this->title           = isset($data['title']) ? $data['title'] : null;
         $this->platform        = isset($data['platform']) ? $data['platform'] : null;
-        $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
-        $this->esrb_rating     = isset($data['esrb_rating']) ? $data['esrb_rating'] : null;
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
         $this->genre           = isset($data['genre']) ? $data['genre'] : null;
-        $this->complete_series = isset($data['complete_series']) ? $data['complete_series'] : "Incomplete";
+
+        /* Set Enums */
+        $this->esrb_rating     = (isset($data['esrb_rating'])
+            && Media::is_valid_enum(Constants::game_esrb_rating(), $data["esrb_rating"]))
+            ? $data['esrb_rating']
+            : null;
+        $this->location        = (isset($data['location'])
+            && Media::is_valid_enum(Constants::media_location(), $data["location"]))
+            ? $data['location']
+            : Constants::media_location()->home;
+        $this->complete_series = (isset($data['complete_series'])
+            && Media::is_valid_enum(Constants::media_complete_series(), $data["complete_series"]))
+            ? $data['complete_series']
+            : Constants::media_complete_series()->incomplete;
 
         $this->type            = "game";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;

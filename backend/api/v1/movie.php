@@ -246,6 +246,33 @@ $app->group('/api', function () use ($app) {
                 "running_time"
             ));
 
+            /* Check that enums are valid */
+            if(isset($params["format"])){
+                if(!Media::is_valid_enum(Constants::movie_format(), $params["format"])){
+                    APIService::response_fail("Must choose a valid value for format.", 400);
+                }
+            }
+            if(isset($params["content_type"])){
+                if(!Media::is_valid_enum(Constants::movie_content_type(), $params["content_type"])){
+                    APIService::response_fail("Must choose a valid value for content type.", 400);
+                }
+            }
+            if(isset($params["mpaa_rating"])){
+                if(!Media::is_valid_enum(Constants::movie_mpaa_rating(), $params["mpaa_rating"])){
+                    APIService::response_fail("Must choose a valid value for MPAA rating.", 400);
+                }
+            }
+            if(isset($params["location"])){
+                if(!Media::is_valid_enum(Constants::media_location(), $params["location"])){
+                    APIService::response_fail("Must choose a valid value for location.", 400);
+                }
+            }
+            if(isset($params["complete_series"])){
+                if(!Media::is_valid_enum(Constants::media_complete_series(), $params["complete_series"])){
+                    APIService::response_fail("Must choose a valid value for complete series.", 400);
+                }
+            }
+
             $files = APIService::build_files($_FILES, null, array(
                 "image"
             ));

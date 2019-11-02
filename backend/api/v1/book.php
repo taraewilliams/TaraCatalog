@@ -229,6 +229,28 @@ $app->group('/api', function () use ($app) {
                 "complete_series"
             ));
 
+            /* Check that enums are valid */
+            if(isset($params["cover_type"])){
+                if(!Media::is_valid_enum(Constants::book_cover_type(), $params["cover_type"])){
+                    APIService::response_fail("Must choose a valid value for cover type.", 400);
+                }
+            }
+            if(isset($params["content_type"])){
+                if(!Media::is_valid_enum(Constants::book_content_type(), $params["content_type"])){
+                    APIService::response_fail("Must choose a valid value for content type.", 400);
+                }
+            }
+            if(isset($params["location"])){
+                if(!Media::is_valid_enum(Constants::media_location(), $params["location"])){
+                    APIService::response_fail("Must choose a valid value for location.", 400);
+                }
+            }
+            if(isset($params["complete_series"])){
+                if(!Media::is_valid_enum(Constants::media_complete_series(), $params["complete_series"])){
+                    APIService::response_fail("Must choose a valid value for complete series.", 400);
+                }
+            }
+
             $files = APIService::build_files($_FILES, null, array(
                 "image"
             ));

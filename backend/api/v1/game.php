@@ -214,6 +214,23 @@ $app->group('/api', function () use ($app) {
                 "complete_series"
             ));
 
+            /* Check that enums are valid */
+            if(isset($params["esrb_rating"])){
+                if(!Media::is_valid_enum(Constants::game_esrb_rating(), $params["esrb_rating"])){
+                    APIService::response_fail("Must choose a valid value for ESRB rating.", 400);
+                }
+            }
+            if(isset($params["location"])){
+                if(!Media::is_valid_enum(Constants::media_location(), $params["location"])){
+                    APIService::response_fail("Must choose a valid value for location.", 400);
+                }
+            }
+            if(isset($params["complete_series"])){
+                if(!Media::is_valid_enum(Constants::media_complete_series(), $params["complete_series"])){
+                    APIService::response_fail("Must choose a valid value for complete series.", 400);
+                }
+            }
+
             $files = APIService::build_files($_FILES, null, array(
                 "image"
             ));

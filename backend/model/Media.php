@@ -248,6 +248,16 @@ class Media
     * Public Functions
     * ===================================================== */
 
+    /* Check if an enum value to be set is valid */
+    public static is_valid_enum($enum, $value){
+        foreach ($enum as $key => $enum_value) {
+            if ($enum_value == $value){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /* Set image */
     public static function set_image($files, $file_prefix, $directory)
     {

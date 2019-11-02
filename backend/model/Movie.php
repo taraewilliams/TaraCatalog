@@ -37,18 +37,35 @@ class Movie
         $this->id              = isset($data['id']) ? intval($data['id']) : null;
         $this->user_id         = isset($data['user_id']) ? intval($data['user_id']) : null;
         $this->title           = isset($data['title']) ? $data['title'] : null;
-        $this->format          = isset($data['format']) ? $data['format'] : "DVD";
         $this->edition         = isset($data['edition']) ? $data['edition'] : null;
-        $this->content_type    = isset($data['content_type']) ? $data['content_type'] : "Live Action";
-        $this->location        = isset($data['location']) ? $data['location'] : "Home";
         $this->season          = isset($data['season']) ? $data['season'] : null;
         $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->image           = isset($data['image']) ? $data['image'] : null;
-        $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
         $this->genre           = isset($data['genre']) ? $data['genre'] : null;
         $this->running_time    = isset($data['running_time']) ? $data['running_time'] : null;
-        $this->complete_series = isset($data['complete_series']) ? $data['complete_series'] : "Incomplete";
+
+        /* Set Enums */
+        $this->format          = (isset($data['format'])
+            && Media::is_valid_enum(Constants::movie_format(), $data["format"]))
+            ? $data['format']
+            : Constants::movie_format()->dvd;
+        $this->content_type    = (isset($data['content_type'])
+            && Media::is_valid_enum(Constants::movie_content_type(), $data["content_type"]))
+            ? $data['content_type']
+            : Constants::movie_content_type()->live_action;
+        $this->mpaa_rating     = (isset($data['mpaa_rating'])
+            && Media::is_valid_enum(Constants::movie_mpaa_rating(), $data["mpaa_rating"]))
+            ? $data['mpaa_rating']
+            : null;
+        $this->location        = (isset($data['location'])
+            && Media::is_valid_enum(Constants::media_location(), $data["location"]))
+            ? $data['location']
+            : Constants::media_location()->home;
+        $this->complete_series = (isset($data['complete_series'])
+            && Media::is_valid_enum(Constants::media_complete_series(), $data["complete_series"]))
+            ? $data['complete_series']
+            : Constants::media_complete_series()->incomplete;
 
         $this->type            = "movie";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
@@ -147,7 +164,7 @@ class Movie
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem counting the media.", 500);
+            APIService::response_fail("There was a problem getting the running time.", 500);
         }else{
             $total_minutes = intval($result["running_time"]);
             $hours = floor($total_minutes / 60);

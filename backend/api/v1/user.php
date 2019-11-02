@@ -120,6 +120,18 @@ $app->group('/api', function () use ($app) {
                 "role"
             ));
 
+            /* Check that enums are valid */
+            if(isset($params["color_scheme"])){
+                if(!Media::is_valid_enum(Constants::user_color_scheme(), $params["color_scheme"])){
+                    APIService::response_fail("Must choose a valid value for color scheme.", 400);
+                }
+            }
+            if(isset($params["role"])){
+                if(!Media::is_valid_enum(Constants::user_role(), $params["role"])){
+                    APIService::response_fail("Must choose a valid value for role.", 400);
+                }
+            }
+
             if(!User::unique_username_and_email($id, $params, $error)) {
                 APIService::response_fail($error, 500);
             }
