@@ -82,7 +82,8 @@ $app->group('/api', function () use ($app) {
                 "platform",
                 "location",
                 "esrb_rating",
-                "genre"
+                "genre",
+                "complete_series"
             ));
 
             $order_by = Constants::default_order()->game;
@@ -103,7 +104,8 @@ $app->group('/api', function () use ($app) {
                 "platform",
                 "location",
                 "esrb_rating",
-                "genre"
+                "genre",
+                "complete_series"
             ));
 
             $order_by = "ORDER BY " . $order;
@@ -168,7 +170,8 @@ $app->group('/api', function () use ($app) {
                 "todo_list",
                 "esrb_rating",
                 "notes",
-                "genre"
+                "genre",
+                "complete_series"
             ));
             $params["user_id"] = $user_id;
 
@@ -207,7 +210,8 @@ $app->group('/api', function () use ($app) {
                 "todo_list",
                 "esrb_rating",
                 "notes",
-                "genre"
+                "genre",
+                "complete_series"
             ));
 
             $files = APIService::build_files($_FILES, null, array(

@@ -56,6 +56,12 @@
     </section>
 
     <section>
+        <label for="complete_series">
+            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
         <label for="location">Location<br>
           <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
           <input type="radio" ng-model="filter.location" value="Home"> Home<br>

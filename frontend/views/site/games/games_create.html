@@ -26,6 +26,12 @@
             <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
         </label>
 
+        <label for="complete_series">Complete Series (Select 'Yes' if own complete series)<br>
+            <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
         <label for="esrb_rating">ESRB Rating<br>
             <select ng-model="media.esrb_rating">
                 <option value="none">None</option>

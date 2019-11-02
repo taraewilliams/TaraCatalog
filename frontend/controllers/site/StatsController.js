@@ -133,14 +133,17 @@ app.controller('StatsController', function($scope,
         return [ CONFIG.api_routes.get_book_column_count + 'content_type',
         CONFIG.api_routes.get_book_column_count + 'cover_type',
         CONFIG.api_routes.get_book_column_count + 'genre',
+        CONFIG.api_routes.get_book_column_count + 'complete_series',
         CONFIG.api_routes.get_movie_column_count + 'format',
         CONFIG.api_routes.get_movie_column_count + 'content_type',
         CONFIG.api_routes.get_movie_column_count + 'mpaa_rating',
         CONFIG.api_routes.get_movie_mpaa_count_grouped,
         CONFIG.api_routes.get_movie_column_count + 'genre',
+        CONFIG.api_routes.get_movie_column_count + 'complete_series',
         CONFIG.api_routes.get_game_column_count + 'esrb_rating',
         CONFIG.api_routes.get_game_column_count + 'platform',
-        CONFIG.api_routes.get_game_column_count + 'genre' ];
+        CONFIG.api_routes.get_game_column_count + 'genre',
+        CONFIG.api_routes.get_game_column_count + 'complete_series' ];
     };
 
     var getPieChartItems = function(itemKey){
@@ -157,6 +160,10 @@ app.controller('StatsController', function($scope,
             var dataArray = [['Book Genre', 'Number of Books']];
             var title = 'Genre';
             var html_element = 'BookGenreChart';
+        }else if(itemKey == 'book_complete_series'){
+            var dataArray = [['Complete Series', 'Number of Books']];
+            var title = 'Complete Series';
+            var html_element = 'BookCompleteSeriesChart';
         /* Movie Charts */
         }else if(itemKey == 'movie_format'){
             var dataArray = [['Movie Format', 'Number of Movies']];
@@ -178,6 +185,10 @@ app.controller('StatsController', function($scope,
             var dataArray = [['Movie Genre', 'Number of Movies']];
             var title = 'Genre';
             var html_element = 'MovieGenreChart';
+        }else if(itemKey == 'movie_complete_series'){
+            var dataArray = [['Complete Series', 'Number of Movies']];
+            var title = 'Complete Series';
+            var html_element = 'MovieCompleteSeriesChart';
         /* Game Charts */
         }else if(itemKey == "game_esrb_rating"){
             var dataArray = [['Game ESRB Rating', 'Number of Games']];
@@ -187,6 +198,10 @@ app.controller('StatsController', function($scope,
             var dataArray = [['Game Platform Type', 'Number of Games']];
             var title = 'Platform';
             var html_element = 'GamePlatformTypeChart';
+        }else if(itemKey == 'game_complete_series'){
+            var dataArray = [['Complete Series', 'Number of Games']];
+            var title = 'Complete Series';
+            var html_element = 'GameCompleteSeriesChart';
         }else{
             var dataArray = [['Game Genre', 'Number of Games']];
             var title = 'Genre';

@@ -16,9 +16,9 @@ class Constants
     public static function enum_columns()
     {
         return (object) array(
-          "book"    => array("cover_type", "content_type", "location"),
-          "movie"   => array("format", "content_type", "location", "mpaa_rating"),
-          "game"    => array("location", "esrb_rating")
+          "book"    => array("cover_type", "content_type", "location", "complete_series"),
+          "movie"   => array("format", "content_type", "location", "mpaa_rating", "complete_series"),
+          "game"    => array("location", "esrb_rating", "complete_series")
         );
     }
 

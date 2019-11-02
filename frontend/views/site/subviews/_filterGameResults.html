@@ -17,7 +17,7 @@
         <label for="genre">Genre<br>
             <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
         </label>
-        
+
         <label for="esrb_rating">ESRB Rating<br>
             <select ng-model="filter.esrb_rating">
                 <option value="none">None</option>
@@ -33,13 +33,19 @@
     </section>
 
     <section>
-        <label for="location">Location<br>
-          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
-          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        <label for="complete_series">
+            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
         </label>
     </section>
 
     <section>
+        <label for="location">Location<br>
+          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+        
         <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
         <button type="submit">Filter Results</button>
     </section>

@@ -362,6 +362,12 @@ button {
       background-color: #8CEE7D; }
     .standard-table .location-dot-away {
       background-color: red; }
+    .standard-table .complete {
+      background-color: #ffff99; }
+    .standard-table .incomplete {
+      background-color: #d9d9d9; }
+    .standard-table .standalone {
+      background-color: #66b3ff; }
     .standard-table .row-number {
       vertical-align: middle;
       text-align: center;

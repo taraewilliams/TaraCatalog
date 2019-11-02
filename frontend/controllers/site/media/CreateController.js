@@ -114,7 +114,8 @@ app.controller('CreateController', function(
                 image:"",
                 notes:"",
                 genre:"",
-                old_genre:""
+                old_genre:"",
+                complete_series:""
             };
         }else if ($scope.variables.media_type == "movie"){
             return {
@@ -128,7 +129,9 @@ app.controller('CreateController', function(
                 image:"",
                 notes:"",
                 genre:"",
-                old_genre:""
+                old_genre:"",
+                complete_series:"",
+                running_time:null
             };
         }else{
             return {
@@ -140,7 +143,8 @@ app.controller('CreateController', function(
                 image:"",
                 notes:"",
                 genre:"",
-                old_genre:""
+                old_genre:"",
+                complete_series:""
             };
         }
     };

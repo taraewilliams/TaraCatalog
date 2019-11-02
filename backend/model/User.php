@@ -19,6 +19,7 @@ class User
     public $color_scheme;
     public $image;
     public $role;
+    public $is_admin;
 
     public $created;
     public $updated;
@@ -34,6 +35,7 @@ class User
         $this->image            = isset($data['image']) ? $data['image'] : null;
         $this->color_scheme     = isset($data['color_scheme']) ? $data['color_scheme'] : 'red';
         $this->role             = isset($data['role']) ? $data['role'] : 'viewer';
+        $this->is_admin         = isset($data['is_admin']) ? (boolean) $data['is_admin'] : false;
 
         if(isset($data['password'])) {
             $this->hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
@@ -70,6 +72,7 @@ class User
             "color_scheme"      => $user->color_scheme,
             "image"             => $user->image,
             "role"              => $user->role,
+            "is_admin"          => $user->is_admin,
             "created"           => $user->created,
             "updated"           => $user->updated,
             "active"            => $user->active

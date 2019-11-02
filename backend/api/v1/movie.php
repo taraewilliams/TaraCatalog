@@ -85,7 +85,9 @@ $app->group('/api', function () use ($app) {
                 "mpaa_rating",
                 "location",
                 "season",
-                "genre"
+                "genre",
+                "complete_series",
+                "running_time"
             ));
 
             $order_by = Constants::default_order()->movie;
@@ -109,7 +111,9 @@ $app->group('/api', function () use ($app) {
                 "mpaa_rating",
                 "location",
                 "season",
-                "genre"
+                "genre",
+                "complete_series",
+                "running_time"
             ));
 
             $order_by = "ORDER BY " . $order;
@@ -186,7 +190,9 @@ $app->group('/api', function () use ($app) {
                 "season",
                 "todo_list",
                 "notes",
-                "genre"
+                "genre",
+                "complete_series",
+                "running_time"
             ));
             $params["user_id"] = $user_id;
 
@@ -227,7 +233,9 @@ $app->group('/api', function () use ($app) {
                 "season",
                 "todo_list",
                 "notes",
-                "genre"
+                "genre",
+                "complete_series",
+                "running_time"
             ));
 
             $files = APIService::build_files($_FILES, null, array(

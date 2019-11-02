@@ -35,17 +35,24 @@
             <input type="radio" ng-model="filter.cover_type" value="Paperback"> Paperback<br>
             <input type="radio" ng-model="filter.cover_type" value="Hardcover"> Hardcover<br>
         </label>
-        <label for="location">Location<br>
-          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
-          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+
+        <label for="content_type">Content Type<br>
+            <input type="radio" ng-model="filter.content_type" value="Novel"> Novel<br>
+            <input type="radio" ng-model="filter.content_type" value="Manga"> Manga<br>
+            <input type="radio" ng-model="filter.content_type" value="Comic Book"> Comic Book<br>
         </label>
     </section>
 
     <section>
-      <label for="content_type">Content Type<br>
-          <input type="radio" ng-model="filter.content_type" value="Novel"> Novel<br>
-          <input type="radio" ng-model="filter.content_type" value="Manga"> Manga<br>
-          <input type="radio" ng-model="filter.content_type" value="Comic Book"> Comic Book<br>
+      <label for="complete_series">
+          <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+          <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+          <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
+      </label>
+
+      <label for="location">Location<br>
+        <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+        <input type="radio" ng-model="filter.location" value="Home"> Home<br>
       </label>
 
       <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>

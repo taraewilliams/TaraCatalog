@@ -333,6 +333,19 @@ button{
             background-color: red;
         }
 
+        // Complete Series Column Colors
+        .complete{
+            background-color: $light-yellow;
+
+        }
+        .incomplete{
+            background-color: $light-gray;
+
+        }
+        .standalone{
+            background-color: $light-blue;
+        }
+
         .row-number{
             vertical-align:middle;
             text-align:center;

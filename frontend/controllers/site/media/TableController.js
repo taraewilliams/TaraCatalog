@@ -203,7 +203,8 @@ app.controller('TableController', function($scope,
                 cover_type:"",
                 content_type:"",
                 location:"",
-                genre:""
+                genre:"",
+                complete_series:""
             };
         }else if ($scope.variables.item_type == "movie"){
             return {
@@ -214,7 +215,9 @@ app.controller('TableController', function($scope,
                 content_type:"",
                 mpaa_rating:"",
                 location:"",
-                genre:""
+                genre:"",
+                running_time:null,
+                complete_series:""
             };
         }else{
             return {
@@ -222,7 +225,8 @@ app.controller('TableController', function($scope,
                 platform:"",
                 esrb_rating:"",
                 location:"",
-                genre:""
+                genre:"",
+                complete_series:""
             };
         }
     };

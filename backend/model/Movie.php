@@ -22,6 +22,8 @@ class Movie
     public $mpaa_rating;
     public $notes;
     public $genre;
+    public $running_time;
+    public $complete_series;
 
     public $type;
     public $row_number;
@@ -44,6 +46,8 @@ class Movie
         $this->mpaa_rating     = isset($data['mpaa_rating']) ? $data['mpaa_rating'] : null;
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
         $this->genre           = isset($data['genre']) ? $data['genre'] : null;
+        $this->running_time    = isset($data['running_time']) ? $data['running_time'] : null;
+        $this->complete_series = isset($data['complete_series']) ? $data['complete_series'] : "Incomplete";
 
         $this->type            = "movie";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
@@ -78,6 +82,8 @@ class Movie
             "mpaa_rating"    => $movie->mpaa_rating,
             "notes"          => $movie->notes,
             "genre"          => $movie->genre,
+            "running_time"   => $movie->running_time,
+            "complete_series" => $movie->complete_series,
             "created"        => $movie->created,
             "updated"        => $movie->updated,
             "active"         => $movie->active

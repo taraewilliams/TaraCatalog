@@ -22,6 +22,7 @@ class Book
     public $todo_list;
     public $genre;
     public $image;
+    public $complete_series;
 
     public $type;
     public $row_number;
@@ -45,6 +46,7 @@ class Book
         $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
         $this->genre           = isset($data['genre']) ? $data['genre'] : null;
         $this->image           = isset($data['image']) ? $data['image'] : null;
+        $this->complete_series = isset($data['complete_series']) ? $data['complete_series'] : "Incomplete";
 
         $this->type            = "book";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
@@ -80,6 +82,7 @@ class Book
             "todo_list"      => $book->todo_list,
             "genre"          => $book->genre,
             "image"          => $book->image,
+            "complete_series" => $book->complete_series,
             "created"        => $book->created,
             "updated"        => $book->updated,
             "active"         => $book->active

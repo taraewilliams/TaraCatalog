@@ -56,8 +56,13 @@ $app->group('/api', function () use ($app) {
             /* Make an admin request */
             $session = APIService::authenticate_request($_DELETE);
 
-            $deleted_images = Media::delete_unused_images();
-            APIService::response_success($deleted_images);
+            if ($session->user->is_admin){
+                $deleted_images = Media::delete_unused_images();
+                APIService::response_success($deleted_images);
+            }else{
+                APIService::response_fail("Admin only request.", 401);
+            }
+
         });
 
     });

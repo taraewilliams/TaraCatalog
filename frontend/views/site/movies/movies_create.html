@@ -22,6 +22,10 @@
         <input type="text" name="season" id="season" ng-model="media.season" placeholder="Season...">
     </label>
 
+    <label for="running_time">Running Time<br>
+        <input type="number" name="running_time" id="running_time" ng-model="media.running_time" placeholder="Running Time...">
+    </label>
+
     <label for="format">Format<br>
         <input required type="radio" name="format" ng-model="media.format" value="DVD"> DVD<br>
         <input type="radio" name="format" ng-model="media.format" value="Blu-Ray"> Blu-Ray<br>
@@ -38,6 +42,12 @@
         <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
         Select From Existing:
         <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
+    </label>
+
+    <label for="complete_series">Complete Series (Select 'Yes' if own complete series)<br>
+        <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
+        <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
+        <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
     </label>
 
     <label for="mpaa_rating">MPAA/TV Rating<br>

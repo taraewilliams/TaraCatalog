@@ -18,6 +18,7 @@ class Game
     public $esrb_rating;
     public $notes;
     public $genre;
+    public $complete_series;
 
     public $type;
     public $row_number;
@@ -37,6 +38,7 @@ class Game
         $this->esrb_rating     = isset($data['esrb_rating']) ? $data['esrb_rating'] : null;
         $this->notes           = isset($data['notes']) ? $data['notes'] : null;
         $this->genre           = isset($data['genre']) ? $data['genre'] : null;
+        $this->complete_series = isset($data['complete_series']) ? $data['complete_series'] : "Incomplete";
 
         $this->type            = "game";
         $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
@@ -68,6 +70,7 @@ class Game
             "notes"          => $game->notes,
             "genre"          => $game->genre,
             "image"          => $game->image,
+            "complete_series" => $game->complete_series,
             "created"        => $game->created,
             "updated"        => $game->updated,
             "active"         => $game->active

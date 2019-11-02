@@ -53,6 +53,12 @@
             <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
         </label>
 
+        <label for="complete_series">Complete Series (Select 'Yes' if own complete series)<br>
+            <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
         <label for="location">Location<br>
             <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
             <input type="radio" ng-model="media.location" value="Home"> Home<br>

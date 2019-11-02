@@ -27,6 +27,7 @@
                     <option value="cover_type">Cover Type</option>
                     <option value="content_type">Content Type</option>
                     <option value="genre">Genre</option>
+                    <option value="complete_series">Complete Series</option>
                     <option value="location">Location</option>
                 </select>
             </label>
@@ -48,13 +49,14 @@
             <th>Cover Type</th>
             <th>Content Type</th>
             <th>Genre</th>
+            <th>Complete Series</th>
             <th>Notes</th>
             <th class="location-column-header">Location</th>
             <th class="button-column-header"></th>
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="13">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="14">{{ item.title }}</th>
 
 
             <!-- Regular Table -->
@@ -72,6 +74,7 @@
             <td ng-if="!item.isHeader && !item.editOn">{{item.cover_type}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.content_type}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.genre}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.notes}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="button-column">
@@ -130,6 +133,13 @@
             <td ng-if="!item.isHeader && item.editOn">
                 <label for="genre">
                     <input type="text" name="genre" id="genre" ng-model="item.genre" placeholder="Genre...">
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="complete_series">
+                    <input type="radio" ng-model="item.complete_series" value="Complete"> Complete<br>
+                    <input type="radio" ng-model="item.complete_series" value="Incomplete"> Incomplete<br>
+                    <input type="radio" ng-model="item.complete_series" value="Standalone"> Standalone<br>
                 </label>
             </td>
             <td ng-if="!item.isHeader && item.editOn">

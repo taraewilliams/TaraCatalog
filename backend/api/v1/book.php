@@ -86,7 +86,8 @@ $app->group('/api', function () use ($app) {
                 "cover_type",
                 "content_type",
                 "location",
-                "genre"
+                "genre",
+                "complete_series"
             ));
 
             $order_by = Constants::default_order()->book;
@@ -111,7 +112,8 @@ $app->group('/api', function () use ($app) {
                 "cover_type",
                 "content_type",
                 "location",
-                "genre"
+                "genre",
+                "complete_series"
             ));
 
             $order_by = "ORDER BY " . $order;
@@ -180,7 +182,8 @@ $app->group('/api', function () use ($app) {
                 "notes",
                 "location",
                 "todo_list",
-                "genre"
+                "genre",
+                "complete_series"
             ));
             $params["user_id"] = $user_id;
 
@@ -222,7 +225,8 @@ $app->group('/api', function () use ($app) {
                 "notes",
                 "location",
                 "todo_list",
-                "genre"
+                "genre",
+                "complete_series"
             ));
 
             $files = APIService::build_files($_FILES, null, array(
