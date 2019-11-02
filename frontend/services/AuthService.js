@@ -1,5 +1,15 @@
-app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Session, RequestService, AUTH_EVENTS, User)
+app.service('AuthService', function ($rootScope,
+    $http,
+    $location,
+    CONFIG,
+    Session,
+    RequestService,
+    AUTH_EVENTS,
+    User,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
+
     this.login = function(credentials) {
         var _this = this;
         var url = CONFIG.api + CONFIG.api_routes.login;
@@ -9,10 +19,9 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
             _this.setUser();
             $rootScope.$broadcast(AUTH_EVENTS.loginSuccess);
             $location.path('/');
-        }, function(error) {
-            console.log("Error logging in:", error.data.message);
+        }, function(response) {
+            messageCenterService.add(MESSAGE_OPTIONS.danger, "Error logging in: " + response.data.message, { timeout: CONFIG.messageTimeout });
             $rootScope.$broadcast(AUTH_EVENTS.loginFailed);
-            alert(error.data.message);
             $location.path('/login');
         });
     };
@@ -23,8 +32,8 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
         RequestService.post(url, {session_id: Session.id}, function(response) {
             Session.destroy();
             $location.path('/login');
-        }, function(error) {
-            console.log("Error logging out:", error.data.message);
+        }, function(response) {
+            messageCenterService.add(MESSAGE_OPTIONS.danger, "Error logging out: " + response.data.message, { timeout: CONFIG.messageTimeout });
             Session.destroy();
         });
     };
@@ -74,7 +83,7 @@ app.service('AuthService', function ($rootScope, $http, $location, CONFIG, Sessi
             $rootScope.userCopy = angular.copy($rootScope.user);
             $rootScope.color_scheme = $rootScope.userCopy.color_scheme;
         }, function(response){
-            alert(response.data.message);
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             Session.destroy();
             $location.path('/login');
         }) : null;

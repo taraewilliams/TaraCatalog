@@ -1,4 +1,12 @@
-app.controller('TableController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService, $route)
+app.controller('TableController', function($scope,
+    $routeParams,
+    CONFIG,
+    $http,
+    RequestService,
+    AuthService,
+    $route,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -11,6 +19,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         $scope.is_todo_list = false;
         $scope.sortVal = "none";
 
+        /* Set the variables for the books/movies/games */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
@@ -36,7 +45,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
             $scope.items = $scope.addLettersToTitles($scope.items, "none");
             $scope.items_resolved = true;
         }, function(response){
-            console.log("Error");
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 
@@ -47,9 +56,9 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
         var url = $scope.variables.put_url + id;
 
         RequestService.post(url, new_item, function(data) {
-            alert($scope.variables.item_type + " was updated.");
-        }, function(error, status){
-            console.log(error.message);
+            messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.item_type + " was updated.", { timeout: CONFIG.messageTimeout });
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     };
 
@@ -61,9 +70,9 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
 
             $http.delete(url)
             .then(function(response) {
-                alert("The item was deleted.");
+                messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.item_type + " was deleted.", { timeout: CONFIG.messageTimeout });
             }, function(response){
-                console.log("Error");
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };
@@ -77,9 +86,9 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
 
         if (!$scope.isEmptyObj(new_media)){
             RequestService.post(url, new_media, function(data) {
-                alert($scope.variables.item_type + " was updated.");
-            }, function(error, status){
-                console.log(error.message);
+                messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.item_type + " was updated.", { timeout: CONFIG.messageTimeout });
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };
@@ -124,7 +133,7 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                     $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
                 }
             }, function(response){
-                console.log("Error");
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }else{
             if (sortVal == "none"){
@@ -139,8 +148,8 @@ app.controller('TableController', function($scope, $routeParams, CONFIG, $http, 
                 if(sortVal=="none" || sortVal == "title"){
                     $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
                 }
-            }, function(error, status){
-                console.log(error.message);
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };

@@ -1,4 +1,9 @@
-app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
+app.controller('StatsController', function($scope,
+    CONFIG,
+    $http,
+    AuthService,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -19,16 +24,22 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
         $http.get(CONFIG.api + CONFIG.api_routes.get_book_count)
         .then(function(response) {
             $scope.counts.books = response.data.num;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_movie_count)
         .then(function(response) {
             $scope.counts.movies = response.data.num;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_game_count)
         .then(function(response) {
             $scope.counts.games = response.data.num;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
 
@@ -38,6 +49,8 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             $http.get(CONFIG.api + urls[i])
             .then(function(response) {
                 makePieChartForData(response.data);
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
 
@@ -55,6 +68,8 @@ app.controller('StatsController', function($scope, CONFIG, $http, AuthService)
             var title = 'Location (Percentage)';
             var html_element = 'LocationBarChart';
             makeBarChart(dataArray, html_element, title);
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 

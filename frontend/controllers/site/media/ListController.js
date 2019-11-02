@@ -1,4 +1,11 @@
-app.controller('ListController', function($scope, $routeParams, RequestService, CONFIG, $http, AuthService, $route)
+app.controller('ListController', function($scope,
+    $routeParams,
+    CONFIG,
+    $http,
+    AuthService,
+    $route,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -24,6 +31,7 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         var media_type = media_string.substring(0, media_string.length - 1);
 
         $scope.variables = {
+            media_type:media_type,
             path: "/" + media_type + "s/",
             get_url: CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_limit"] + offset + "/" + limit,
             get_count_url: CONFIG.api + CONFIG.api_routes["get_" + media_type + "_count"],
@@ -43,14 +51,19 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
         .then(function(response) {
             $scope.media = response.data;
             $scope.media_resolved = true;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
-        if ($scope.maxPerPage != "All" && $scope.maxPerPage != "invalid"){
+        if ($scope.maxPerPage != "All" && $scope.maxPerPage != "invalid")
+        {
             /* Count all the media items */
             $http.get($scope.variables.get_count_url)
             .then(function(response) {
                 var num_pages = Math.ceil(parseInt(response.data.num)/limit);
                 $scope.pages = makePages(num_pages, offset, limit);
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     }
@@ -64,9 +77,9 @@ app.controller('ListController', function($scope, $routeParams, RequestService, 
 
             $http.delete(url)
             .then(function(response) {
-                console.log("Success");
+                messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.media_type + " was deleted.", { timeout: CONFIG.messageTimeout });
             }, function(response){
-                console.log("Error");
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };

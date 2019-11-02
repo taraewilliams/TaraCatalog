@@ -1,4 +1,9 @@
-app.controller('HomeController', function($scope, RequestService, CONFIG, AuthService, $http)
+app.controller('HomeController', function($scope,
+    RequestService,
+    CONFIG,
+    AuthService,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -17,8 +22,8 @@ app.controller('HomeController', function($scope, RequestService, CONFIG, AuthSe
 
         RequestService.post(CONFIG.api + CONFIG.api_routes.get_media_search, search, function(response) {
             $scope.items = response.data;
-        }, function(error, status){
-            console.log(error.message);
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
     };

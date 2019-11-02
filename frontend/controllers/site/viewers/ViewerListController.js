@@ -1,4 +1,10 @@
-app.controller('ViewerListController', function($scope, RequestService, CONFIG, AuthService, $http)
+app.controller('ViewerListController', function($scope,
+    RequestService,
+    CONFIG,
+    AuthService,
+    $http,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -36,7 +42,7 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
             RequestService.post($scope.variables.get_url, approv_vars, function(response) {
                 $scope.viewers = response.data;
             }, function(response){
-                console.log(response.data.message);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
 
             var pend_vars = {
@@ -46,9 +52,8 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
 
             RequestService.post($scope.variables.get_url, pend_vars, function(response) {
                 $scope.pending_viewers_creator = response.data;
-                console.log($scope.pending_viewers_creator.length);
             }, function(response){
-                console.log(response.data.message);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
 
             pend_vars.requested_by = 'viewer';
@@ -56,7 +61,7 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
             RequestService.post($scope.variables.get_url, pend_vars, function(response) {
                 $scope.pending_viewers_viewer = response.data;
             }, function(response){
-                console.log(response.data.message);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     }
@@ -68,10 +73,10 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
             var url = $scope.variables.delete_url + viewerID + "/" + creatorID;
             $http.delete(url)
             .then(function(response) {
-                alert("The viewer was deleted.");
+                messageCenterService.add(MESSAGE_OPTIONS.success, "The viewer was deleted.", { timeout: CONFIG.messageTimeout });
                 location.reload();
             }, function(response){
-                console.log("Error");
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };
@@ -86,10 +91,10 @@ app.controller('ViewerListController', function($scope, RequestService, CONFIG, 
             RequestService.post(url, new_viewer, function(data) {
                 location.reload();
             }, function(response){
-                console.log(response);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }else{
-            alert("You don't have permission to update.")
+            messageCenterService.add(MESSAGE_OPTIONS.warning, "You don't have permission to update.", { timeout: CONFIG.messageTimeout });
         }
     };
 

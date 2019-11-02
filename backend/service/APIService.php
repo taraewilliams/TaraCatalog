@@ -20,7 +20,7 @@ class APIService
         http_response_code($code);
 
         $response = array(
-            "status" => "fail",
+            "status" => $code,
             "message" => $message
         );
         die(json_encode( (object) $response ));

@@ -1,4 +1,9 @@
-app.controller('ProfileController', function($scope, AuthService, Session, $http, CONFIG, RequestService)
+app.controller('ProfileController', function($scope,
+    AuthService,
+    $http,
+    CONFIG,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -22,7 +27,7 @@ app.controller('ProfileController', function($scope, AuthService, Session, $http
                 alert("The user was deleted.");
                 $scope.goToPath("/login");
             }, function(response){
-                console.log("Error");
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };

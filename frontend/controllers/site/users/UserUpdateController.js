@@ -1,4 +1,10 @@
-app.controller('UserUpdateController', function($scope, AuthService, Session, $http, CONFIG, RequestService)
+app.controller('UserUpdateController', function($scope,
+    AuthService,
+    $http,
+    CONFIG,
+    RequestService,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -13,7 +19,7 @@ app.controller('UserUpdateController', function($scope, AuthService, Session, $h
             $scope.user_orig = response.data;
             $scope.user_clone = $scope.clone($scope.user_orig);
         }, function(error){
-            console.log("Error");
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 
@@ -24,12 +30,12 @@ app.controller('UserUpdateController', function($scope, AuthService, Session, $h
 
         if (!$scope.isEmptyObj(new_user)){
             RequestService.post(url, new_user, function(data) {
-                alert("User was updated.");
+                messageCenterService.add(MESSAGE_OPTIONS.success, "User was updated.", { timeout: CONFIG.messageTimeout });
             }, function(response){
-                alert(response.data.message);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }else{
-            alert("No changes made.");
+            messageCenterService.add(MESSAGE_OPTIONS.info, "No changes made.", { timeout: CONFIG.messageTimeout });
         }
     };
 

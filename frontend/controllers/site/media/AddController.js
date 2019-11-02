@@ -1,4 +1,11 @@
-app.controller('AddController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService, $route)
+app.controller('AddController', function($scope,
+    CONFIG,
+    $http,
+    RequestService,
+    AuthService,
+    $route,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -10,6 +17,7 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
 
         $scope.addedItems = [];
 
+        /* Set the variables for the books/movies/games */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
@@ -19,7 +27,6 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
             put_url: CONFIG.api + CONFIG.api_routes["update_" + media_type],
             redirect_url: '/' + media_type + "s_table/"
         };
-
         $scope.variables.redirect_url += (media_type == "book") ? "read" : ((media_type == "movie") ? "watch" : "play");
 
         /* Get the items to display in the table */
@@ -28,7 +35,7 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
             $scope.items = response.data;
             $scope.items_resolved = true;
         }, function(response){
-            console.log("Error");
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 
@@ -61,7 +68,7 @@ app.controller('AddController', function($scope, $routeParams, CONFIG, $http, Re
                     $scope.goToPath($scope.variables.redirect_url);
                 }
             }, function(response){
-                console.log(response);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };

@@ -1,4 +1,11 @@
-app.controller('ApplicationController', function ($scope, $route, $location, AuthService, AUTH_EVENTS, Session)
+app.controller('ApplicationController', function ($scope,
+    $route,
+    $location,
+    AuthService,
+    AUTH_EVENTS,
+    Session,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
     /* Set the user */
     AuthService.setUser();
@@ -11,7 +18,7 @@ app.controller('ApplicationController', function ($scope, $route, $location, Aut
 
         Session.destroy();
         $location.path('/login');
-        alert("Your session either does not exist or has expired. Please login again.");
+        messageCenterService.add(MESSAGE_OPTIONS.danger, "Your session either does not exist or has expired. Please login again.", { timeout: CONFIG.messageTimeout });
     });
 
     var windowWidth = window.innerWidth;

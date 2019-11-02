@@ -1,5 +1,7 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
+<mc-messages class="message-popup"></mc-messages>
+
 <div class="loader" ng-if="!user || !color_scheme || !media_resolved"></div>
 
 <main ng-if="user && color_scheme && media_resolved">

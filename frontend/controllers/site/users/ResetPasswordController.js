@@ -1,4 +1,9 @@
-app.controller('ResetPasswordController', function($scope, AuthService, Session, $http, CONFIG, RequestService)
+app.controller('ResetPasswordController', function($scope,
+    AuthService,
+    CONFIG,
+    RequestService,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -18,15 +23,15 @@ app.controller('ResetPasswordController', function($scope, AuthService, Session,
         var url = CONFIG.api + CONFIG.api_routes.update_user + $scope.user.id;
 
         if ($scope.isEmpty(new_password) || $scope.isEmpty(new_password_2)){
-            alert("Enter new password");
+            messageCenterService.add(MESSAGE_OPTIONS.warning, "Enter new password", { timeout: CONFIG.messageTimeout });
         } else if(new_password !== new_password_2){
-            alert("Passwords do not match");
+            messageCenterService.add(MESSAGE_OPTIONS.warning, "Passwords do not match", { timeout: CONFIG.messageTimeout });
         }else{
             RequestService.post(url, new_user, function(data) {
                 alert("Password was updated.");
                 $scope.goToPath('/profile');
             }, function(response){
-                alert(response.data.message);
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
 
         }

@@ -1,4 +1,11 @@
-app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, RequestService, AuthService, $route)
+app.controller('ToDoController', function($scope,
+    CONFIG,
+    $http,
+    RequestService,
+    AuthService,
+    $route,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -11,6 +18,7 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
         $scope.removedItems = [];
         $scope.editOn = false;
 
+        /* Set the variables for the books/movies/games */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
@@ -29,7 +37,7 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
             $scope.items = $scope.addLettersToTitles($scope.items, "none");
             $scope.items_resolved = true;
         }, function(response){
-            console.log("Error");
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 
@@ -61,8 +69,8 @@ app.controller('ToDoController', function($scope, $routeParams, CONFIG, $http, R
                 if (update_num == id_list.length){
                     location.reload();
                 }
-            }, function(error, status){
-                console.log(error.message);
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };

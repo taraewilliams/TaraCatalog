@@ -1,4 +1,12 @@
-app.controller('UpdateController', function($scope, $routeParams, CONFIG, RequestService, $http, AuthService, $route)
+app.controller('UpdateController', function($scope,
+    $routeParams,
+    CONFIG,
+    RequestService,
+    $http,
+    AuthService,
+    $route,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -8,6 +16,7 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
             return;
         }
 
+        /* Set the variables for the books/movies/games */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
@@ -23,28 +32,38 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
             $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'author')
             .then(function(response) {
                 $scope.authors = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
 
             $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'title')
             .then(function(response) {
                 $scope.titles = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
 
             $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'series')
             .then(function(response) {
                 $scope.series = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
 
         }else if (media_type == "game"){
             $http.get(CONFIG.api + CONFIG.api_routes.get_game_column_values + 'platform')
             .then(function(response) {
                 $scope.platforms = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
 
         $http.get($scope.variables.get_genre_url)
         .then(function(response) {
             $scope.genres = response.data;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
         /* Get the media to be updated */
@@ -53,8 +72,8 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
             $scope.media = response.data;
             $scope.media_clone = $scope.clone($scope.media);
             $scope.media_resolved = true;
-        }, function(error){
-            console.log("Error");
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
     }
@@ -74,9 +93,9 @@ app.controller('UpdateController', function($scope, $routeParams, CONFIG, Reques
         var url = $scope.variables.get_put_url;
 
         RequestService.post(url, new_media, function(data) {
-            alert($scope.variables.media_type + " was updated.");
-        }, function(error, status){
-            console.log(error.message);
+            messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.media_type + " was updated.", { timeout: CONFIG.messageTimeout });
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
     };

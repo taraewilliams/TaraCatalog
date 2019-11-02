@@ -1,4 +1,9 @@
-app.controller('RegisterController', function($scope, AuthService, $location, RequestService, CONFIG)
+app.controller('RegisterController', function($scope,
+    AuthService,
+    RequestService,
+    CONFIG,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init() {
@@ -24,11 +29,11 @@ app.controller('RegisterController', function($scope, AuthService, $location, Re
         var url = CONFIG.api + CONFIG.api_routes.create_user;
 
         RequestService.post(url, new_user, function(data) {
-            alert("Profile was created.");
+            messageCenterService.add(MESSAGE_OPTIONS.success, "Profile was created.", { timeout: CONFIG.messageTimeout });
             $scope.goToPath('/login');
 
         }, function(response) {
-            alert(response.data.message);
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
     };

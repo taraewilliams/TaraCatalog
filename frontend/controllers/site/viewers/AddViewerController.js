@@ -1,4 +1,10 @@
-app.controller('AddViewerController', function($scope, RequestService, CONFIG, AuthService, $http)
+app.controller('AddViewerController', function($scope,
+    RequestService,
+    CONFIG,
+    AuthService,
+    $http,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
 
     function init(){
@@ -27,6 +33,8 @@ app.controller('AddViewerController', function($scope, RequestService, CONFIG, A
         $http.get($scope.variables.get_url)
         .then(function(response) {
             $scope.users = response.data;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 
@@ -68,8 +76,8 @@ app.controller('AddViewerController', function($scope, RequestService, CONFIG, A
                 if (update_num == id_list.length){
                     $scope.goToPath($scope.variables.redirect_url);
                 }
-            }, function(error, status){
-                console.log(error.message);
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };

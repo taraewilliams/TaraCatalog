@@ -1,4 +1,11 @@
-app.controller('ViewerController', function($scope, AuthService, Session, $http, CONFIG, RequestService, $routeParams)
+app.controller('ViewerController', function($scope,
+    AuthService,
+    $http,
+    CONFIG,
+    RequestService,
+    $routeParams,
+    messageCenterService,
+    MESSAGE_OPTIONS)
 {
     function init(){
 
@@ -13,7 +20,7 @@ app.controller('ViewerController', function($scope, AuthService, Session, $http,
         .then(function(response) {
             $scope.viewer = response.data;
         }, function(response){
-            console.log(response.data.message);
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             $scope.goToPath('/profile');
         });
 
@@ -21,16 +28,22 @@ app.controller('ViewerController', function($scope, AuthService, Session, $http,
             $http.get(CONFIG.api + CONFIG.api_routes.get_books_viewer + $scope.creatorID)
             .then(function(response) {
                 $scope.books = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }else if ($scope.isActive('/movie_view/:id')){
             $http.get(CONFIG.api + CONFIG.api_routes.get_movies_viewer  + $scope.creatorID)
             .then(function(response) {
                 $scope.movies = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }else if ($scope.isActive('/game_view/:id')){
             $http.get(CONFIG.api + CONFIG.api_routes.get_games_viewer + $scope.creatorID)
             .then(function(response) {
                 $scope.games = response.data;
+            }, function(response){
+                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
 
@@ -43,7 +56,7 @@ app.controller('ViewerController', function($scope, AuthService, Session, $http,
         RequestService.post(CONFIG.api + CONFIG.api_routes.get_media_search_viewer + $scope.creatorID, search, function(response) {
             $scope.items = response.data;
         }, function(response){
-            console.log(response.data.message);
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
     };
