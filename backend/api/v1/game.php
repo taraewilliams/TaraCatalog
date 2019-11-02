@@ -18,7 +18,7 @@ $app->group('/api', function () use ($app) {
         * GET GAMES
         * ========================================================== */
 
-        /* 1. Get a single game */
+        /* Get a single game */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -28,7 +28,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($game);
         });
 
-        /* 2. Get all games */
+        /* Get all games */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -38,7 +38,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 3. Get all games on the todo list or not on the todo list */
+        /* Get all games on the todo list or not on the todo list */
         $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -49,7 +49,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 4. Get a set number of games */
+        /* Get a set number of games */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -61,7 +61,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 5. Get all games ordered by a specific field */
+        /* Get all games ordered by a specific field */
         $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -71,7 +71,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 6. Get games for multiple filters */
+        /* Get games for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -92,7 +92,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 7. Get games for multiple filters with order */
+        /* Get games for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -118,7 +118,7 @@ $app->group('/api', function () use ($app) {
         * GET GAME COUNTS
         * ========================================================== */
 
-        /* 8. Count all games */
+        /* Count all games */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -127,7 +127,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($games);
         });
 
-        /* 9. Count games with different column values */
+        /* Count games with different column values */
         $app->get($resource . '/column_count/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -142,7 +142,7 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* 10. Get all distinct values for a column */
+        /* Get all distinct values for a column */
         $app->get($resource . '/column_values/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -156,7 +156,7 @@ $app->group('/api', function () use ($app) {
         * POST
         * ========================================================== */
 
-        /* 1. Create a game */
+        /* Create a game */
         $app->post($resource, function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -192,7 +192,7 @@ $app->group('/api', function () use ($app) {
         * PUT
         * ========================================================== */
 
-        /* 2. Update a game */
+        /* Update a game */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -254,7 +254,7 @@ $app->group('/api', function () use ($app) {
         * DELETE
         * ========================================================== */
 
-        /* 1. Delete a game */
+        /* Delete a game */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);

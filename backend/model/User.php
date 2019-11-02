@@ -3,10 +3,12 @@
 namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\FileService;
 use TaraCatalog\Service\APIService;
+use TaraCatalog\Model\Media;
 
 class User
 {

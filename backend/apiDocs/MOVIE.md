@@ -91,6 +91,14 @@
 
 **Output:** Array of column values
 
+### movies/running_time/total
+
+**Description:** Gets the total running time of all movies.
+
+**Input:** none
+
+**Output:** Total running time and time in hours
+
 ## POST Requests
 
 ### movies

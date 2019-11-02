@@ -9,3 +9,21 @@
 **Input:** none
 
 **Output:** Media counts
+
+### media/images
+
+**Description:** Gets all unused media images.
+
+**Input:** none
+
+**Output:** List of image strings
+
+## DELETE Requests
+
+### media/images
+
+**Description:** Deletes all unused media images.
+
+**Input:** none
+
+**Output:** List of image strings that were deleted

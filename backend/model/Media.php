@@ -249,7 +249,7 @@ class Media
     * ===================================================== */
 
     /* Check if an enum value to be set is valid */
-    public static is_valid_enum($enum, $value){
+    public static function is_valid_enum($enum, $value){
         foreach ($enum as $key => $enum_value) {
             if ($enum_value == $value){
                 return true;

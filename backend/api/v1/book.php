@@ -18,7 +18,7 @@ $app->group('/api', function () use ($app) {
         * GET BOOKS
         * ========================================================== */
 
-        /* 1. Get a single book */
+        /* Get a single book */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -28,7 +28,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($book);
         });
 
-        /* 2. Get all books for a user */
+        /* Get all books for a user */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -38,7 +38,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 3. Get all books on the todo list or not on the todo list */
+        /* Get all books on the todo list or not on the todo list */
         $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -49,7 +49,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 4. Get a set number of books */
+        /* Get a set number of books */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -61,7 +61,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 5. Get all books ordered by a specific field */
+        /* Get all books ordered by a specific field */
         $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -71,7 +71,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 6. Get books for multiple filters */
+        /* Get books for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -96,7 +96,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 7. Get books for multiple filters with order */
+        /* Get books for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -126,7 +126,7 @@ $app->group('/api', function () use ($app) {
         * GET BOOK COUNTS
         * ========================================================== */
 
-        /* 8. Count all books */
+        /* Count all books */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -135,7 +135,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($books);
         });
 
-        /* 9. Count books with different column values */
+        /* Count books with different column values */
         $app->get($resource . '/column_count/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -150,7 +150,7 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* 10. Get all distinct values for a column */
+        /* Get all distinct values for a column */
         $app->get($resource . '/column_values/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -164,7 +164,7 @@ $app->group('/api', function () use ($app) {
         * POST
         * ========================================================== */
 
-        /* 1. Create a book */
+        /* Create a book */
         $app->post($resource, function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -203,7 +203,7 @@ $app->group('/api', function () use ($app) {
         * PUT
         * ========================================================== */
 
-        /* 2. Update a book */
+        /* Update a book */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -275,7 +275,7 @@ $app->group('/api', function () use ($app) {
         * DELETE
         * ========================================================== */
 
-        /* 1. Delete a book */
+        /* Delete a book */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);

@@ -3,8 +3,10 @@
 namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;
+use TaraCatalog\Model\Media;
 
 class Game
 {

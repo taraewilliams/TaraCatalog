@@ -4,6 +4,7 @@ namespace TaraCatalog\Model;
 
 use TaraCatalog\Model\Media;
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;

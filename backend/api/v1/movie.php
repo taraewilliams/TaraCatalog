@@ -18,7 +18,7 @@ $app->group('/api', function () use ($app) {
         * GET MOVIES
         * ========================================================== */
 
-        /* 1. Get a single movie */
+        /* Get a single movie */
         $app->get($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -28,7 +28,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movie);
         });
 
-        /* 2. Get all movies */
+        /* Get all movies */
         $app->get($resource, function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -38,7 +38,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 3. Get all movies on the todo list */
+        /* Get all movies on the todo list */
         $app->get($resource . '/todo/list/{todo}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -49,7 +49,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 4. Get a set number of movies */
+        /* Get a set number of movies */
         $app->get($resource . '/limit/{offset}/{limit}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -61,7 +61,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 5. Get all movies ordered by a specific field */
+        /* Get all movies ordered by a specific field */
         $app->get($resource . '/order_by/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -71,7 +71,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 6. Get movies for multiple filters */
+        /* Get movies for multiple filters */
         $app->post($resource. '/filter', function () use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -96,7 +96,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 7. Get movies for multiple filters with order */
+        /* Get movies for multiple filters with order */
         $app->post($resource. '/filter/{order}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -126,7 +126,7 @@ $app->group('/api', function () use ($app) {
         * GET MOVIE COUNTS
         * ========================================================== */
 
-        /* 8. Count all movies */
+        /* Count all movies */
         $app->get($resource . '/count/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -135,7 +135,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 9. Count movies with different column values */
+        /* Count movies with different column values */
         $app->get($resource . '/column_count/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -146,7 +146,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($movies);
         });
 
-        /* 10. Count movies with different mpaa ratings, grouped by under PG and above PG */
+        /* Count movies with different mpaa ratings, grouped by under PG and above PG */
         $app->get($resource . '/mpaa_rating_grouped/count', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -159,7 +159,7 @@ $app->group('/api', function () use ($app) {
         * GET ALL DISTINCT VALUES FOR A COLUMN
         * ========================================================== */
 
-        /* 11. Get all distinct values for a column */
+        /* Get all distinct values for a column */
         $app->get($resource . '/column_values/{column}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -169,6 +169,7 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($column_values);
         });
 
+        /* Get total running time */
         $app->get($resource . '/running_time/total', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
@@ -181,7 +182,7 @@ $app->group('/api', function () use ($app) {
         * POST
         * ========================================================== */
 
-        /* 1. Create a movie */
+        /* Create a movie */
         $app->post($resource, function () use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -220,7 +221,7 @@ $app->group('/api', function () use ($app) {
         * PUT
         * ========================================================== */
 
-        /* 2. Update a movie */
+        /* Update a movie */
         $app->post($resource . '/{id}', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_REQUEST);
@@ -296,7 +297,7 @@ $app->group('/api', function () use ($app) {
         * DELETE
         * ========================================================== */
 
-        /* 1. Delete a movie */
+        /* Delete a movie */
         $app->delete($resource . '/{id}', function ($response, $request, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
