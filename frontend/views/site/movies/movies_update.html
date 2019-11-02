@@ -1,5 +1,9 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
+<div class="loader" ng-if="!media_clone || !media || !user || !color_scheme || !media_resolved"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
 <main ng-if="media_clone && media && user && color_scheme">
 
   <h1>Update Movie</h1>

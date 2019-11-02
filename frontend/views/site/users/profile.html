@@ -1,5 +1,9 @@
 <div ng-include="'views/site/subviews/_mainMenu.html'"></div>
 
+<div class="loader" ng-if="!user_clone || !user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
 <main ng-if="user_clone && user && color_scheme" class="profile">
 
     <h1 ng-if="user.first_name">Hi, {{user.first_name}} {{user.last_name}}</h1>

@@ -2,6 +2,8 @@
 
 <div class="loader" ng-if="!user || !color_scheme || !items_resolved"></div>
 
+<mc-messages class="message-popup"></mc-messages>
+
 <main ng-if="user && color_scheme && items_resolved">
 
     <h1>Read List ( {{ item_length }} )</h1>
