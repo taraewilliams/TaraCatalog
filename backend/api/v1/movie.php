@@ -169,6 +169,14 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($column_values);
         });
 
+        $app->get($resource . '/running_time/total', function ($request, $response, $args) use ($app)
+        {
+            $session = APIService::authenticate_request($_GET);
+            $user_id = $session->user->id;
+            $running_time = Movie::sum_running_time($user_id, Config::DBTables()->movie);
+            APIService::response_success($running_time);
+        });
+
         /* ========================================================== *
         * POST
         * ========================================================== */

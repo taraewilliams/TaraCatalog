@@ -259,6 +259,46 @@ class Media
         return $file_name;
     }
 
+    /* Get unused images */
+    public static function get_unused_images(){
+
+        $books = Media::get_unused_images_for_table(CONFIG::DBTables()->book);
+        $movies = Media::get_unused_images_for_table(CONFIG::DBTables()->movie);
+        $games = Media::get_unused_images_for_table(CONFIG::DBTables()->game);
+        $users = Media::get_unused_images_for_table(CONFIG::DBTables()->user);
+
+        $images = array(
+            "books"     => $books,
+            "movies"    => $movies,
+            "games"     => $games,
+            "users"     => $users
+        );
+
+        return $images;
+    }
+
+    /* Get unused images for table */
+    public static function get_unused_images_for_table($table)
+    {
+        /* Get media images in database */
+        $media_images = Media::get_media_images();
+
+        /* Get media images currently stored */
+        $path = FileService::MAIN_DIR . '/' . $table . 's';
+        $files = array_diff(scandir($path), array('.', '..'));
+
+        /* Get images stored that are not in database */
+        $images = array();
+        foreach( $files as $file ) {
+            $full_file = $path . "/" . $file;
+
+            if (!in_array($full_file,$media_images)){
+                array_push($images, $full_file);
+            }
+        }
+        return $images;
+    }
+
     /* Delete unused images */
     public static function delete_unused_images(){
 
@@ -281,19 +321,7 @@ class Media
     public static function delete_unused_images_for_table($table)
     {
         /* Get media images in database */
-        $database = Database::instance();
-        $sql = "SELECT DISTINCT image FROM " . $table . " WHERE image IS NOT NULL";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if( $result === false || $result === null) {
-            APIService::response_fail("There was an error getting images.", 500);
-        }
-        $media_images = array();
-        foreach ($result as $image){
-            array_push($media_images, $image["image"]);
-        }
+        $media_images = Media::get_media_images();
 
         /* Get media images currently stored */
         $path = FileService::MAIN_DIR . '/' . $table . 's';
@@ -310,6 +338,24 @@ class Media
             }
         }
         return $deleted_images;
+    }
+
+    /* Get all media images */
+    public static function get_media_images(){
+        $database = Database::instance();
+        $sql = "SELECT DISTINCT image FROM " . $table . " WHERE image IS NOT NULL";
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error getting images.", 500);
+        }
+        $media_images = array();
+        foreach ($result as $image){
+            array_push($media_images, $image["image"]);
+        }
+        return $media_images;
     }
 
     /* Sort all media by title */

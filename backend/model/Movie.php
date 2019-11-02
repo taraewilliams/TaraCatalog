@@ -4,6 +4,7 @@ namespace TaraCatalog\Model;
 
 use TaraCatalog\Model\Media;
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;
 
@@ -134,6 +135,26 @@ class Movie
         );
 
         return array($header => $grouped_counts);
+    }
+
+    /* Sum movie running times */
+    public static function sum_running_time($user_id, $table)
+    {
+        $database = Database::instance();
+        $sql = "SELECT SUM(running_time) as running_time FROM " . $table . " WHERE active = 1 AND user_id = " . $user_id;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetch(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem counting the media.", 500);
+        }else{
+            $total_minutes = intval($result["running_time"]);
+            $hours = floor($total_minutes / 60);
+            $minutes = $total_minutes % 60;
+            $result["hours"] = $hours . " hours and " . $minutes . " minutes";
+            return $result;
+        }
     }
 
 }

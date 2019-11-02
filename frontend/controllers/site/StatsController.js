@@ -42,6 +42,12 @@ app.controller('StatsController', function($scope,
             messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
+        $http.get(CONFIG.api + CONFIG.api_routes.get_movie_running_time_total)
+        .then(function(response) {
+            $scope.total_running_time = response.data;
+        }, function(response){
+            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+        });
 
         /* Make Pie Charts */
         var urls = getCountUrls();

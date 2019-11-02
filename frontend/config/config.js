@@ -36,6 +36,7 @@ app.constant('CONFIG', {
         get_movie_column_count: '/movies/column_count/',
         get_movie_column_values: '/movies/column_values/',
         get_movie_mpaa_count_grouped: '/movies/mpaa_rating_grouped/count',
+        get_movie_running_time_total: '/movies/running_time/total',
         create_movie: '/movies',
         update_movie: '/movies/',
         delete_movie: '/movies/',
@@ -55,6 +56,8 @@ app.constant('CONFIG', {
         delete_game: '/games/',
         /* media */
         get_media_location_count: '/media/location/count',
+        get_media_unused_images: '/media/images',
+        delete_media_unused_images: '/media/images',
         /* search */
         get_media_search: '/search',
         get_media_search_viewer: '/search/',
