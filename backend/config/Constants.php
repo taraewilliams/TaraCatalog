@@ -4,6 +4,16 @@ namespace TaraCatalog\Config;
 
 class Constants
 {
+    public static function property_types()
+    {
+        return (object) array(
+          "string"    => "string",
+          "date"      => "date",
+          "bool"      => "bool",
+          "num"       => "num"
+        );
+    }
+
     public static function default_order()
     {
         return (object) array(
@@ -23,6 +33,7 @@ class Constants
     }
 
     /* Book Enums */
+
     public static function book_cover_type(){
         return (object) array(
           "hardcover"    => "Hardcover",
@@ -39,6 +50,7 @@ class Constants
     }
 
     /* Movie Enums */
+
     public static function movie_format(){
         return (object) array(
             "blu_ray"      => "Blu-Ray",
@@ -76,6 +88,7 @@ class Constants
     }
 
     /* Game Enums */
+
     public static function game_esrb_rating(){
         return (object) array(
             "rp"        => "RP",
@@ -91,6 +104,7 @@ class Constants
     }
 
     /* Media Enums */
+
     public static function media_location(){
         return (object) array(
           "apartment"  => "Apartment",
@@ -107,6 +121,7 @@ class Constants
     }
 
     /* User Enums */
+
     public static function user_role(){
         return (object) array(
             "creator"      => "creator",
@@ -124,6 +139,23 @@ class Constants
             "purple"    => "purple",
             "red"       => "red",
             "yellow"    => "yellow"
+        );
+    }
+
+    /* Viewer Enums */
+
+    public static function viewer_requested_by(){
+        return (object) array(
+            "creator"      => "creator",
+            "viewer"       => "viewer"
+        );
+    }
+
+    public static function viewer_status(){
+        return (object) array(
+            "approved"      => "approved",
+            "pending"       => "pending",
+            "rejected"      => "rejected"
         );
     }
 

@@ -229,6 +229,17 @@ class Media
         return $result ? (Media::get_from_id($user_id, $id, $table)) : false;
     }
 
+    /* Update image paths for a table when username is changed */
+    public static function update_image_paths_for_table($user_id, $table, $old_username, $username)
+    {
+        $database = Database::instance();
+        $sql = "UPDATE " . $table . " SET image = REPLACE(image, 'uploads/images/" . $old_username . "', 'uploads/images/" . $username . "') WHERE user_id = " . $user_id;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $query->closeCursor();
+        return ($query->rowCount() > 0);
+    }
+
     /* ========================================================== *
     * DELETE
     * ========================================================== */
@@ -243,10 +254,43 @@ class Media
         return $result;
     }
 
+    public static function delete_for_id($id, $user_id, $table)
+    {
+        $where = array("user_id" => $user_id, "id" => $id);
+        $result = DatabaseService::delete($table, $where);
+        return $result;
+    }
+
 
     /* ===================================================== *
     * Public Functions
     * ===================================================== */
+
+    public static function set_property($data, $property, $type = "string", $default_value = null){
+        return isset($data[$property]) ? (
+            $type == "num" ? intval($data[$property])
+            : ($type == "bool" ? (boolean) $data[$property]
+            : ($type == "date" ? new \DateTime($data[$property]) : $data[$property] ) ) )
+            : $default_value;
+    }
+
+    public static function set_enum_property($data, $property, $enum, $default_value = null){
+        return (isset($data[$property]) && Media::is_valid_enum($enum, $data[$property]))
+            ? $data[$property] : $default_value;
+    }
+
+    public static function are_valid_enums($enum_property_list, $params){
+        foreach ($enum_property_list as $item){
+            $property = $item["property"];
+            $enum = $item["enum"];
+            if(isset($params[$property])){
+                if(!Media::is_valid_enum($enum, $params[$property])){
+                    APIService::response_fail("Must choose a valid value for " . $property . ".", 400);
+                }
+            }
+        }
+        return true;
+    }
 
     /* Check if an enum value to be set is valid */
     public static function is_valid_enum($enum, $value){
@@ -287,28 +331,6 @@ class Media
         return $images;
     }
 
-    /* Get unused images for table */
-    public static function get_unused_images_for_table($table)
-    {
-        /* Get media images in database */
-        $media_images = Media::get_media_images();
-
-        /* Get media images currently stored */
-        $path = FileService::MAIN_DIR . '/' . $table . 's';
-        $files = array_diff(scandir($path), array('.', '..'));
-
-        /* Get images stored that are not in database */
-        $images = array();
-        foreach( $files as $file ) {
-            $full_file = $path . "/" . $file;
-
-            if (!in_array($full_file,$media_images)){
-                array_push($images, $full_file);
-            }
-        }
-        return $images;
-    }
-
     /* Delete unused images */
     public static function delete_unused_images(){
 
@@ -325,47 +347,6 @@ class Media
         );
 
         return $deleted_images;
-    }
-
-    /* Delete unused images for table */
-    public static function delete_unused_images_for_table($table)
-    {
-        /* Get media images in database */
-        $media_images = Media::get_media_images();
-
-        /* Get media images currently stored */
-        $path = FileService::MAIN_DIR . '/' . $table . 's';
-        $files = array_diff(scandir($path), array('.', '..'));
-
-        /* Delete images stored that are not in database */
-        $deleted_images = array();
-        foreach( $files as $file ) {
-            $full_file = $path . "/" . $file;
-
-            if (!in_array($full_file,$media_images)){
-                array_push($deleted_images, $full_file);
-                FileService::delete_file($full_file);
-            }
-        }
-        return $deleted_images;
-    }
-
-    /* Get all media images */
-    public static function get_media_images(){
-        $database = Database::instance();
-        $sql = "SELECT DISTINCT image FROM " . $table . " WHERE image IS NOT NULL";
-        $query = $database->prepare($sql);
-        $query->execute();
-        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
-        $query->closeCursor();
-        if( $result === false || $result === null) {
-            APIService::response_fail("There was an error getting images.", 500);
-        }
-        $media_images = array();
-        foreach ($result as $image){
-            array_push($media_images, $image["image"]);
-        }
-        return $media_images;
     }
 
     /* Sort all media by title */
@@ -394,6 +375,99 @@ class Media
     /* ========================================================== *
     * PRIVATE FUNCTIONS
     * ========================================================== */
+
+    /* Get unused images for table */
+    private static function get_unused_images_for_table($table)
+    {
+        $images = array();
+
+        /* Get media images in database */
+        $media_images = Media::get_media_images($table);
+
+        /* Get media images currently stored */
+        if ($table === Config::DBTables()->user){
+            $path = FileService::MAIN_DIR . "/users";
+            $files = array_diff(scandir($path), array('.', '..'));
+            $images = Media::add_unused_images_to_array($images, $media_images, $files, $path);
+        }else{
+            $users = array_diff(scandir(FileService::MAIN_DIR), array('.', '..'));
+            foreach($users as $username){
+                if ($username !== "users"){
+                    $user_path = FileService::MAIN_DIR . "/" . $username . "/" . $table . "s";
+                    $files = array_diff(scandir($user_path), array('.', '..'));
+                    $images = Media::add_unused_images_to_array($images, $media_images, $files, $user_path);
+                }
+            }
+        }
+        return $images;
+    }
+
+    /* Delete unused images for table */
+    private static function delete_unused_images_for_table($table)
+    {
+        $deleted_images = array();
+
+        /* Get media images in database */
+        $media_images = Media::get_media_images($table);
+
+        /* Delete unused media images currently stored */
+        if ($table === Config::DBTables()->user){
+            $path = FileService::MAIN_DIR . "/users";
+            $files = array_diff(scandir($path), array('.', '..'));
+            $deleted_images = Media::add_deleted_images_to_array($deleted_images, $media_images, $files, $path);
+        }else{
+            $users = array_diff(scandir(FileService::MAIN_DIR), array('.', '..'));
+            foreach($users as $username){
+                if ($username !== "users"){
+                    $user_path = FileService::MAIN_DIR . "/" . $username . "/" . $table . "s";
+                    $files = array_diff(scandir($user_path), array('.', '..'));
+                    $deleted_images = Media::add_deleted_images_to_array($deleted_images, $media_images, $files, $user_path);
+                }
+            }
+        }
+        return $deleted_images;
+    }
+
+    /* Get all media images */
+    private static function get_media_images($table){
+        $database = Database::instance();
+        $sql = "SELECT DISTINCT image FROM " . $table . " WHERE image IS NOT NULL";
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetchAll(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if( $result === false || $result === null) {
+            APIService::response_fail("There was an error getting images.", 500);
+        }
+        $media_images = array();
+        foreach ($result as $image){
+            array_push($media_images, $image["image"]);
+        }
+        return $media_images;
+    }
+
+    private static function add_unused_images_to_array($images, $media_images, $files, $path){
+        foreach( $files as $file ) {
+            $full_file = $path . "/" . $file;
+
+            if (!in_array($full_file,$media_images)){
+                array_push($images, $full_file);
+            }
+        }
+        return $images;
+    }
+
+    private static function add_deleted_images_to_array($deleted_images, $media_images, $files, $path){
+        foreach( $files as $file ) {
+            $full_file = $path . "/" . $file;
+
+            if (!in_array($full_file,$media_images)){
+                array_push($deleted_images, $full_file);
+                FileService::delete_file($full_file);
+            }
+        }
+        return $deleted_images;
+    }
 
     private static function build_media_item($table, $result){
         $media = ($table == "book") ? new Book($result) : (($table == "movie") ? new Movie($result) : new Game($result));

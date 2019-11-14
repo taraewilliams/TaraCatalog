@@ -25,6 +25,7 @@ class Movie
     public $notes;
     public $genre;
     public $running_time;
+    public $rt_hours;
     public $complete_series;
 
     public $type;
@@ -35,44 +36,30 @@ class Movie
 
     public function __construct($data)
     {
-        $this->id              = isset($data['id']) ? intval($data['id']) : null;
-        $this->user_id         = isset($data['user_id']) ? intval($data['user_id']) : null;
-        $this->title           = isset($data['title']) ? $data['title'] : null;
-        $this->edition         = isset($data['edition']) ? $data['edition'] : null;
-        $this->season          = isset($data['season']) ? $data['season'] : null;
-        $this->todo_list       = isset($data['todo_list']) ? (boolean) $data['todo_list'] : false;
-        $this->image           = isset($data['image']) ? $data['image'] : null;
-        $this->notes           = isset($data['notes']) ? $data['notes'] : null;
-        $this->genre           = isset($data['genre']) ? $data['genre'] : null;
-        $this->running_time    = isset($data['running_time']) ? $data['running_time'] : null;
+        $this->id              = Media::set_property($data, "id", Constants::property_types()->num);
+        $this->user_id         = Media::set_property($data, "user_id", Constants::property_types()->num);
+        $this->title           = Media::set_property($data, "title");
+        $this->edition         = Media::set_property($data, "edition");
+        $this->season          = Media::set_property($data, "season");
+        $this->todo_list       = Media::set_property($data, "todo_list", Constants::property_types()->bool, false);
+        $this->image           = Media::set_property($data, "image");
+        $this->notes           = Media::set_property($data, "notes");
+        $this->genre           = Media::set_property($data, "genre");
+        $this->running_time    = Media::set_property($data, "running_time", Constants::property_types()->num);
+        $this->rt_hours        = Movie::get_running_time_in_hours($this->running_time);
 
         /* Set Enums */
-        $this->format          = (isset($data['format'])
-            && Media::is_valid_enum(Constants::movie_format(), $data["format"]))
-            ? $data['format']
-            : Constants::movie_format()->dvd;
-        $this->content_type    = (isset($data['content_type'])
-            && Media::is_valid_enum(Constants::movie_content_type(), $data["content_type"]))
-            ? $data['content_type']
-            : Constants::movie_content_type()->live_action;
-        $this->mpaa_rating     = (isset($data['mpaa_rating'])
-            && Media::is_valid_enum(Constants::movie_mpaa_rating(), $data["mpaa_rating"]))
-            ? $data['mpaa_rating']
-            : null;
-        $this->location        = (isset($data['location'])
-            && Media::is_valid_enum(Constants::media_location(), $data["location"]))
-            ? $data['location']
-            : Constants::media_location()->home;
-        $this->complete_series = (isset($data['complete_series'])
-            && Media::is_valid_enum(Constants::media_complete_series(), $data["complete_series"]))
-            ? $data['complete_series']
-            : Constants::media_complete_series()->incomplete;
+        $this->format          = Media::set_enum_property($data, 'format', Constants::movie_format(), Constants::movie_format()->dvd);
+        $this->content_type    = Media::set_enum_property($data, 'content_type', Constants::movie_content_type(), Constants::movie_content_type()->live_action);
+        $this->mpaa_rating     = Media::set_enum_property($data, 'mpaa_rating', Constants::movie_mpaa_rating());
+        $this->location        = Media::set_enum_property($data, 'location', Constants::media_location(), Constants::media_location()->home);
+        $this->complete_series = Media::set_enum_property($data, 'complete_series', Constants::media_complete_series(), Constants::media_complete_series()->incomplete);
 
         $this->type            = "movie";
-        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
-        $this->created         = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated         = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active          = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->row_number      = Media::set_property($data, "row_number", Constants::property_types()->num);
+        $this->created         = Media::set_property($data, "created", Constants::property_types()->date, new \DateTime('now'));
+        $this->updated         = Media::set_property($data, "updated", Constants::property_types()->date, new \DateTime('now'));
+        $this->active          = Media::set_property($data, "active", Constants::property_types()->bool, true);
     }
 
     /* =====================================================
@@ -89,23 +76,23 @@ class Movie
         $movie = new Movie($data);
 
         $data = array(
-            "user_id"        => $movie->user_id,
-            "title"          => $movie->title,
-            "format"         => $movie->format,
-            "edition"        => $movie->edition,
-            "content_type"   => $movie->content_type,
-            "location"       => $movie->location,
-            "season"         => $movie->season,
-            "todo_list"      => $movie->todo_list,
-            "image"          => $movie->image,
-            "mpaa_rating"    => $movie->mpaa_rating,
-            "notes"          => $movie->notes,
-            "genre"          => $movie->genre,
-            "running_time"   => $movie->running_time,
+            "user_id"         => $movie->user_id,
+            "title"           => $movie->title,
+            "format"          => $movie->format,
+            "edition"         => $movie->edition,
+            "content_type"    => $movie->content_type,
+            "location"        => $movie->location,
+            "season"          => $movie->season,
+            "todo_list"       => $movie->todo_list,
+            "image"           => $movie->image,
+            "mpaa_rating"     => $movie->mpaa_rating,
+            "notes"           => $movie->notes,
+            "genre"           => $movie->genre,
+            "running_time"    => $movie->running_time,
             "complete_series" => $movie->complete_series,
-            "created"        => $movie->created,
-            "updated"        => $movie->updated,
-            "active"         => $movie->active
+            "created"         => $movie->created,
+            "updated"         => $movie->updated,
+            "active"          => $movie->active
         );
 
         $id = DatabaseService::create(Config::DBTables()->movie, $data);
@@ -168,11 +155,15 @@ class Movie
             APIService::response_fail("There was a problem getting the running time.", 500);
         }else{
             $total_minutes = intval($result["running_time"]);
-            $hours = floor($total_minutes / 60);
-            $minutes = $total_minutes % 60;
-            $result["hours"] = $hours . " hours and " . $minutes . " minutes";
+            $result["hours"] = Movie::get_running_time_in_hours($total_minutes);
             return $result;
         }
+    }
+
+    private static function get_running_time_in_hours($runtime){
+        $hours = floor($runtime / 60);
+        $minutes = $runtime % 60;
+        return $hours . " hours and " . $minutes . " minutes";
     }
 
 }

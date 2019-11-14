@@ -76,6 +76,12 @@
     </ul>
 
     <ul class="profile-menu" ng-if="menuOpen">
+
+        <!-- Admin Pages -->
+        <li ng-if="user.is_admin" class="menu-item" ng-class="{ 'selected': isActive(['/admin']) }">
+            <a ng-href="#/admin">Admin Panel</a>
+        </li>
+
         <!-- Profile Page -->
         <li class="menu-item" ng-class="{ 'selected': isActive(['/profile', '/user_update', '/reset_password']) }">
             <a ng-href="#/profile">Profile</a>
@@ -91,7 +97,7 @@
     <!-- Sub Menus for Website -->
 
     <!-- Books -->
-    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }">
+    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }">
         <li><a ng-class="{ 'sub-selected': isActive(['/books_create']) }" ng-href="#/books_create">New</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/books/:offset/:limit']) }" ng-href="#/books/0/25">See Books</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/books_table','/books_table/order_by/:order_by']) }" ng-href="#/books_table">See Books List</a></li>
@@ -99,7 +105,7 @@
     </ul>
 
     <!-- Movies -->
-    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }">
+    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }">
         <li><a ng-class="{ 'sub-selected': isActive(['/movies_create']) }" ng-href="#/movies_create">New</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/movies/:offset/:limit']) }" ng-href="#/movies/0/25">See Movies</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/movies_table', '/movies_table/order_by/:order_by']) }" ng-href="#/movies_table">See Movies List</a></li>
@@ -107,7 +113,7 @@
     </ul>
 
     <!-- Games -->
-    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }">
+    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }">
         <li><a ng-class="{ 'sub-selected': isActive(['/games_create']) }" ng-href="#/games_create">New</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/games/:offset/:limit']) }" ng-href="#/games/0/25">See Games</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/games_table', '/games_table/order_by/:order_by']) }" ng-href="#/games_table">See Games List</a></li>
@@ -115,11 +121,17 @@
     </ul>
 
     <!-- Viewers -->
-    <ul ng-if="menuOpen" class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
+    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
         <li ng-if="user.role == 'creator'"><a ng-class="{ 'sub-selected': isActive(['/viewer_list']) }" ng-href="#/viewer_list">Viewers of your Catalog</a></li>
         <li ng-if="user.role == 'creator'"><a ng-class="{ 'sub-selected': isActive(['/add_viewers']) }" ng-href="#/add_viewers">Add Viewers</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/view_list']) }" ng-href="#/view_list">View Other Catalogs</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/request_view']) }" ng-href="#/request_view">Request to View Catalogs</a></li>
+    </ul>
+
+    <!-- Admin -->
+    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/admin', '/admin/images']) }">
+        <li><a ng-class="{ 'sub-selected': isActive(['/admin']) }" ng-href="#/admin">Users</a></li>
+        <li><a ng-class="{ 'sub-selected': isActive(['/admin/images']) }" ng-href="#/admin/images">Unused Images</a></li>
     </ul>
 
 </header>

@@ -27,34 +27,41 @@ $app->group('/api', function () use ($app) {
             $searchTerm = isset($params["search"]) ? $params["search"] : null;
 
             $book_params = array(
-                "title"          => $searchTerm,
-                "series"         => $searchTerm,
-                "author"         => $searchTerm,
-                "volume"         => $searchTerm,
-                "isbn"           => $searchTerm,
-                "cover_type"     => $searchTerm,
-                "content_type"   => $searchTerm,
-                "location"       => $searchTerm,
-                "genre"          => $searchTerm
+                "title"           => $searchTerm,
+                "series"          => $searchTerm,
+                "author"          => $searchTerm,
+                "volume"          => $searchTerm,
+                "isbn"            => $searchTerm,
+                "cover_type"      => $searchTerm,
+                "content_type"    => $searchTerm,
+                "location"        => $searchTerm,
+                "genre"           => $searchTerm,
+                "notes"           => $searchTerm,
+                "complete_series" => $searchTerm
             );
 
             $movie_params = array(
-                "title"         => $searchTerm,
-                "format"        => $searchTerm,
-                "edition"       => $searchTerm,
-                "content_type"  => $searchTerm,
-                "location"      => $searchTerm,
-                "season"        => $searchTerm,
-                "mpaa_rating"   => $searchTerm,
-                "genre"         => $searchTerm
+                "title"           => $searchTerm,
+                "format"          => $searchTerm,
+                "edition"         => $searchTerm,
+                "content_type"    => $searchTerm,
+                "location"        => $searchTerm,
+                "season"          => $searchTerm,
+                "mpaa_rating"     => $searchTerm,
+                "genre"           => $searchTerm,
+                "notes"           => $searchTerm,
+                "running_time"    => $searchTerm,
+                "complete_series" => $searchTerm
             );
 
             $game_params = array(
-                "title"         => $searchTerm,
-                "platform"      => $searchTerm,
-                "location"      => $searchTerm,
-                "esrb_rating"   => $searchTerm,
-                "genre"         => $searchTerm
+                "title"           => $searchTerm,
+                "platform"        => $searchTerm,
+                "location"        => $searchTerm,
+                "esrb_rating"     => $searchTerm,
+                "genre"           => $searchTerm,
+                "notes"           => $searchTerm,
+                "complete_series" => $searchTerm
             );
 
             $conj = "OR";
@@ -62,7 +69,6 @@ $app->group('/api', function () use ($app) {
             $books = Media::get_for_search($user_id, Config::DBTables()->book, $book_params, Constants::default_order()->book, Constants::enum_columns()->book, $conj);
             $movies = Media::get_for_search($user_id, Config::DBTables()->movie, $movie_params, Constants::default_order()->movie, Constants::enum_columns()->movie, $conj);
             $games = Media::get_for_search($user_id, Config::DBTables()->game, $game_params, Constants::default_order()->game, Constants::enum_columns()->game, $conj);
-
 
             $merge = array_merge($books, $movies);
             $media = array_merge($merge, $games);
@@ -81,7 +87,7 @@ $app->group('/api', function () use ($app) {
 
             /* Check that the viewer has permission to view the creator's media */
             if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
-                APIService::response_fail("There was a problem getting the media.", 500);
+                APIService::response_fail("You don't have permission to view this list.", 500);
             }
 
             $params = APIService::build_params($_REQUEST, null, array(

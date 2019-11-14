@@ -1,10 +1,12 @@
 <?php
 
 use TaraCatalog\Service\APIService;
+use TaraCatalog\Service\FileService;
 use TaraCatalog\Model\User;
 use TaraCatalog\Model\Media;
 use TaraCatalog\Model\Viewer;
 use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\Config;
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
@@ -21,7 +23,7 @@ $app->group('/api', function () use ($app) {
 
             $id = intval($args['id']);
             if ($session->user->id !== $id){
-                APIService::response_fail("There was a problem getting user.", 500);
+                APIService::response_fail("Invalid request.", 401);
             }
 
             $user = User::get_from_id($id);
@@ -38,7 +40,7 @@ $app->group('/api', function () use ($app) {
 
             $user = User::get_from_username_and_password($username, $password);
             if ($session->user->id !== $user->id){
-                APIService::response_fail("There was a problem getting user.", 500);
+                APIService::response_fail("Invalid request.", 401);
             }
             APIService::response_success($user);
         });
@@ -49,17 +51,15 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $users = User::get_nonviewers($user_id);
-            usort($users, array("TaraCatalog\Model\User", "sort_viewers"));
             APIService::response_success($users);
         });
 
-        /* Get users whose catalogs a creator can't view */
+        /* Get users (who are creators) whose catalogs a user can't view */
         $app->get($resource . '/non/views/all', function ($request, $response, $args) use ($app)
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
             $users = User::get_nonviews($user_id);
-            usort($users, array("TaraCatalog\Model\User", "sort_viewers"));
             APIService::response_success($users);
         });
 
@@ -85,6 +85,17 @@ $app->group('/api', function () use ($app) {
                 APIService::response_fail($error, 500);
             }
 
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "color_scheme", "enum" => Constants::user_color_scheme()),
+                array("property" => "role", "enum" => Constants::user_role())
+            );
+
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("There was a problem setting the enums.", 500);
+            }
+
+            /* Set image */
             $files = APIService::build_files($_FILES, null, array(
                 "image"
             ));
@@ -93,6 +104,7 @@ $app->group('/api', function () use ($app) {
                 $params['image'] = Media::set_image($files, $params["username"], '/users');
             }
 
+            /* Create user */
             $user = User::create_from_data($params);
             APIService::response_success($user);
         });
@@ -121,30 +133,30 @@ $app->group('/api', function () use ($app) {
                 "role"
             ));
 
-            /* Check that enums are valid */
-            if(isset($params["color_scheme"])){
-                if(!Media::is_valid_enum(Constants::user_color_scheme(), $params["color_scheme"])){
-                    APIService::response_fail("Must choose a valid value for color scheme.", 400);
-                }
-            }
-            if(isset($params["role"])){
-                if(!Media::is_valid_enum(Constants::user_role(), $params["role"])){
-                    APIService::response_fail("Must choose a valid value for role.", 400);
-                }
-            }
-
             if(!User::unique_username_and_email($id, $params, $error)) {
                 APIService::response_fail($error, 500);
             }
 
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "color_scheme", "enum" => Constants::user_color_scheme()),
+                array("property" => "role", "enum" => Constants::user_role())
+            );
+
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("There was a problem setting the enums.", 500);
+            }
+
+            /* Set image */
             $files = APIService::build_files($_FILES, null, array(
                 "image"
             ));
 
+            $old_username = User::get_username_for_id($id);
             if(isset($params["username"])){
                 $username = $params["username"];
             }else{
-                $username = User::get_username_for_id($id);
+                $username = $old_username;
             }
 
             if(isset($files['image'])) {
@@ -154,11 +166,27 @@ $app->group('/api', function () use ($app) {
             /* If role is changing to viewer, delete viewer objects for creator ID
             so other users can no longer view this catalog */
             if(isset($params['role'])){
-                if($params['role'] == 'viewer'){
+                if($params['role'] == Constants::user_role()->viewer){
                     Viewer::delete_for_creator($id);
                 }
             }
 
+            /* If updating username, change folder images are listed under */
+            /* Also, update image paths in database */
+            if($old_username != $username){
+
+                /* Change folder name */
+                $old_dir = FileService::MAIN_DIR . '/' . $old_username;
+                $new_dir = FileService::MAIN_DIR . '/' . $username;
+                FileService::rename_directory($old_dir, $new_dir);
+
+                /* Update image paths in database */
+                $book_result = Media::update_image_paths_for_table($id, CONFIG::DBTables()->book, $old_username, $username);
+                $game_result = Media::update_image_paths_for_table($id, CONFIG::DBTables()->game, $old_username, $username);
+                $movie_result = Media::update_image_paths_for_table($id, CONFIG::DBTables()->movie, $old_username, $username);
+            }
+
+            /* Update user */
             $user = User::update($id, $params);
             APIService::response_success($user);
         });
@@ -174,9 +202,29 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $id = intval($args['id']);
             if ($session->user->id !== $id){
-                APIService::response_fail("There was a problem updating user.", 500);
+                APIService::response_fail("Invalid request.", 401);
             }
-            $result = User::set_active($id, 0);
+            $username = $session->user->username;
+
+            /* Delete user's images */
+            $path = FileService::MAIN_DIR . '/' . $username;
+            FileService::remove_folder($path);
+
+            $profile_image = $session->user->image;
+            FileService::delete_file($profile_image);
+
+            /* Delete books, movies, games */
+            User::delete_dependencies($id, Config::DBTables()->book);
+            User::delete_dependencies($id, Config::DBTables()->movie);
+            User::delete_dependencies($id, Config::DBTables()->game);
+
+            /* Delete viewer relationships */
+            User::delete_viewer_dependencies($id);
+
+            /* Delete sessions */
+            User::delete_dependencies($id, Config::DBTables()->session);
+
+            $result = User::delete_for_id($id);
             APIService::response_success(true);
         });
 

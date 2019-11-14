@@ -56,6 +56,8 @@
     }
 
     .mobile-hamburger{
+        background: none;
+        border: none;
         box-sizing: border-box;
         display: inline-block;
         margin: 5px;
@@ -67,6 +69,10 @@
             margin: 6px 0;
         }
         display:inline-block;
+    }
+
+    .mobile-hamburger:focus{
+        outline: none;
     }
 
     .hamburger-selected{

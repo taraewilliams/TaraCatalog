@@ -46,39 +46,5 @@ $app->group('/api', function () use ($app) {
             APIService::response_success($location_types);
         });
 
-        /* Get unused media images */
-        $app->get($resource . '/images', function ($request, $response, $args) use ($app)
-        {
-            /* Make an admin request */
-            $session = APIService::authenticate_request($_DELETE);
-
-            if ($session->user->is_admin){
-                $images = Media::get_unused_images();
-                APIService::response_success($images);
-            }else{
-                APIService::response_fail("Admin only request.", 401);
-            }
-
-        });
-
-        /* ========================================================== *
-        * DELETE
-        * ========================================================== */
-
-        /* Delete unused media images */
-        $app->delete($resource . '/images', function ($response, $request, $args) use ($app)
-        {
-            /* Make an admin request */
-            $session = APIService::authenticate_request($_DELETE);
-
-            if ($session->user->is_admin){
-                $deleted_images = Media::delete_unused_images();
-                APIService::response_success($deleted_images);
-            }else{
-                APIService::response_fail("Admin only request.", 401);
-            }
-
-        });
-
     });
 });

@@ -62,6 +62,8 @@ app.constant('CONFIG', {
         get_media_search: '/search',
         get_media_search_viewer: '/search/',
         /* user */
+        get_users: '/users',
+        get_users_inactive: '/users/inactive',
         get_single_user: '/users/',
         get_single_user_username_password: '/users/',
         get_users_not_viewing: '/users/non/viewers/all',

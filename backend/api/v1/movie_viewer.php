@@ -24,7 +24,7 @@ $app->group('/api', function () use ($app) {
 
             /* Check that the viewer has permission to view the creator's movies */
             if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
-                APIService::response_fail("There was a problem getting the movies.", 500);
+                APIService::response_fail("You don't have permission to view this list.", 401);
             }
 
             $movies = Media::get_all($creator_id, Config::DBTables()->movie, Constants::default_order()->movie);

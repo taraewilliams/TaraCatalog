@@ -29,35 +29,23 @@ class User
 
     public function __construct($data)
     {
-        $this->id               = isset($data['id']) ? intval($data['id']) : null;
-        $this->username         = isset($data['username']) ? $data['username'] : null;
-        $this->email            = isset($data['email']) ? $data['email'] : null;
-        $this->first_name       = isset($data['first_name']) ? $data['first_name'] : null;
-        $this->last_name        = isset($data['last_name']) ? $data['last_name'] : null;
-        $this->image            = isset($data['image']) ? $data['image'] : null;
-        $this->is_admin         = isset($data['is_admin']) ? (boolean) $data['is_admin'] : false;
 
-        if(isset($data['password'])) {
-            $this->hashed_password = password_hash($data['password'], PASSWORD_BCRYPT);
-        } else if(isset($data['hashed_password'])) {
-            $this->hashed_password = $data['hashed_password'];
-        } else {
-            $this->hashed_password = null;
-        }
+        $this->id              = Media::set_property($data, "id", Constants::property_types()->num);
+        $this->username        = Media::set_property($data, "username");
+        $this->email           = Media::set_property($data, "email");
+        $this->first_name      = Media::set_property($data, "first_name");
+        $this->last_name       = Media::set_property($data, "last_name");
+        $this->image           = Media::set_property($data, "image");
+        $this->is_admin        = Media::set_property($data, "is_admin", Constants::property_types()->bool, false);
+        $this->hashed_password = isset($data['password']) ? password_hash($data['password'], PASSWORD_BCRYPT) : (isset($data['hashed_password']) ? $data['hashed_password'] : null);
 
         /* Set Enums */
-        $this->color_scheme     = (isset($data['color_scheme'])
-            && Media::is_valid_enum(Constants::user_color_scheme(), $data["color_scheme"]))
-            ? $data['color_scheme']
-            : Constants::user_color_scheme()->red;
-        $this->role             = (isset($data['role'])
-            && Media::is_valid_enum(Constants::user_role(), $data["role"]))
-            ? $data['role']
-            : Constants::user_role()->viewer;
+        $this->color_scheme    = Media::set_enum_property($data, 'color_scheme', Constants::user_color_scheme(), Constants::user_color_scheme()->red);
+        $this->role            = Media::set_enum_property($data, 'role', Constants::user_role(), Constants::user_role()->viewer);
 
-        $this->created          = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated          = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active           = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->created         = Media::set_property($data, "created", Constants::property_types()->date, new \DateTime('now'));
+        $this->updated         = Media::set_property($data, "updated", Constants::property_types()->date, new \DateTime('now'));
+        $this->active          = Media::set_property($data, "active", Constants::property_types()->bool, true);
     }
 
     /* =====================================================
@@ -100,6 +88,24 @@ class User
     * GET
     * ========================================================== */
 
+    /* Admin only requests */
+    /* Get all users */
+    public static function get_all($active = 1)
+    {
+        $where = "WHERE active = " . $active;
+        $result = DatabaseService::get_where_order_limit(Config::DBTables()->user, $where);
+        if($result === false || $result === null) {
+            APIService::response_fail("There was a problem getting the users.", 500);
+        }else{
+            $users = array();
+            foreach( $result as $row ) {
+                $users[] = new User($row);
+            }
+            return $users;
+        }
+    }
+
+    /* User requests */
     /* Get user from username and password */
     public static function get_from_username_and_password($username, $password)
     {
@@ -114,7 +120,7 @@ class User
         $user = new User($result[0]);
 
         if( !password_verify($password, $user->hashed_password) ) {
-            APIService::response_fail("There was a problem getting the user.", 500);
+            APIService::response_fail("Invalid username or password.", 500);
         }else{
             return $user;
         }
@@ -135,7 +141,7 @@ class User
     public static function get_nonviewers($user_id){
         $database = Database::instance();
         $viewer_ids = "SELECT DISTINCT viewer_id FROM " . CONFIG::DBTables()->viewer . " WHERE creator_id = " . $user_id;
-        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id != " . $user_id . " AND id NOT IN (" . $viewer_ids . ")";
+        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id != " . $user_id . " AND id NOT IN (" . $viewer_ids . ") ORDER BY username";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -152,7 +158,7 @@ class User
         $database = Database::instance();
         $creator_ids = "SELECT DISTINCT creator_id FROM " . CONFIG::DBTables()->viewer . " WHERE viewer_id = " . $user_id;
         /* Only include users who are currently creators */
-        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND role = 'creator' AND id != " . $user_id . " AND id NOT IN (" . $creator_ids . ")";
+        $sql = "SELECT id, username, image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND role = 'creator' AND id != " . $user_id . " AND id NOT IN (" . $creator_ids . ") ORDER BY username";
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -186,6 +192,20 @@ class User
     /* Update a user */
     public static function update($id, $data)
     {
+        /* If new image is set, delete the old image */
+        if (isset($data["image"])){
+            $database = Database::instance();
+            $sql = "SELECT image FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id = " . $id;
+            $query = $database->prepare($sql);
+            $query->execute();
+            $result = $query->fetch(\PDO::FETCH_ASSOC);
+            $query->closeCursor();
+            if( $result !== false && $result !== null && $result !== "" ) {
+                $old_image = $result["image"];
+                FileService::delete_file($old_image);
+            }
+        }
+
         if(isset($data['password'])) {
             $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
         }
@@ -210,6 +230,32 @@ class User
         return $result;
     }
 
+    public static function delete_dependencies($user_id, $table)
+    {
+        $where = array("user_id" => $user_id);
+        $result = DatabaseService::delete($table, $where);
+        return $result;
+    }
+
+    public static function delete_viewer_dependencies($user_id)
+    {
+        $table = Config::DBTables()->viewer;
+        /* Delete where user is creator */
+        $where = array("creator_id" => $user_id);
+        $result = DatabaseService::delete($table, $where);
+        /* Delete where user is viewer */
+        $where = array("viewer_id" => $user_id);
+        $result = DatabaseService::delete($table, $where);
+        return $result;
+    }
+
+    public static function delete_for_id($id)
+    {
+        $where = array("id" => $id);
+        $result = DatabaseService::delete(Config::DBTables()->user, $where);
+        return $result;
+    }
+
     /* ===================================================== *
     * Public Functions
     * ===================================================== */
@@ -217,19 +263,15 @@ class User
     /* Check if user has unique username and email */
     public static function unique_username_and_email($id, $data, &$error = null)
     {
-        if(isset($data['username']))
-        {
-            if(!self::is_unique_attribute("username", $id, $data)){
-                $error = "This username is already in use.";
-                return false;
-            }
-        }
+        $properties = ['username', 'email'];
 
-        if(isset($data['email']))
-        {
-            if(!self::is_unique_attribute("email", $id, $data)){
-                $error = "This email is already in use.";
-                return false;
+        foreach( $properties as $property ){
+            if(isset($data[$property]))
+            {
+                if(!self::is_unique_attribute($property, $id, $data)){
+                    $error = "This " . $property . " is already in use.";
+                    return false;
+                }
             }
         }
         return true;
@@ -245,10 +287,6 @@ class User
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         return ($result !== false && $result !== null && count($result) !== 0);
-    }
-
-    public static function sort_viewers($a, $b){
-        return strtolower($a["username"]) > strtolower($b["username"]);
     }
 
     /* ===================================================== *

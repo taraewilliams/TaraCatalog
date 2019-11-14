@@ -3,10 +3,12 @@
 namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\FileService;
 use TaraCatalog\Service\APIService;
+use TaraCatalog\Model\Media;
 
 class Viewer
 {
@@ -24,17 +26,20 @@ class Viewer
 
     public function __construct($data, $include_relationships = true)
     {
-        $this->id              = isset($data['id']) ? intval($data['id']) : null;
-        $this->creator_id      = isset($data['creator_id']) ? intval($data['creator_id']) : null;
-        $this->viewer_id       = isset($data['viewer_id']) ? intval($data['viewer_id']) : null;
-        $this->status          = isset($data['status']) ? $data['status'] : "pending";
-        $this->requested_by    = isset($data['requested_by']) ? $data['requested_by'] : "viewer";
+        $this->id              = Media::set_property($data, "id", Constants::property_types()->num);
+        $this->creator_id      = Media::set_property($data, "creator_id", Constants::property_types()->num);
+        $this->viewer_id       = Media::set_property($data, "viewer_id", Constants::property_types()->num);
+
+        /* Set enums */
+        $this->requested_by    = Media::set_enum_property($data, 'requested_by', Constants::viewer_requested_by(), Constants::viewer_requested_by()->viewer);
+        $this->status          = Media::set_enum_property($data, 'status', Constants::viewer_status(), Constants::viewer_status()->pending);
+
         $this->c_username      = User::get_username_for_id($this->creator_id);
 
-        $this->row_number      = isset($data['row_number']) ? intval($data['row_number']) : null;
-        $this->created         = isset($data['created']) ? new \DateTime($data['created']) : new \DateTime('now');
-        $this->updated         = isset($data['updated']) ? new \DateTime($data['updated']) : new \DateTime('now');
-        $this->active          = isset($data['active']) ? (boolean) $data['active'] : true;
+        $this->row_number      = Media::set_property($data, "row_number", Constants::property_types()->num);
+        $this->created         = Media::set_property($data, "created", Constants::property_types()->date, new \DateTime('now'));
+        $this->updated         = Media::set_property($data, "updated", Constants::property_types()->date, new \DateTime('now'));
+        $this->active          = Media::set_property($data, "active", Constants::property_types()->bool, true);
     }
 
     /* =====================================================
@@ -207,9 +212,6 @@ class Viewer
     {
         $where = array("creator_id" => $creator_id);
         $result = DatabaseService::delete(Config::DBTables()->viewer, $where);
-        if( $result === false || $result === null) {
-            APIService::response_fail("There was an error deleting that viewer.", 500);
-        }
         return $result;
     }
 

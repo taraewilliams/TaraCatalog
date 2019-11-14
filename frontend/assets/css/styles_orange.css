@@ -75,6 +75,8 @@ table {
   header .sub-menu {
     display: none; }
   .mobile-hamburger {
+    background: none;
+    border: none;
     box-sizing: border-box;
     display: inline-block;
     margin: 5px;
@@ -85,6 +87,8 @@ table {
       height: 5px;
       background-color: white;
       margin: 6px 0; }
+  .mobile-hamburger:focus {
+    outline: none; }
   .hamburger-selected div {
     background-color: #ff9900; } }
 

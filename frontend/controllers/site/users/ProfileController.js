@@ -24,7 +24,8 @@ app.controller('ProfileController', function($scope,
 
             $http.delete(url)
             .then(function(response) {
-                alert("The user was deleted.");
+                messageCenterService.add(MESSAGE_OPTIONS.success, "The user was deleted.", { timeout: CONFIG.messageTimeout });
+                Session.destroy();
                 $scope.goToPath("/login");
             }, function(response){
                 messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });

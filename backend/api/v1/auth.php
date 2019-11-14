@@ -12,7 +12,7 @@ $app->group('/api', function () use ($app) {
         * ========================================================== */
         $app->post($resource . "/login", function () use ($app)
         {
-            $params = APIService::build_params($_POST, array(
+            $params = APIService::build_params($_REQUEST, array(
                 "username",
                 "password"
             ));

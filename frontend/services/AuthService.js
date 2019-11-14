@@ -65,6 +65,17 @@ app.service('AuthService', function ($rootScope,
         return false;
     };
 
+    this.redirectOnNonAdmin = function(path)
+    {
+        path = (typeof path !== 'undefined') ? path : '/';
+
+        if( $rootScope.user.is_admin !== true ) {
+            $location.path(path);
+            return true;
+        }
+        return false;
+    };
+
     this.redirectOnAuthorized = function(path)
     {
         path = (typeof path !== 'undefined') ? path : '/';

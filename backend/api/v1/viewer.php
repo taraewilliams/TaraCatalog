@@ -2,6 +2,8 @@
 
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Viewer;
+use TaraCatalog\Config\Constants;
+use TaraCatalog\Model\Media;
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
@@ -23,6 +25,17 @@ $app->group('/api', function () use ($app) {
                 "requested_by"
             ));
 
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "status", "enum" => Constants::viewer_status()),
+                array("property" => "requested_by", "enum" => Constants::viewer_requested_by()),
+            );
+
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("Invalid enums.", 500);
+            }
+
+            /* Get viewers */
             $viewers = Viewer::get_all($user_id, $params);
             usort($viewers, array("TaraCatalog\Model\Viewer", "sort_viewers"));
 
@@ -41,6 +54,17 @@ $app->group('/api', function () use ($app) {
                 "requested_by"
             ));
 
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "status", "enum" => Constants::viewer_status()),
+                array("property" => "requested_by", "enum" => Constants::viewer_requested_by()),
+            );
+
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("Invalid enums.", 500);
+            }
+
+            /* Get viewers */
             $viewers = Viewer::get_all_user_views($user_id, $params);
             usort($viewers, array("TaraCatalog\Model\Viewer", "sort_creators"));
 
@@ -56,7 +80,7 @@ $app->group('/api', function () use ($app) {
             $viewer_id = $session->user->id;
 
             /* A viewer can only see creators that have approved them */
-            $status = "approved";
+            $status = Constants::viewer_status()->approved;
 
             $viewer = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id, $status);
             APIService::response_success($viewer);
@@ -77,12 +101,16 @@ $app->group('/api', function () use ($app) {
                 "viewer_id"
             ), array());
 
-            $params["status"] = "pending";
+            if ($params["creator_id"] == $params["viewer_id"]){
+                APIService::response_fail("Cannot create viewer relationship with yourself.", 500);
+            }
+
+            $params["status"] = Constants::viewer_status()->pending;
 
             if ($user_id == $params["creator_id"]){
-                $params["requested_by"] = "creator";
+                $params["requested_by"] = Constants::viewer_requested_by()->creator;
             }else if ($user_id == $params["viewer_id"]){
-                $params["requested_by"] = "viewer";
+                $params["requested_by"] = Constants::viewer_requested_by()->viewer;
             }else{
                 APIService::response_fail("There was a problem creating the viewer.", 500);
             }
@@ -106,11 +134,16 @@ $app->group('/api', function () use ($app) {
                 "status"
             ));
 
-            $status = $params["status"];
-            if ($status !== "approved" && $status !== "rejected" && $status !== "pending"){
-                APIService::response_fail("Invalid status.", 500);
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "status", "enum" => Constants::viewer_status())
+            );
+
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("Invalid enums.", 500);
             }
 
+            /* Update viewer */
             $viewer = Viewer::update($user_id, $id, $params);
             APIService::response_success($viewer);
         });

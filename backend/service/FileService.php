@@ -41,7 +41,28 @@ class FileService
     }
 
     public static function delete_file($file_name){
-        unlink($file_name);
+        if (file_exists($file_name)){
+            unlink($file_name);
+        }
+    }
+
+    public static function remove_folder($folder_path){
+        if (file_exists($folder_path)){
+            FileService::remove_folder_recursive($folder_path);
+        }
+    }
+
+    private static function remove_folder_recursive($dir) {
+        foreach(scandir($dir) as $file) {
+            if ('.' === $file || '..' === $file) continue;
+            if (is_dir("$dir/$file")) FileService::remove_folder_recursive("$dir/$file");
+            else unlink("$dir/$file");
+        }
+        rmdir($dir);
+    }
+
+    public static function rename_directory($old_dir, $new_dir){
+        rename($old_dir, $new_dir);
     }
 
 }

@@ -24,7 +24,7 @@ $app->group('/api', function () use ($app) {
 
             /* Check that the viewer has permission to view the creator's books */
             if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
-                APIService::response_fail("There was a problem getting the books.", 500);
+                APIService::response_fail("You don't have permission to view this list.", 401);
             }
 
             $books = Media::get_all($creator_id, Config::DBTables()->book, Constants::default_order()->book);

@@ -3,6 +3,19 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   $locationProvider.hashPrefix('');
   $routeProvider.
 
+  /* Admin Pages */
+
+  when('/admin', {
+    controller: 'AdminHomeController',
+    templateUrl: 'views/admin/home.html'
+  }).
+  when('/admin/images', {
+    controller: 'AdminImagesController',
+    templateUrl: 'views/admin/images.html'
+  }).
+
+  /* Site Pages */
+
   when('/', {
     controller: 'HomeController',
     templateUrl: CONFIG.homeTemplate

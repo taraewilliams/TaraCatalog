@@ -169,6 +169,7 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
+            $username = $session->user->username;
 
             $params = APIService::build_params($_REQUEST, array(
                 "title"
@@ -187,14 +188,26 @@ $app->group('/api', function () use ($app) {
             ));
             $params["user_id"] = $user_id;
 
-            $files = APIService::build_files($_FILES, null, array(
-                "image"
-            ));
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "cover_type", "enum" => Constants::book_cover_type()),
+                array("property" => "content_type", "enum" => Constants::book_content_type()),
+                array("property" => "location", "enum" => Constants::media_location()),
+                array("property" => "complete_series", "enum" => Constants::media_complete_series())
+            );
 
-            if(isset($files['image'])) {
-                $params['image'] = Media::set_image($files, $params["title"], '/books');
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("There was a problem setting the enums.", 500);
             }
 
+            /* Set image */
+            $files = APIService::build_files($_FILES, null, array( "image" ));
+
+            if(isset($files['image'])) {
+                $params['image'] = Media::set_image($files, $params["title"], '/' . $username . '/books');
+            }
+
+            /* Create book */
             $book = Book::create_from_data($params);
             APIService::response_success($book);
         });
@@ -208,6 +221,7 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
+            $username = $session->user->username;
 
             $id = intval($args["id"]);
             if (!Media::get_from_id($user_id, $id, Config::DBTables()->book)){
@@ -229,31 +243,20 @@ $app->group('/api', function () use ($app) {
                 "complete_series"
             ));
 
-            /* Check that enums are valid */
-            if(isset($params["cover_type"])){
-                if(!Media::is_valid_enum(Constants::book_cover_type(), $params["cover_type"])){
-                    APIService::response_fail("Must choose a valid value for cover type.", 400);
-                }
-            }
-            if(isset($params["content_type"])){
-                if(!Media::is_valid_enum(Constants::book_content_type(), $params["content_type"])){
-                    APIService::response_fail("Must choose a valid value for content type.", 400);
-                }
-            }
-            if(isset($params["location"])){
-                if(!Media::is_valid_enum(Constants::media_location(), $params["location"])){
-                    APIService::response_fail("Must choose a valid value for location.", 400);
-                }
-            }
-            if(isset($params["complete_series"])){
-                if(!Media::is_valid_enum(Constants::media_complete_series(), $params["complete_series"])){
-                    APIService::response_fail("Must choose a valid value for complete series.", 400);
-                }
+            /* Check that enums are set to valid values */
+            $enum_property_list = array(
+                array("property" => "cover_type", "enum" => Constants::book_cover_type()),
+                array("property" => "content_type", "enum" => Constants::book_content_type()),
+                array("property" => "location", "enum" => Constants::media_location()),
+                array("property" => "complete_series", "enum" => Constants::media_complete_series())
+            );
+
+            if(!Media::are_valid_enums($enum_property_list, $params)){
+                APIService::response_fail("There was a problem setting the enums.", 500);
             }
 
-            $files = APIService::build_files($_FILES, null, array(
-                "image"
-            ));
+            /* Set image */
+            $files = APIService::build_files($_FILES, null, array( "image" ));
 
             if(isset($params["title"])){
                 $title = $params["title"];
@@ -263,9 +266,10 @@ $app->group('/api', function () use ($app) {
             }
 
             if(isset($files['image'])) {
-                $params['image'] = Media::set_image($files, $title, '/books');
+                $params['image'] = Media::set_image($files, $title, '/' . $username . '/books');
             }
 
+            /* Update book */
             $book = Media::update($user_id, $id, $params, Config::DBTables()->book);
             APIService::response_success($book);
         });
@@ -286,7 +290,7 @@ $app->group('/api', function () use ($app) {
                 APIService::response_fail("There was a problem deleting the book.", 500);
             }
 
-            $result = Media::set_active($id, 0, Config::DBTables()->book);
+            $result = Media::delete_for_id($id, $user_id, Config::DBTables()->book);
             APIService::response_success(true);
         });
     });
