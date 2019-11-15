@@ -172,16 +172,26 @@ class User
 
     /* Get a user's username for the ID */
     public static function get_username_for_id($id){
+        return User::get_column_value_for_id($id, "username");
+    }
+
+    /* Get a user's image for the ID */
+    public static function get_image_for_id($id){
+        return User::get_column_value_for_id($id, "image");
+    }
+
+    /* Get a user column value for the ID */
+    public static function get_column_value_for_id($id, $column_name){
         $database = Database::instance();
-        $sql = "SELECT username FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id = " . $id;
+        $sql = "SELECT " . $column_name . " FROM " . CONFIG::DBTables()->user . " WHERE active = 1 AND id = " . $id;
         $query = $database->prepare($sql);
         $query->execute();
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the user.", 500);
+            APIService::response_fail("There was a problem getting the value.", 500);
         }else{
-            return $result["username"];
+            return $result[$column_name];
         }
     }
 

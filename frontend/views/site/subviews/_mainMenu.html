@@ -78,8 +78,15 @@
     <ul class="profile-menu" ng-if="menuOpen">
 
         <!-- Admin Pages -->
-        <li ng-if="user.is_admin" class="menu-item" ng-class="{ 'selected': isActive(['/admin']) }">
+        <li ng-if="user.is_admin" class="menu-item" ng-class="{ 'selected': isActive(['/admin', '/admin/images', '/admin/register']) }">
             <a ng-href="#/admin">Admin Panel</a>
+
+            <!-- Admin Sub Menu for Mobile -->
+            <ul class="sub-menu-mobile" ng-class="{ 'sub-menu-selected-mobile': isActive(['/admin', '/admin/images', '/admin/register']) }">
+                <li><a ng-class="{ 'sub-selected': isActive(['/admin/register']) }" ng-href="#/admin/register">New User</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/admin']) }" ng-href="#/admin">Users</a></li>
+                <li><a ng-class="{ 'sub-selected': isActive(['/admin/images']) }" ng-href="#/admin/images">Unused Images</a></li>
+            </ul>
         </li>
 
         <!-- Profile Page -->
@@ -129,7 +136,8 @@
     </ul>
 
     <!-- Admin -->
-    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/admin', '/admin/images']) }">
+    <ul class="sub-menu" ng-class="{ 'sub-menu-selected': isActive(['/admin', '/admin/images', '/admin/register']) }">
+        <li><a ng-class="{ 'sub-selected': isActive(['/admin/register']) }" ng-href="#/admin/register">New User</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/admin']) }" ng-href="#/admin">Users</a></li>
         <li><a ng-class="{ 'sub-selected': isActive(['/admin/images']) }" ng-href="#/admin/images">Unused Images</a></li>
     </ul>

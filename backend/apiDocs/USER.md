@@ -36,15 +36,6 @@
 
 ## POST Requests
 
-### users
-
-**Description:** Creates a new user.
-
-**Input:** (required) username, password, email
-        (optional) first_name, last_name, color_scheme, role, image
-
-**Output:** User object
-
 ### users/{id}
 
 **Description:** Updates a user.

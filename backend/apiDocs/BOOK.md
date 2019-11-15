@@ -101,7 +101,7 @@
 **Input:** (required) id (book ID)
         (optional) title, author, volume, isbn, cover_type, content_type, notes, location, todo_list, image, genre
 
-**Output:** true or false (success or failure)
+**Output:** Book object
 
 
 ## DELETE Requests

@@ -3,6 +3,14 @@ app.constant('CONFIG', {
     homeTemplate: 'views/site/home.html',
     messageTimeout: 5000,
     api_routes: {
+        /* admin */
+        get_unused_images: '/admin/images',
+        delete_unused_images: '/admin/images',
+        get_users: '/admin/users',
+        get_inactive_users: '/admin/users/inactive',
+        create_user_admin: '/admin/users',
+        update_user_admin: '/admin/users/',
+        delete_user_admin: '/admin/users/',
         /* auth */
         login: '/auth/login',
         logout: '/auth/logout',
@@ -56,19 +64,14 @@ app.constant('CONFIG', {
         delete_game: '/games/',
         /* media */
         get_media_location_count: '/media/location/count',
-        get_media_unused_images: '/media/images',
-        delete_media_unused_images: '/media/images',
         /* search */
         get_media_search: '/search',
         get_media_search_viewer: '/search/',
         /* user */
-        get_users: '/users',
-        get_users_inactive: '/users/inactive',
         get_single_user: '/users/',
         get_single_user_username_password: '/users/',
         get_users_not_viewing: '/users/non/viewers/all',
         get_users_cant_view: '/users/non/views/all',
-        create_user: '/users',
         update_user: '/users/',
         delete_user: '/users/',
         /* viewers */

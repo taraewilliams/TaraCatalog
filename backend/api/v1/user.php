@@ -67,49 +67,6 @@ $app->group('/api', function () use ($app) {
         * POST
         * ========================================================== */
 
-        /* Create a user */
-        $app->post($resource, function () use ($app)
-        {
-            $params = APIService::build_params($_REQUEST, array(
-                "username",
-                "password",
-                "email"
-            ), array(
-                "first_name",
-                "last_name",
-                "color_scheme",
-                "role"
-            ));
-
-            if(!User::unique_username_and_email(null, $params, $error)) {
-                APIService::response_fail($error, 500);
-            }
-
-            /* Check that enums are set to valid values */
-            $enum_property_list = array(
-                array("property" => "color_scheme", "enum" => Constants::user_color_scheme()),
-                array("property" => "role", "enum" => Constants::user_role())
-            );
-
-            if(!Media::are_valid_enums($enum_property_list, $params)){
-                APIService::response_fail("There was a problem setting the enums.", 500);
-            }
-
-            /* Set image */
-            $files = APIService::build_files($_FILES, null, array(
-                "image"
-            ));
-
-            if(isset($files['image'])) {
-                $params['image'] = Media::set_image($files, $params["username"], '/users');
-            }
-
-            /* Create user */
-            $user = User::create_from_data($params);
-            APIService::response_success($user);
-        });
-
-
         /* ========================================================== *
         * PUT
         * ========================================================== */

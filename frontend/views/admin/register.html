@@ -1,9 +1,12 @@
+<div ng-include="'views/site/subviews/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
 
 <mc-messages class="message-popup"></mc-messages>
 
 <main class="register">
 
-    <h1>Create Your Profile</h1>
+    <h1>Create New User</h1>
 
     <form ng-submit="createUser(new_user)">
 

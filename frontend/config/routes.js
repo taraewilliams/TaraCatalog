@@ -13,6 +13,10 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
     controller: 'AdminImagesController',
     templateUrl: 'views/admin/images.html'
   }).
+  when('/admin/register', {
+    controller: 'AdminRegisterController',
+    templateUrl: 'views/admin/register.html'
+  }).
 
   /* Site Pages */
 
@@ -28,10 +32,6 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   when('/logout', {
     controller: 'LogoutController',
     templateUrl: 'views/site/logout.html'
-  }).
-  when('/register', {
-    controller: 'RegisterController',
-    templateUrl: 'views/site/register.html'
   }).
 
 

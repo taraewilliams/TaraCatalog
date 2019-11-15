@@ -13,7 +13,7 @@ app.controller('AdminImagesController', function($scope,
             return;
         }
 
-        $http.get(CONFIG.api + CONFIG.api_routes.get_media_unused_images)
+        $http.get(CONFIG.api + CONFIG.api_routes.get_unused_images)
         .then(function(response) {
             $scope.images = response.data;
         }, function(response){

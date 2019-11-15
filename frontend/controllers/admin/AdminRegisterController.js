@@ -1,4 +1,4 @@
-app.controller('RegisterController', function($scope,
+app.controller('AdminRegisterController', function($scope,
     AuthService,
     RequestService,
     CONFIG,
@@ -8,8 +8,9 @@ app.controller('RegisterController', function($scope,
 
     function init() {
 
-        if( AuthService.redirectOnAuthorized() ) {
-          return;
+        /* Redirect if not logged in */
+        if( AuthService.redirectOnUnauthorized() || AuthService.redirectOnNonAdmin() ) {
+            return;
         }
 
         $scope.new_user = {
@@ -26,18 +27,16 @@ app.controller('RegisterController', function($scope,
 
     $scope.createUser = function(new_user) {
 
-        var url = CONFIG.api + CONFIG.api_routes.create_user;
+        var url = CONFIG.api + CONFIG.api_routes.create_user_admin;
 
         RequestService.post(url, new_user, function(data) {
-            messageCenterService.add(MESSAGE_OPTIONS.success, "Profile was created.", { timeout: CONFIG.messageTimeout });
-            $scope.goToPath('/login');
-
+            messageCenterService.add(MESSAGE_OPTIONS.success, "User was created.", { timeout: CONFIG.messageTimeout });
         }, function(response) {
             messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
     };
 
-    init();
+    $scope.user.$promise.then(init);
 
 });

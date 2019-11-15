@@ -11,7 +11,9 @@
 
     <h2>Active Users</h2>
 
-    <table class="standard-table" ng-show="users.length > 0">
+    <div class="loader" ng-if="!users_resolved"></div>
+
+    <table class="standard-table" ng-show="users.length > 0 && users_resolved">
         <tr>
             <th>Image</th>
             <th>Username</th>
@@ -20,6 +22,7 @@
             <th>Email</th>
             <th>Role</th>
             <th>Admin</th>
+            <th></th>
         </tr>
         <tr ng-repeat="user in users">
             <td>
@@ -33,15 +36,23 @@
             <td>{{user.role}}</td>
             <td ng-if="user.is_admin">Yes</td>
             <td ng-if="!user.is_admin">No</td>
+            <td>
+                <button ng-if="!user.is_admin" class="basic-button table-button" ng-click="updateUser(user.id,1)">Make Admin</button>
+                <button ng-if="user.is_admin" class="basic-button table-button on-todo-list" ng-click="updateUser(user.id,0)">Remove Admin</button>
+
+                <button class="basic-button table-button" ng-click="deleteUser(user.id)">Delete</button>
+            </td>
         </tr>
 
     </table>
 
     <h2>Inactive Users</h2>
 
+    <div class="loader" ng-if="!inactive_users_resolved"></div>
+
     <p ng-if="inactive_users.length <= 0">No users</p>
 
-    <table class="standard-table" ng-show="inactive_users.length > 0">
+    <table class="standard-table" ng-show="inactive_users.length > 0 && inactive_users_resolved">
         <tr>
             <th>Image</th>
             <th>Username</th>
@@ -50,6 +61,7 @@
             <th>Email</th>
             <th>Role</th>
             <th>Admin</th>
+            <th></th>
         </tr>
         <tr ng-repeat="user in inactive_users">
             <td>
@@ -63,6 +75,12 @@
             <td>{{user.role}}</td>
             <td ng-if="user.is_admin">Yes</td>
             <td ng-if="!user.is_admin">No</td>
+            <td>
+                <button ng-if="!user.is_admin" class="basic-button table-button" ng-click="updateUser(user.id,1)">Make Admin</button>
+                <button ng-if="user.is_admin" class="basic-button table-button on-todo-list" ng-click="updateUser(user.id,0)">Remove Admin</button>
+
+                <button class="basic-button table-button" ng-click="deleteUser(user.id)">Delete</button>
+            </td>
         </tr>
 
     </table>
