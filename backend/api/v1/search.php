@@ -20,61 +20,66 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
-            $params = APIService::build_params($_REQUEST, null, array(
-                "search"
-            ));
+            if ($session->user->role === Constants::user_role()->creator){
 
-            $searchTerm = isset($params["search"]) ? $params["search"] : null;
+                $params = APIService::build_params($_REQUEST, null, array(
+                    "search"
+                ));
 
-            $book_params = array(
-                "title"           => $searchTerm,
-                "series"          => $searchTerm,
-                "author"          => $searchTerm,
-                "volume"          => $searchTerm,
-                "isbn"            => $searchTerm,
-                "cover_type"      => $searchTerm,
-                "content_type"    => $searchTerm,
-                "location"        => $searchTerm,
-                "genre"           => $searchTerm,
-                "notes"           => $searchTerm,
-                "complete_series" => $searchTerm
-            );
+                $searchTerm = isset($params["search"]) ? $params["search"] : null;
 
-            $movie_params = array(
-                "title"           => $searchTerm,
-                "format"          => $searchTerm,
-                "edition"         => $searchTerm,
-                "content_type"    => $searchTerm,
-                "location"        => $searchTerm,
-                "season"          => $searchTerm,
-                "mpaa_rating"     => $searchTerm,
-                "genre"           => $searchTerm,
-                "notes"           => $searchTerm,
-                "running_time"    => $searchTerm,
-                "complete_series" => $searchTerm
-            );
+                $book_params = array(
+                    "title"           => $searchTerm,
+                    "series"          => $searchTerm,
+                    "author"          => $searchTerm,
+                    "volume"          => $searchTerm,
+                    "isbn"            => $searchTerm,
+                    "cover_type"      => $searchTerm,
+                    "content_type"    => $searchTerm,
+                    "location"        => $searchTerm,
+                    "genre"           => $searchTerm,
+                    "notes"           => $searchTerm,
+                    "complete_series" => $searchTerm
+                );
 
-            $game_params = array(
-                "title"           => $searchTerm,
-                "platform"        => $searchTerm,
-                "location"        => $searchTerm,
-                "esrb_rating"     => $searchTerm,
-                "genre"           => $searchTerm,
-                "notes"           => $searchTerm,
-                "complete_series" => $searchTerm
-            );
+                $movie_params = array(
+                    "title"           => $searchTerm,
+                    "format"          => $searchTerm,
+                    "edition"         => $searchTerm,
+                    "content_type"    => $searchTerm,
+                    "location"        => $searchTerm,
+                    "season"          => $searchTerm,
+                    "mpaa_rating"     => $searchTerm,
+                    "genre"           => $searchTerm,
+                    "notes"           => $searchTerm,
+                    "running_time"    => $searchTerm,
+                    "complete_series" => $searchTerm
+                );
 
-            $conj = "OR";
+                $game_params = array(
+                    "title"           => $searchTerm,
+                    "platform"        => $searchTerm,
+                    "location"        => $searchTerm,
+                    "esrb_rating"     => $searchTerm,
+                    "genre"           => $searchTerm,
+                    "notes"           => $searchTerm,
+                    "complete_series" => $searchTerm
+                );
 
-            $books = Media::get_for_search($user_id, Config::DBTables()->book, $book_params, Constants::default_order()->book, Constants::enum_columns()->book, $conj);
-            $movies = Media::get_for_search($user_id, Config::DBTables()->movie, $movie_params, Constants::default_order()->movie, Constants::enum_columns()->movie, $conj);
-            $games = Media::get_for_search($user_id, Config::DBTables()->game, $game_params, Constants::default_order()->game, Constants::enum_columns()->game, $conj);
+                $conj = "OR";
 
-            $merge = array_merge($books, $movies);
-            $media = array_merge($merge, $games);
-            usort($media, array("TaraCatalog\Model\Media", "sort_all"));
+                $books = Media::get_for_search($user_id, Config::DBTables()->book, $book_params, Constants::default_order()->book, Constants::enum_columns()->book, $conj);
+                $movies = Media::get_for_search($user_id, Config::DBTables()->movie, $movie_params, Constants::default_order()->movie, Constants::enum_columns()->movie, $conj);
+                $games = Media::get_for_search($user_id, Config::DBTables()->game, $game_params, Constants::default_order()->game, Constants::enum_columns()->game, $conj);
 
-            APIService::response_success($media);
+                $merge = array_merge($books, $movies);
+                $media = array_merge($merge, $games);
+                usort($media, array("TaraCatalog\Model\Media", "sort_all"));
+
+                APIService::response_success($media);
+            }else{
+                APIService::response_fail("Must be a creator to search media.", 401);
+            }
         });
 
         /* Get media for viewer search */

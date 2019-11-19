@@ -20,29 +20,34 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_REQUEST);
             $user_id = $session->user->id;
 
-            $params = APIService::build_params($_REQUEST, null, array(
-                "status",
-                "requested_by"
-            ));
+            if ($session->user->role === Constants::user_role()->creator){
 
-            /* Check that enums are set to valid values */
-            $enum_property_list = array(
-                array("property" => "status", "enum" => Constants::viewer_status()),
-                array("property" => "requested_by", "enum" => Constants::viewer_requested_by()),
-            );
+                $params = APIService::build_params($_REQUEST, null, array(
+                    "status",
+                    "requested_by"
+                ));
 
-            if(!Media::are_valid_enums($enum_property_list, $params)){
-                APIService::response_fail("Invalid enums.", 500);
+                /* Check that enums are set to valid values */
+                $enum_property_list = array(
+                    array("property" => "status", "enum" => Constants::viewer_status()),
+                    array("property" => "requested_by", "enum" => Constants::viewer_requested_by()),
+                );
+
+                if(!Media::are_valid_enums($enum_property_list, $params)){
+                    APIService::response_fail("Invalid enums.", 500);
+                }
+
+                /* Get viewers */
+                $viewers = Viewer::get_all($user_id, $params);
+                usort($viewers, array("TaraCatalog\Model\Viewer", "sort_viewers"));
+
+                APIService::response_success($viewers);
+            }else{
+                APIService::response_fail("Must be a creator to get viewers.", 401);
             }
-
-            /* Get viewers */
-            $viewers = Viewer::get_all($user_id, $params);
-            usort($viewers, array("TaraCatalog\Model\Viewer", "sort_viewers"));
-
-            APIService::response_success($viewers);
         });
 
-        /* Get all user catalogs a creator can view for a specific status
+        /* Get all user catalogs a user can view for a specific status
         and by who requested the relationship */
         $app->post($resource. '/view_list', function () use ($app)
         {

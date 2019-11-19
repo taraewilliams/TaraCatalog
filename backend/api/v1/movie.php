@@ -23,9 +23,13 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $id = intval($args['id']);
-            $movie = Media::get_from_id($user_id, $id, Config::DBTables()->movie);
-            APIService::response_success($movie);
+            if ($session->user->role === Constants::user_role()->creator){
+                $id = intval($args['id']);
+                $movie = Media::get_from_id($user_id, $id, Config::DBTables()->movie);
+                APIService::response_success($movie);
+            }else{
+                APIService::response_fail("Must be a creator to get movie.", 401);
+            }
         });
 
         /* Get all movies */
@@ -33,9 +37,13 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $order_by = Constants::default_order()->movie;
-            $movies = Media::get_all($user_id, CONFIG::DBTables()->movie, $order_by);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $order_by = Constants::default_order()->movie;
+                $movies = Media::get_all($user_id, CONFIG::DBTables()->movie, $order_by);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movies.", 401);
+            }
         });
 
         /* Get all movies on the todo list */
@@ -43,10 +51,14 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $todo = intval($args['todo']);
-            $order_by = Constants::default_order()->movie;
-            $movies = Media::get_all_on_todo_list($user_id, $todo, CONFIG::DBTables()->movie, $order_by);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $todo = intval($args['todo']);
+                $order_by = Constants::default_order()->movie;
+                $movies = Media::get_all_on_todo_list($user_id, $todo, CONFIG::DBTables()->movie, $order_by);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movies.", 401);
+            }
         });
 
         /* Get a set number of movies */
@@ -54,11 +66,15 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $offset = intval($args['offset']);
-            $limit = intval($args['limit']);
-            $order_by = Constants::default_order()->movie;
-            $movies = Media::get_all_with_limit($user_id, CONFIG::DBTables()->movie, $order_by, $offset, $limit);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $offset = intval($args['offset']);
+                $limit = intval($args['limit']);
+                $order_by = Constants::default_order()->movie;
+                $movies = Media::get_all_with_limit($user_id, CONFIG::DBTables()->movie, $order_by, $offset, $limit);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movies.", 401);
+            }
         });
 
         /* Get all movies ordered by a specific field */
@@ -66,9 +82,13 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $order = $args['order'];
-            $movies = Media::get_all_with_order($user_id, CONFIG::DBTables()->movie, $order);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $order = $args['order'];
+                $movies = Media::get_all_with_order($user_id, CONFIG::DBTables()->movie, $order);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movies.", 401);
+            }
         });
 
         /* Get movies for multiple filters */
@@ -77,23 +97,28 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
 
-            $params = APIService::build_params($_REQUEST, null, array(
-                "title",
-                "format",
-                "edition",
-                "content_type",
-                "mpaa_rating",
-                "location",
-                "season",
-                "genre",
-                "complete_series",
-                "running_time"
-            ));
+            if ($session->user->role === Constants::user_role()->creator){
 
-            $order_by = Constants::default_order()->movie;
-            $enum_keys = Constants::enum_columns()->movie;
-            $movies = Media::get_for_search($user_id, CONFIG::DBTables()->movie, $params, $order_by, $enum_keys);
-            APIService::response_success($movies);
+                $params = APIService::build_params($_REQUEST, null, array(
+                    "title",
+                    "format",
+                    "edition",
+                    "content_type",
+                    "mpaa_rating",
+                    "location",
+                    "season",
+                    "genre",
+                    "complete_series",
+                    "running_time"
+                ));
+
+                $order_by = Constants::default_order()->movie;
+                $enum_keys = Constants::enum_columns()->movie;
+                $movies = Media::get_for_search($user_id, CONFIG::DBTables()->movie, $params, $order_by, $enum_keys);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movies.", 401);
+            }
         });
 
         /* Get movies for multiple filters with order */
@@ -102,24 +127,29 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
 
-            $order = $args['order'];
-            $params = APIService::build_params($_REQUEST, null, array(
-                "title",
-                "format",
-                "edition",
-                "content_type",
-                "mpaa_rating",
-                "location",
-                "season",
-                "genre",
-                "complete_series",
-                "running_time"
-            ));
+            if ($session->user->role === Constants::user_role()->creator){
 
-            $order_by = "ORDER BY " . $order;
-            $enum_keys = Constants::enum_columns()->movie;
-            $movies = Media::get_for_search($user_id, CONFIG::DBTables()->movie, $params, $order_by, $enum_keys);
-            APIService::response_success($movies);
+                $order = $args['order'];
+                $params = APIService::build_params($_REQUEST, null, array(
+                    "title",
+                    "format",
+                    "edition",
+                    "content_type",
+                    "mpaa_rating",
+                    "location",
+                    "season",
+                    "genre",
+                    "complete_series",
+                    "running_time"
+                ));
+
+                $order_by = "ORDER BY " . $order;
+                $enum_keys = Constants::enum_columns()->movie;
+                $movies = Media::get_for_search($user_id, CONFIG::DBTables()->movie, $params, $order_by, $enum_keys);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movies.", 401);
+            }
         });
 
         /* ========================================================== *
@@ -131,8 +161,12 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Media::count_media($user_id, CONFIG::DBTables()->movie);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $movies = Media::count_media($user_id, CONFIG::DBTables()->movie);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to count movies.", 401);
+            }
         });
 
         /* Count movies with different column values */
@@ -140,10 +174,14 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = $args["column"];
-            $header = "movie_" . $column_name;
-            $movies = Media::get_counts_for_column(Config::DBTables()->movie, $user_id, $column_name, $header);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $column_name = $args["column"];
+                $header = "movie_" . $column_name;
+                $movies = Media::get_counts_for_column(Config::DBTables()->movie, $user_id, $column_name, $header);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to count movies.", 401);
+            }
         });
 
         /* Count movies with different mpaa ratings, grouped by under PG and above PG */
@@ -151,8 +189,12 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $movies = Movie::get_all_mpaa_rating_counts_grouped($user_id);
-            APIService::response_success($movies);
+            if ($session->user->role === Constants::user_role()->creator){
+                $movies = Movie::get_all_mpaa_rating_counts_grouped($user_id);
+                APIService::response_success($movies);
+            }else{
+                APIService::response_fail("Must be a creator to get movie mpaa ratings.", 401);
+            }
         });
 
         /* ========================================================== *
@@ -164,9 +206,13 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $column_name = $args["column"];
-            $column_values = Media::get_distinct_for_column($user_id, Config::DBTables()->movie, $column_name);
-            APIService::response_success($column_values);
+            if ($session->user->role === Constants::user_role()->creator){
+                $column_name = $args["column"];
+                $column_values = Media::get_distinct_for_column($user_id, Config::DBTables()->movie, $column_name);
+                APIService::response_success($column_values);
+            }else{
+                APIService::response_fail("Must be a creator to get movie column values.", 401);
+            }
         });
 
         /* Get total running time */
@@ -174,8 +220,12 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $running_time = Movie::sum_running_time($user_id, Config::DBTables()->movie);
-            APIService::response_success($running_time);
+            if ($session->user->role === Constants::user_role()->creator){
+                $running_time = Movie::sum_running_time($user_id, Config::DBTables()->movie);
+                APIService::response_success($running_time);
+            }else{
+                APIService::response_fail("Must be a creator to get total running time.", 401);
+            }
         });
 
         /* ========================================================== *
@@ -189,46 +239,52 @@ $app->group('/api', function () use ($app) {
             $user_id = $session->user->id;
             $username = $session->user->username;
 
-            $params = APIService::build_params($_REQUEST, array(
-                "title",
-                "format"
-            ), array(
-                "edition",
-                "content_type",
-                "mpaa_rating",
-                "location",
-                "season",
-                "todo_list",
-                "notes",
-                "genre",
-                "complete_series",
-                "running_time"
-            ));
-            $params["user_id"] = $user_id;
+            if ($session->user->role === Constants::user_role()->creator){
 
-            /* Check that enums are set to valid values */
-            $enum_property_list = array(
-                array("property" => "format", "enum" => Constants::movie_format()),
-                array("property" => "content_type", "enum" => Constants::movie_content_type()),
-                array("property" => "mpaa_rating", "enum" => Constants::movie_mpaa_rating()),
-                array("property" => "location", "enum" => Constants::media_location()),
-                array("property" => "complete_series", "enum" => Constants::media_complete_series())
-            );
+                $params = APIService::build_params($_REQUEST, array(
+                    "title",
+                    "format"
+                ), array(
+                    "edition",
+                    "content_type",
+                    "mpaa_rating",
+                    "location",
+                    "season",
+                    "todo_list",
+                    "notes",
+                    "genre",
+                    "complete_series",
+                    "running_time"
+                ));
+                $params["user_id"] = $user_id;
 
-            if(!Media::are_valid_enums($enum_property_list, $params)){
-                APIService::response_fail("There was a problem setting the enums.", 500);
+                /* Check that enums are set to valid values */
+                $enum_property_list = array(
+                    array("property" => "format", "enum" => Constants::movie_format()),
+                    array("property" => "content_type", "enum" => Constants::movie_content_type()),
+                    array("property" => "mpaa_rating", "enum" => Constants::movie_mpaa_rating()),
+                    array("property" => "location", "enum" => Constants::media_location()),
+                    array("property" => "complete_series", "enum" => Constants::media_complete_series())
+                );
+
+                if(!Media::are_valid_enums($enum_property_list, $params)){
+                    APIService::response_fail("There was a problem setting the enums.", 500);
+                }
+
+                /* Set image */
+                $files = APIService::build_files($_FILES, null, array( "image" ));
+
+                if(isset($files['image'])) {
+                    $params['image'] = Media::set_image($files, $params["title"], '/' . $username . '/movies');
+                }
+
+                /* Create movie */
+                $movie = Movie::create_from_data($params);
+                APIService::response_success($movie);
+
+            }else{
+                APIService::response_fail("Must be a creator to create a movie.", 401);
             }
-
-            /* Set image */
-            $files = APIService::build_files($_FILES, null, array( "image" ));
-
-            if(isset($files['image'])) {
-                $params['image'] = Media::set_image($files, $params["title"], '/' . $username . '/movies');
-            }
-
-            /* Create movie */
-            $movie = Movie::create_from_data($params);
-            APIService::response_success($movie);
         });
 
         /* ========================================================== *
@@ -242,55 +298,60 @@ $app->group('/api', function () use ($app) {
             $user_id = $session->user->id;
             $username = $session->user->username;
 
-            $id = intval($args["id"]);
-            if (!Media::get_from_id($user_id, $id, Config::DBTables()->movie)){
-                APIService::response_fail("There was a problem updating the movie.", 500);
-            }
+            if ($session->user->role === Constants::user_role()->creator){
 
-            $params = APIService::build_params($_REQUEST, null, array(
-                "title",
-                "format",
-                "edition",
-                "content_type",
-                "mpaa_rating",
-                "location",
-                "season",
-                "todo_list",
-                "notes",
-                "genre",
-                "complete_series",
-                "running_time"
-            ));
+                $id = intval($args["id"]);
+                if (!Media::get_from_id($user_id, $id, Config::DBTables()->movie)){
+                    APIService::response_fail("There was a problem updating the movie.", 500);
+                }
 
-            /* Check that enums are set to valid values */
-            $enum_property_list = array(
-                array("property" => "format", "enum" => Constants::movie_format()),
-                array("property" => "content_type", "enum" => Constants::movie_content_type()),
-                array("property" => "mpaa_rating", "enum" => Constants::movie_mpaa_rating()),
-                array("property" => "location", "enum" => Constants::media_location()),
-                array("property" => "complete_series", "enum" => Constants::media_complete_series())
-            );
+                $params = APIService::build_params($_REQUEST, null, array(
+                    "title",
+                    "format",
+                    "edition",
+                    "content_type",
+                    "mpaa_rating",
+                    "location",
+                    "season",
+                    "todo_list",
+                    "notes",
+                    "genre",
+                    "complete_series",
+                    "running_time"
+                ));
 
-            if(!Media::are_valid_enums($enum_property_list, $params)){
-                APIService::response_fail("There was a problem setting the enums.", 500);
-            }
+                /* Check that enums are set to valid values */
+                $enum_property_list = array(
+                    array("property" => "format", "enum" => Constants::movie_format()),
+                    array("property" => "content_type", "enum" => Constants::movie_content_type()),
+                    array("property" => "mpaa_rating", "enum" => Constants::movie_mpaa_rating()),
+                    array("property" => "location", "enum" => Constants::media_location()),
+                    array("property" => "complete_series", "enum" => Constants::media_complete_series())
+                );
 
-            /* Set image */
-            $files = APIService::build_files($_FILES, null, array( "image" ));
+                if(!Media::are_valid_enums($enum_property_list, $params)){
+                    APIService::response_fail("There was a problem setting the enums.", 500);
+                }
 
-            if(isset($params["title"])){
-                $title = $params["title"];
+                /* Set image */
+                $files = APIService::build_files($_FILES, null, array( "image" ));
+
+                if(isset($params["title"])){
+                    $title = $params["title"];
+                }else{
+                    $title = Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->movie, "title");
+                }
+
+                if(isset($files['image'])) {
+                    $params['image'] = Media::set_image($files, $title, '/' . $username . '/movies');
+                }
+
+                /* Update movie */
+                $movie = Media::update($user_id, $id, $params, Config::DBTables()->movie);
+                APIService::response_success($movie);
             }else{
-                $title = Media::get_column_value_for_id($user_id, $id, CONFIG::DBTables()->movie, "title");
+                APIService::response_fail("Must be a creator to update a movie.", 401);
             }
-
-            if(isset($files['image'])) {
-                $params['image'] = Media::set_image($files, $title, '/' . $username . '/movies');
-            }
-
-            /* Update movie */
-            $movie = Media::update($user_id, $id, $params, Config::DBTables()->movie);
-            APIService::response_success($movie);
         });
 
 
@@ -303,14 +364,21 @@ $app->group('/api', function () use ($app) {
         {
             $session = APIService::authenticate_request($_GET);
             $user_id = $session->user->id;
-            $id = intval($args['id']);
 
-            if (!Media::get_from_id($user_id, $id, Config::DBTables()->movie)){
-                APIService::response_fail("There was a problem deleting the movie.", 500);
+            if ($session->user->role === Constants::user_role()->creator){
+
+                $id = intval($args['id']);
+
+                if (!Media::get_from_id($user_id, $id, Config::DBTables()->movie)){
+                    APIService::response_fail("There was a problem deleting the movie.", 500);
+                }
+
+                $result = Media::delete_for_id($id, $user_id, Config::DBTables()->movie);
+                APIService::response_success(true);
+
+            }else{
+                APIService::response_fail("Must be a creator to delete a movie.", 401);
             }
-
-            $result = Media::delete_for_id($id, $user_id, Config::DBTables()->movie);
-            APIService::response_success(true);
         });
     });
 });
