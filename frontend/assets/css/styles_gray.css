@@ -46,6 +46,8 @@ table {
   border-spacing: 0; }
 
 @media screen and (max-width: 800px) {
+  .main-menu-web {
+    display: none; }
   header h1 {
     display: inline-block; }
   header .main-menu, header .profile-menu {
@@ -93,6 +95,8 @@ table {
     background-color: #737373; } }
 
 @media screen and (min-width: 800px) {
+  .main-menu-mobile {
+    display: none; }
   header h1 {
     display: block; }
   header .main-menu, header .profile-menu {

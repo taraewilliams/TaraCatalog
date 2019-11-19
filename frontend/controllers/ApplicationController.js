@@ -21,12 +21,7 @@ app.controller('ApplicationController', function ($scope,
         messageCenterService.add(MESSAGE_OPTIONS.danger, "Your session either does not exist or has expired. Please login again.", { timeout: CONFIG.messageTimeout });
     });
 
-    var windowWidth = window.innerWidth;
-    if (windowWidth >= 800){
-        $scope.menuOpen = true;
-    }else{
-        $scope.menuOpen = false;
-    }
+    $scope.menuOpen = false;
 
     $scope.changeStyle = function(color){
         $scope.color_scheme = color;

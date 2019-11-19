@@ -1,4 +1,4 @@
-<header>
+<header class="main-menu-mobile">
 
     <h1>Media Catalog</h1>
 
@@ -87,6 +87,65 @@
                 <li><a ng-class="{ 'sub-selected': isActive(['/admin']) }" ng-href="#/admin">Users</a></li>
                 <li><a ng-class="{ 'sub-selected': isActive(['/admin/images']) }" ng-href="#/admin/images">Unused Images</a></li>
             </ul>
+        </li>
+
+        <!-- Profile Page -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/profile', '/user_update', '/reset_password']) }">
+            <a ng-href="#/profile">Profile</a>
+        </li>
+
+        <!-- Logout -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/logout']) }">
+            <a ng-href="#/logout">Logout</a>
+        </li>
+    </ul>
+
+</header>
+
+
+<header class="main-menu-web">
+
+    <h1>Media Catalog</h1>
+
+    <!-- Main Menu -->
+    <ul class="main-menu">
+
+        <!-- Home Page -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/']) }">
+            <a ng-href="#">Home</a>
+        </li>
+
+        <!-- Book Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/books/:offset/:limit', '/books_table', '/books_table/read', '/books_create', '/books_update/:id', '/books_table/order_by/:order_by', '/books_table/read_add' ]) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/books/0/25">Books</a>
+        </li>
+
+        <!-- Movie Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/movies/:offset/:limit', '/movies_table', '/movies_table/watch', '/movies_create', '/movies_update/:id', '/movies_table/order_by/:order_by', '/movies_table/watch_add' ]) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/movies/0/25">Movies</a>
+        </li>
+
+        <!-- Game Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/games/:offset/:limit', '/games_table', '/games_table/play', '/games_create', '/games_update/:id', '/games_table/order_by/:order_by', '/games_table/play_add']) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/games/0/25">Games</a>
+        </li>
+
+        <!-- Viewer Pages -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/viewer_list', '/add_viewers', '/view_list', '/request_view']) }">
+            <a ng-href="#/view_list">View Catalogs</a>
+        </li>
+
+        <!-- Statistics Page -->
+        <li class="menu-item" ng-class="{ 'selected': isActive(['/stats']) }" ng-if="user.role == 'creator'">
+            <a ng-href="#/stats">Stats</a>
+        </li>
+    </ul>
+
+    <ul class="profile-menu">
+
+        <!-- Admin Pages -->
+        <li ng-if="user.is_admin" class="menu-item" ng-class="{ 'selected': isActive(['/admin', '/admin/images', '/admin/register']) }">
+            <a ng-href="#/admin">Admin Panel</a>
         </li>
 
         <!-- Profile Page -->

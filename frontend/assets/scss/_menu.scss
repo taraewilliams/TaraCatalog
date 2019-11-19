@@ -1,6 +1,10 @@
 // Mobile CSS
 @media screen and (max-width: 800px) {
 
+    .main-menu-web{
+        display:none;
+    }
+
     header{
         h1{
             display: inline-block;
@@ -84,6 +88,10 @@
 
 // Web CSS
 @media screen and (min-width: 800px) {
+
+    .main-menu-mobile{
+        display:none;
+    }
 
     header{
         h1{
