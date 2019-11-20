@@ -14,10 +14,6 @@
 
     <section>
 
-        <label for="genre">Genre<br>
-            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
-        </label>
-
         <label for="esrb_rating">ESRB Rating<br>
             <select ng-model="filter.esrb_rating">
                 <option value="none">None</option>
@@ -30,22 +26,30 @@
                 <option value="AO">AO (Adults Only)</option>
             </select>
         </label>
+
     </section>
 
     <section>
-        <label for="complete_series">
+
+        <label for="location">Location<br>
+            <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+            <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
+        </label>
+
+    </section>
+
+    <section>
+
+        <label for="complete_series">Complete Series<br>
             <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
             <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
             <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
         </label>
-    </section>
 
-    <section>
-        <label for="location">Location<br>
-          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
-          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
-        </label>
-        
         <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
         <button type="submit">Filter Results</button>
     </section>

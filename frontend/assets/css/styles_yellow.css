@@ -760,7 +760,16 @@ button {
       display: block; }
     .profile ul li a:hover {
       cursor: pointer;
-      opacity: 0.5; } }
+      opacity: 0.5; }
+  .profile-pic-list li {
+    display: inline-block;
+    margin: 5px; }
+  .profile-pic-list .profile-pic {
+    width: 200px;
+    height: 200px;
+    border: 1px solid #333300;
+    border-radius: 15%;
+    box-sizing: border-box; } }
 
 @media screen {
   .alert {

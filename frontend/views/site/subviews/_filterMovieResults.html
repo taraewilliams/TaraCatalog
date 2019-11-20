@@ -7,20 +7,6 @@
             <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
         </label>
 
-        <label for="edition">Edition<br>
-            <input type="text" name="edition" id="edition" ng-model="filter.edition" placeholder="Edition...">
-        </label>
-
-        <label for="season">Season<br>
-            <input type="text" name="season" id="season" ng-model="filter.season" placeholder="Season...">
-        </label>
-    </section>
-
-    <section>
-        <label for="genre">Genre<br>
-            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
-        </label>
-
         <label for="format">Format<br>
             <input type="radio" ng-model="filter.format" value="DVD"> DVD<br>
             <input type="radio" ng-model="filter.format" value="Blu-Ray"> Blu-Ray<br>
@@ -29,12 +15,22 @@
     </section>
 
     <section>
+        <label for="edition">Edition<br>
+            <input type="text" name="edition" id="edition" ng-model="filter.edition" placeholder="Edition...">
+        </label>
+
+        <label for="season">Season<br>
+            <input type="text" name="season" id="season" ng-model="filter.season" placeholder="Season...">
+        </label>
+
         <label for="content_type">Content Type<br>
             <input type="radio" ng-model="filter.content_type" value="Live Action"> Live Action<br>
             <input type="radio" ng-model="filter.content_type" value="Anime"> Anime<br>
             <input type="radio" ng-model="filter.content_type" value="Animated"> Animated<br>
         </label>
+    </section>
 
+    <section>
         <label for="mpaa_rating">MPAA/TV Rating<br>
             <select ng-model="filter.mpaa_rating">
                 <option value="none">None</option>
@@ -53,18 +49,22 @@
                 <option value="TV-MA">TV-MA</option>
             </select>
         </label>
-    </section>
-
-    <section>
-        <label for="complete_series">
-            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
-            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
-            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
-        </label>
 
         <label for="location">Location<br>
           <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
           <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+    </section>
+
+    <section>
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
+        </label>
+
+        <label for="complete_series">Complete Series<br>
+            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
         </label>
 
         <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>

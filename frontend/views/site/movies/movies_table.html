@@ -14,25 +14,7 @@
     <div class="filter-form" ng-include="'views/site/subviews/_filterMovieResults.html'"></div>
 
     <!-- Movie Table Order By -->
-    <form ng-submit="sortBy(sortVal, filter)" class="sort-media-form">
-        <section>
-            <label for="sortVal">Sort By:<br>
-                <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
-                    <option value="none">None</option>
-                    <option value="title">Title</option>
-                    <option value="season">Season</option>
-                    <option value="edition">Edition</option>
-                    <option value="running_time">Running Time</option>
-                    <option value="format">Format</option>
-                    <option value="content_type">Content Type</option>
-                    <option value="mpaa_rating">MPAA/TV Rating</option>
-                    <option value="genre">Genre</option>
-                    <option value="complete_series">Complete Series</option>
-                    <option value="location">Location</option>
-                </select>
-            </label>
-        </section>
-    </form>
+    <div ng-include="'views/site/subviews/_sortMovieResults.html'"></div>
 
     <!-- Movie Table -->
     <p ng-show="items.length <= 0">No matching movies</p>
@@ -44,16 +26,16 @@
             <th ng-if="!editOn" class="row-number-header"></th>
             <th class="image-column-header">Image</th>
             <th>Title</th>
-            <th>Season</th>
-            <th>Edition</th>
-            <th>Running Time</th>
             <th>Format</th>
+            <th>Edition</th>
+            <th>Season</th>
             <th>Content Type</th>
+            <th>Running Time</th>
+            <th>MPAA/TV Rating</th>
+            <th class="location-column-header">Location</th>
             <th>Genre</th>
             <th>Complete Series</th>
-            <th>MPAA/TV Rating</th>
             <th>Notes</th>
-            <th class="location-column-header">Location</th>
             <th class="button-column-header"></th>
         </tr>
         <tr ng-repeat="item in items">
@@ -67,16 +49,16 @@
                 <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/frontend/assets/images/movie_saver.jpg"/>
             </td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.title}}</td>
-            <td ng-if="!item.isHeader && !item.editOn">{{item.season}}</td>
-            <td ng-if="!item.isHeader && !item.editOn">{{item.edition}}</td>
-            <td ng-if="!item.isHeader && !item.editOn">{{item.running_time}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.format}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.edition}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.season}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.running_time}} minutes, {{item.rt_hours}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.mpaa_rating}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.genre}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
-            <td ng-if="!item.isHeader && !item.editOn">{{item.mpaa_rating}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.notes}}</td>
-            <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="button-column">
                 <button class="basic-button table-button" ng-click="toggleEdit(item)">Edit</button>
                 <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>

@@ -26,12 +26,14 @@
             <th>ISBN</th>
             <th>Cover Type</th>
             <th>Content Type</th>
-            <th>Genre</th>
             <th class="location-column-header">Location</th>
+            <th>Genre</th>
+            <th>Complete Series</th>
+            <th>Notes</th>
         </tr>
         <tr ng-repeat="item in items">
 
-            <th ng-if="item.isHeader" colspan="11">{{ item.title }}</th>
+            <th ng-if="item.isHeader" colspan="13">{{ item.title }}</th>
 
             <td class="table-toggle-box" ng-if="!item.isHeader && editOn"><input ng-click="toggleRemovedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
 
@@ -48,8 +50,10 @@
             <td ng-if="!item.isHeader">{{item.isbn}}</td>
             <td ng-if="!item.isHeader">{{item.cover_type}}</td>
             <td ng-if="!item.isHeader">{{item.content_type}}</td>
-            <td ng-if="!item.isHeader">{{item.genre}}</td>
             <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+            <td ng-if="!item.isHeader">{{item.genre}}</td>
+            <td ng-if="!item.isHeader" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
+            <td ng-if="!item.isHeader">{{item.notes}}</td>
         </tr>
     </table>
 

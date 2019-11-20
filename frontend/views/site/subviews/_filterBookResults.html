@@ -17,10 +17,6 @@
     </section>
 
     <section>
-        <label for="genre">Genre<br>
-            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
-        </label>
-
         <label for="volume">Volume<br>
             <input type="number" name="volume" id="volume" ng-model="filter.volume" placeholder="Volume...">
         </label>
@@ -28,35 +24,40 @@
         <label for="isbn">ISBN<br>
             <input type="text" name="isbn" id="isbn" ng-model="filter.isbn" placeholder="ISBN...">
         </label>
-    </section>
 
-    <section>
         <label for="cover_type">Cover Type<br>
             <input type="radio" ng-model="filter.cover_type" value="Paperback"> Paperback<br>
             <input type="radio" ng-model="filter.cover_type" value="Hardcover"> Hardcover<br>
         </label>
+    </section>
 
+    <section>
         <label for="content_type">Content Type<br>
             <input type="radio" ng-model="filter.content_type" value="Novel"> Novel<br>
             <input type="radio" ng-model="filter.content_type" value="Manga"> Manga<br>
             <input type="radio" ng-model="filter.content_type" value="Comic Book"> Comic Book<br>
         </label>
+
+        <label for="location">Location<br>
+            <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+            <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
     </section>
 
     <section>
-      <label for="complete_series">
-          <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
-          <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
-          <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
-      </label>
 
-      <label for="location">Location<br>
-        <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
-        <input type="radio" ng-model="filter.location" value="Home"> Home<br>
-      </label>
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
+        </label>
 
-      <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
-      <button type="submit">Filter Results</button>
+        <label for="complete_series">Complete Series<br>
+            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
+        <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
+        <button type="submit">Filter Results</button>
     </section>
 
 </form>

@@ -14,25 +14,7 @@
     <div class="filter-form" ng-include="'views/site/subviews/_filterBookResults.html'"></div>
 
     <!-- Book Table Order By -->
-    <form ng-submit="sortBy(sortVal, filter)" class="sort-media-form">
-        <section>
-            <label for="sortVal">Sort By:<br>
-                <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
-                    <option value="none">None</option>
-                    <option value="title">Title</option>
-                    <option value="series">Series</option>
-                    <option value="author">Author</option>
-                    <option value="volume">Volume</option>
-                    <option value="isbn">ISBN</option>
-                    <option value="cover_type">Cover Type</option>
-                    <option value="content_type">Content Type</option>
-                    <option value="genre">Genre</option>
-                    <option value="complete_series">Complete Series</option>
-                    <option value="location">Location</option>
-                </select>
-            </label>
-        </section>
-    </form>
+    <div ng-include="'views/site/subviews/_sortBookResults.html'"></div>
 
     <!-- Book Table -->
     <p ng-show="items.length <= 0">No matching books</p>
@@ -48,16 +30,15 @@
             <th>ISBN</th>
             <th>Cover Type</th>
             <th>Content Type</th>
+            <th class="location-column-header">Location</th>
             <th>Genre</th>
             <th>Complete Series</th>
             <th>Notes</th>
-            <th class="location-column-header">Location</th>
             <th class="button-column-header"></th>
         </tr>
         <tr ng-repeat="item in items">
 
             <th ng-if="item.isHeader" colspan="14">{{ item.title }}</th>
-
 
             <!-- Regular Table -->
             <td ng-if="!item.isHeader && !item.editOn" class="row-number">{{item.row_number}}</td>
@@ -73,10 +54,10 @@
             <td ng-if="!item.isHeader && !item.editOn">{{item.isbn}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.cover_type}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.genre}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
             <td ng-if="!item.isHeader && !item.editOn">{{item.notes}}</td>
-            <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
             <td ng-if="!item.isHeader && !item.editOn" class="button-column">
                 <button class="basic-button table-button" ng-click="toggleEdit(item)">Edit</button>
                 <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
@@ -130,6 +111,12 @@
                     <input type="radio" ng-model="item.content_type" value="Comic Book"> Comic Book<br>
                 </label>
             </td>
+            <td ng-if="!item.isHeader && item.editOn" class="location-column">
+                <label for="location">
+                    <input type="radio" ng-model="item.location" value="Apartment"> Apartment<br>
+                    <input type="radio" ng-model="item.location" value="Home"> Home<br>
+                </label>
+            </td>
             <td ng-if="!item.isHeader && item.editOn">
                 <label for="genre">
                     <input type="text" name="genre" id="genre" ng-model="item.genre" placeholder="Genre...">
@@ -145,12 +132,6 @@
             <td ng-if="!item.isHeader && item.editOn">
                 <label for="notes">
                     <textarea name="text" ng-model="item.notes" placeholder="Notes..."></textarea>
-                </label>
-            </td>
-            <td ng-if="!item.isHeader && item.editOn" class="location-column">
-                <label for="location">
-                    <input type="radio" ng-model="item.location" value="Apartment"> Apartment<br>
-                    <input type="radio" ng-model="item.location" value="Home"> Home<br>
                 </label>
             </td>
             <td ng-if="!item.isHeader && item.editOn" class="button-column">

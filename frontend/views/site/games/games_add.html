@@ -17,13 +17,15 @@
           <th class="image-column-header">Image</th>
           <th>Title</th>
           <th>Platform</th>
-          <th>Genre</th>
           <th>ESRB Rating</th>
           <th class="location-column-header">Location</th>
+          <th>Genre</th>
+          <th>Complete Series</th>
+          <th>Notes</th>
       </tr>
       <tr ng-repeat="item in items">
 
-          <th ng-if="item.isHeader" colspan="7">{{ item.title }}</th>
+          <th ng-if="item.isHeader" colspan="9">{{ item.title }}</th>
 
           <td class="table-toggle-box" ng-if="!item.isHeader"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
           <td ng-if="!item.isHeader" class="image-column">
@@ -32,9 +34,11 @@
           </td>
           <td ng-if="!item.isHeader">{{item.title}}</td>
           <td ng-if="!item.isHeader">{{item.platform}}</td>
-          <td ng-if="!item.isHeader">{{item.genre}}</td>
           <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
           <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+          <td ng-if="!item.isHeader">{{item.genre}}</td>
+          <td ng-if="!item.isHeader" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
+          <td ng-if="!item.isHeader">{{item.notes}}</td>
       </tr>
   </table>
 

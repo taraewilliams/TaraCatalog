@@ -9,20 +9,18 @@
     <!-- Page Heading -->
     <h1>Admin Panel</h1>
 
+    <button ng-click="deleteImages()" class="basic-button">Delete Unused Images</button>
+
     <h2>Unused Images</h2>
 
     <h4>Users</h4>
 
     <p ng-if="images.users.length <= 0">No images</p>
 
-    <ul ng-show="images.users.length > 0" class="media-list-pic">
-        <!-- <li ng-repeat="media_item in media">
-            <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', media_item.id)">Edit</button>
-            <button name="Delete Book" ng-click="deleteMedia(media_item.id)">X</button>
-            <img ng-if="!isEmpty(media_item.image)" alt="Book Cover" ng-src="../backend/public/{{media_item.image}}"/>
-            <img ng-if="isEmpty(media_item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
-            <h6>{{getDisplayTitle(media_item)}}</h6>
-        </li> -->
+    <ul ng-show="images.users.length > 0" class="profile-pic-list">
+        <li ng-repeat="image in images.users">
+            <img class="profile-pic" alt="Image" ng-src="../backend/public/{{image}}"/>
+        </li>
     </ul>
 
 
@@ -31,13 +29,9 @@
     <p ng-if="images.books.length <= 0">No images</p>
 
     <ul ng-show="images.books.length > 0" class="media-list-pic">
-        <!-- <li ng-repeat="media_item in media">
-            <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', media_item.id)">Edit</button>
-            <button name="Delete Book" ng-click="deleteMedia(media_item.id)">X</button>
-            <img ng-if="!isEmpty(media_item.image)" alt="Book Cover" ng-src="../backend/public/{{media_item.image}}"/>
-            <img ng-if="isEmpty(media_item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
-            <h6>{{getDisplayTitle(media_item)}}</h6>
-        </li> -->
+        <li ng-repeat="image in images.books">
+            <img alt="Image" ng-src="../backend/public/{{image}}"/>
+        </li>
     </ul>
 
 
@@ -46,13 +40,9 @@
     <p ng-if="images.movies.length <= 0">No images</p>
 
     <ul ng-show="images.movies.length > 0" class="media-list-pic">
-        <!-- <li ng-repeat="media_item in media">
-            <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', media_item.id)">Edit</button>
-            <button name="Delete Book" ng-click="deleteMedia(media_item.id)">X</button>
-            <img ng-if="!isEmpty(media_item.image)" alt="Book Cover" ng-src="../backend/public/{{media_item.image}}"/>
-            <img ng-if="isEmpty(media_item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
-            <h6>{{getDisplayTitle(media_item)}}</h6>
-        </li> -->
+        <li ng-repeat="image in images.movies">
+            <img alt="Image" ng-src="../backend/public/{{image}}"/>
+        </li>
     </ul>
 
 
@@ -61,13 +51,9 @@
     <p ng-if="images.games.length <= 0">No images</p>
 
     <ul ng-show="images.games.length > 0" class="media-list-pic">
-        <!-- <li ng-repeat="media_item in media">
-            <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', media_item.id)">Edit</button>
-            <button name="Delete Book" ng-click="deleteMedia(media_item.id)">X</button>
-            <img ng-if="!isEmpty(media_item.image)" alt="Book Cover" ng-src="../backend/public/{{media_item.image}}"/>
-            <img ng-if="isEmpty(media_item.image)" alt="Book Cover" ng-src="/TaraCatalog/frontend/assets/images/book_saver.jpg"/>
-            <h6>{{getDisplayTitle(media_item)}}</h6>
-        </li> -->
+        <li ng-repeat="image in images.games">
+            <img alt="Image" ng-src="../backend/public/{{image}}"/>
+        </li>
     </ul>
 
 

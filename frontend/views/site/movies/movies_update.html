@@ -14,6 +14,12 @@
         <input type="text" name="title" id="title" ng-model="media_clone.title" placeholder="Title..."><br>
     </label>
 
+    <label for="format">Format<br>
+        <input type="radio" ng-model="media_clone.format" value="DVD"> DVD<br>
+        <input type="radio" ng-model="media_clone.format" value="Blu-Ray"> Blu-Ray<br>
+        <input type="radio" ng-model="media_clone.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
+    </label>
+
     <label for="edition">Edition<br>
         <input type="text" name="edition" id="edition" ng-model="media_clone.edition" placeholder="Edition...">
     </label>
@@ -22,32 +28,14 @@
         <input type="text" name="season" id="season" ng-model="media_clone.season" placeholder="Season...">
     </label>
 
-    <label for="running_time">Running Time<br>
-        <input type="number" name="running_time" id="running_time" ng-model="media_clone.running_time" placeholder="Running Time...">
-    </label>
-
-    <label for="format">Format<br>
-        <input type="radio" ng-model="media_clone.format" value="DVD"> DVD<br>
-        <input type="radio" ng-model="media_clone.format" value="Blu-Ray"> Blu-Ray<br>
-        <input type="radio" ng-model="media_clone.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
-    </label>
-
     <label for="content_type">Content Type<br>
         <input type="radio" ng-model="media_clone.content_type" value="Live Action"> Live Action<br>
         <input type="radio" ng-model="media_clone.content_type" value="Anime"> Anime<br>
         <input type="radio" ng-model="media_clone.content_type" value="Animated"> Animated<br>
     </label>
 
-    <label for="genre">Genre<br>
-        <input type="text" name="genre" id="genre" ng-model="media_clone.genre" placeholder="Genre..."><br>
-        Select From Existing:
-        <select ng-model="media_clone.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media_clone.old_genre.genre, 'genre')"></select>
-    </label>
-
-    <label for="complete_series">Complete Series<br>
-        <input type="radio" ng-model="media_clone.complete_series" value="Complete"> Complete<br>
-        <input type="radio" ng-model="media_clone.complete_series" value="Incomplete"> Incomplete<br>
-        <input type="radio" ng-model="media_clone.complete_series" value="Standalone"> Standalone<br>
+    <label for="running_time">Running Time<br>
+        <input type="number" name="running_time" id="running_time" ng-model="media_clone.running_time" placeholder="Running Time...">
     </label>
 
     <label for="mpaa_rating">MPAA/TV Rating<br>
@@ -72,6 +60,18 @@
     <label for="location">Location<br>
         <input type="radio" ng-model="media_clone.location" value="Apartment"> Apartment<br>
         <input type="radio" ng-model="media_clone.location" value="Home"> Home<br>
+    </label>
+
+    <label for="genre">Genre<br>
+        <input type="text" name="genre" id="genre" ng-model="media_clone.genre" placeholder="Genre..."><br>
+        Select From Existing:
+        <select ng-model="media_clone.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media_clone.old_genre.genre, 'genre')"></select>
+    </label>
+
+    <label for="complete_series">Complete Series<br>
+        <input type="radio" ng-model="media_clone.complete_series" value="Complete"> Complete<br>
+        <input type="radio" ng-model="media_clone.complete_series" value="Incomplete"> Incomplete<br>
+        <input type="radio" ng-model="media_clone.complete_series" value="Standalone"> Standalone<br>
     </label>
 
     <label for="notes">Notes<br>

@@ -47,6 +47,11 @@
             <input type="radio" ng-model="media.content_type" value="Comic Book"> Comic Book<br>
         </label>
 
+        <label for="location">Location<br>
+            <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
+            <input type="radio" ng-model="media.location" value="Home"> Home<br>
+        </label>
+
         <label for="genre">Genre<br>
             <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
             Select From Existing:
@@ -57,11 +62,6 @@
             <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
             <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
             <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
-        </label>
-
-        <label for="location">Location<br>
-            <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
-            <input type="radio" ng-model="media.location" value="Home"> Home<br>
         </label>
 
         <label for="notes">Notes<br>

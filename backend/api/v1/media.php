@@ -3,6 +3,7 @@
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Media;
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {

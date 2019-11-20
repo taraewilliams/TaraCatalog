@@ -45,7 +45,7 @@ class Movie
         $this->image           = Media::set_property($data, "image");
         $this->notes           = Media::set_property($data, "notes");
         $this->genre           = Media::set_property($data, "genre");
-        $this->running_time    = Media::set_property($data, "running_time", Constants::property_types()->num);
+        $this->running_time    = Media::set_property($data, "running_time", Constants::property_types()->num, 0);
         $this->rt_hours        = Movie::get_running_time_in_hours($this->running_time);
 
         /* Set Enums */
@@ -163,7 +163,9 @@ class Movie
     private static function get_running_time_in_hours($runtime){
         $hours = floor($runtime / 60);
         $minutes = $runtime % 60;
-        return $hours . " hours and " . $minutes . " minutes";
+        $hour_text = ($hours == 1) ? "hour" : "hours";
+        $minute_text = ($minutes == 1) ? "minute" : "minutes";
+        return $hours . " " . $hour_text . " and " . $minutes . " " . $minute_text;
     }
 
 }
