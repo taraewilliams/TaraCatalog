@@ -1,0 +1,223 @@
+// Mobile CSS
+@media screen and (max-width: 800px) {
+
+    .main-menu-web{
+        display:none;
+    }
+
+    header{
+        h1{
+            display: inline-block;
+        }
+
+        .main-menu, .profile-menu{
+            display:block;
+
+            li{
+                display:block;
+                width: 100%;
+                height: auto;
+                min-height: 30px;
+                line-height: 30px;
+                padding-top:5px;
+
+                .sub-menu-mobile{
+                    li{
+                        a{
+                            color:$dark-red;
+                        }
+
+                        a:hover{
+                            color:$font-light;
+                        }
+
+                        .sub-selected{
+                            color:$font-light;
+                        }
+                    }
+                }
+            }
+        }
+
+        .sub-menu-mobile{
+            display: none;
+            overflow: hidden;
+            background-color:$lighter-red;
+        }
+
+        .sub-menu-selected-mobile{
+            display:block;
+            overflow:visible;
+        }
+
+        .sub-menu-selected{
+            display: none;
+        }
+
+        .sub-menu{
+            display: none;
+        }
+    }
+
+    .mobile-hamburger{
+        background: none;
+        border: none;
+        box-sizing: border-box;
+        display: inline-block;
+        margin: 5px;
+        float: right;
+        div{
+            width: 35px;
+            height: 5px;
+            background-color: white;
+            margin: 6px 0;
+        }
+        display:inline-block;
+    }
+
+    .mobile-hamburger:focus{
+        outline: none;
+    }
+
+    .hamburger-selected{
+        div{
+            background-color: $medium-red;
+        }
+    }
+}
+
+// Web CSS
+@media screen and (min-width: 800px) {
+
+    .main-menu-mobile{
+        display:none;
+    }
+
+    header{
+        h1{
+            display: block;
+        }
+
+        .main-menu, .profile-menu{
+            display:inline-block;
+
+            li{
+                display: inline-block;
+                min-width: 75px;
+                height: 25px;
+                line-height: 25px;
+                padding: 5px 10px 5px 10px;
+            }
+        }
+
+        .profile-menu{
+            float: right;
+        }
+
+        .sub-menu{
+            display: none;
+            overflow: hidden;
+            background-color:$lighter-red;
+
+            li{
+                display: inline-block;
+                padding: 10px 15px 10px 15px;
+
+                a{
+                    color:$dark-red;
+                    text-decoration: none;
+                    display:block;
+                    width:100%;
+                    height:100%;
+                    cursor: pointer;
+                    font-size: 14px;
+                }
+
+                a:hover{
+                    color: $font-light;
+                }
+
+                .sub-selected{
+                    color: $font-light;
+                }
+            }
+        }
+
+        .sub-menu-selected{
+            display:block;
+            overflow:visible;
+        }
+
+        .sub-menu-mobile{
+            display: none;
+        }
+
+        .sub-menu-selected-mobile{
+            display: none;
+        }
+    }
+
+    .mobile-hamburger{
+        display:none;
+    }
+}
+
+@media screen{
+
+    header{
+        background-color: $light-red;
+        color: $font-light;
+        box-sizing: border-box;
+        position: relative;
+
+        .main-menu, .profile-menu{
+            font-size:0;
+
+            li{
+                text-align: center;
+
+                a{
+                    color: $font-light;
+                    text-decoration: none;
+                    display:block;
+                    width:100%;
+                    height:100%;
+                    cursor: pointer;
+                    font-size:18px;
+                }
+            }
+
+            li:hover{
+                background-color:$medium-red;
+            }
+
+            .selected{
+                background-color:$medium-red;
+            }
+        }
+    }
+
+    .viewer-menu{
+        div{
+            display:inline-block;
+            a{
+                padding:10px;
+            }
+            .view-selected{
+                background-color:$darker-red;
+                color:$font-light;
+            }
+        }
+    }
+}
+
+@media print{
+
+    .main-menu, .profile-menu, .sub-menu{
+        display:none;
+    }
+
+    .mobile-hamburger{
+        display:none;
+    }
+}

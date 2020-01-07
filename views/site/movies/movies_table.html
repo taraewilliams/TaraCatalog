@@ -1,0 +1,162 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <h1 class="table-title">Movies ( {{ item_length }} )</h1>
+
+    <button ng-click="printPage()" class="basic-button print-button">Print</button>
+
+    <!-- Movie Filter -->
+    <div class="filter-form" ng-include="'views/subviews/_filterMovieResults.html'"></div>
+
+    <!-- Movie Table Order By -->
+    <div ng-include="'views/subviews/_sortMovieResults.html'"></div>
+
+    <!-- Movie Table -->
+    <p ng-show="items.length <= 0">No matching movies</p>
+
+    <table class="standard-table" ng-show="items.length > 0">
+        <tr>
+            <th ng-if="editOn" class="select-header">Select</th>
+
+            <th ng-if="!editOn" class="row-number-header"></th>
+            <th class="image-column-header">Image</th>
+            <th>Title</th>
+            <th>Format</th>
+            <th>Edition</th>
+            <th>Season</th>
+            <th>Content Type</th>
+            <th>Running Time</th>
+            <th>MPAA/TV Rating</th>
+            <th class="location-column-header">Location</th>
+            <th>Genre</th>
+            <th>Complete Series</th>
+            <th>Notes</th>
+            <th class="button-column-header"></th>
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="14">{{ item.title }}</th>
+
+            <!-- Regular Table -->
+            <td ng-if="!item.isHeader && !item.editOn" class="row-number">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="image-column">
+                <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+            </td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.title}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.format}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.edition}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.season}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.content_type}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.running_time}} minutes, {{item.rt_hours}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.mpaa_rating}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.genre}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
+            <td ng-if="!item.isHeader && !item.editOn">{{item.notes}}</td>
+            <td ng-if="!item.isHeader && !item.editOn" class="button-column">
+                <button class="basic-button table-button" ng-click="toggleEdit(item)">Edit</button>
+                <button class="basic-button table-button" ng-click="deleteItem(item.id)">Delete</button>
+
+                <button ng-if="!item.isHeader && item.todo_list" class="basic-button table-button-2 on-todo-list" ng-click="toggleReadList(item.id,0)">Remove from Watch List</button>
+                <button ng-if="!item.isHeader && !item.todo_list" class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Watch List</button>
+            </td>
+
+            <!-- Edit Table -->
+            <td ng-if="!item.isHeader && item.editOn" class="row-number">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader && item.editOn" class="image-column">
+                <img ng-if="!isEmpty(item.image)" alt="Movie Cover" ng-src="backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="title">
+                    <input type="text" name="title" id="title" ng-model="item.title" placeholder="Title..."><br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="format">
+                    <input type="radio" ng-model="item.format" value="DVD"> DVD<br>
+                    <input type="radio" ng-model="item.format" value="Blu-Ray"> Blu-Ray<br>
+                    <input type="radio" ng-model="item.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="edition">
+                    <input type="text" name="edition" id="edition" ng-model="item.edition" placeholder="Edition...">
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="season">
+                    <input type="text" name="season" id="season" ng-model="item.season" placeholder="Season...">
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="content_type">
+                    <input type="radio" ng-model="item.content_type" value="Live Action"> Live Action<br>
+                    <input type="radio" ng-model="item.content_type" value="Anime"> Anime<br>
+                    <input type="radio" ng-model="item.content_type" value="Animated"> Animated<br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="running_time">
+                    <input type="number" name="running_time" id="running_time" ng-model="item.running_time" placeholder="Running Time...">
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="mpaa_rating">
+                    <select ng-model="item.mpaa_rating">
+                        <option value="none">None</option>
+                        <option value="G">G</option>
+                        <option value="PG">PG</option>
+                        <option value="PG-13">PG-13</option>
+                        <option value="R">R</option>
+                        <option value="NC-17">NC-17</option>
+                        <option value="Not Rated">Not Rated</option>
+                        <option value="Unrated">Unrated</option>
+                        <option value="TV-Y">TV-Y</option>
+                        <option value="TV-Y7">TV-Y7</option>
+                        <option value="TV-G">TV-G</option>
+                        <option value="TV-PG">TV-PG</option>
+                        <option value="TV-14">TV-14</option>
+                        <option value="TV-MA">TV-MA</option>
+                    </select>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn" class="location-column">
+                <label for="location">
+                    <input type="radio" ng-model="item.location" value="Apartment"> Apartment<br>
+                    <input type="radio" ng-model="item.location" value="Home"> Home<br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="genre">
+                    <input type="text" name="genre" id="genre" ng-model="item.genre" placeholder="Genre..."><br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="complete_series">
+                    <input type="radio" ng-model="item.complete_series" value="Complete"> Complete<br>
+                    <input type="radio" ng-model="item.complete_series" value="Incomplete"> Incomplete<br>
+                    <input type="radio" ng-model="item.complete_series" value="Standalone"> Standalone<br>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn">
+                <label for="notes">
+                    <textarea name="text" ng-model="item.notes" placeholder="Notes..."></textarea>
+                </label>
+            </td>
+            <td ng-if="!item.isHeader && item.editOn" class="button-column">
+                <button class="basic-button table-button" ng-click="updateMedia(item)">Update</button>
+                <button class="basic-button table-button" ng-click="toggleEdit(item)">Cancel</button>
+            </td>
+
+        </tr>
+    </table>
+
+
+</main>

@@ -1,0 +1,68 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <h1>Create a Game</h1>
+
+    <form ng-submit="createMedia(media)">
+
+        <label for="title">Title<br>
+            <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
+        </label>
+
+        <label for="platform">Platform<br>
+            <input type="text" name="platform" id="platform" ng-model="media.platform" placeholder="Platform..."><br>
+            Select From Existing:
+            <select ng-model="media.old_platform" ng-options="platform.platform for platform in platforms" ng-change="updateForSelectValue(media.old_platform.platform, 'platform')"></select>
+        </label>
+
+        <label for="esrb_rating">ESRB Rating<br>
+            <select ng-model="media.esrb_rating">
+                <option value="none">None</option>
+                <option value="RP">RP (Rating Pending)</option>
+                <option value="EC">EC (Early Childhood)</option>
+                <option value="E">E (Everyone)</option>
+                <option value="E10+">E10+ (Everyone 10+)</option>
+                <option value="KA">KA (Kids to Adults)</option>
+                <option value="T">T (Teen)</option>
+                <option value="M">M (Mature)</option>
+                <option value="AO">AO (Adults Only)</option>
+            </select>
+        </label>
+
+        <label for="location">Location<br>
+            <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
+            <input type="radio" ng-model="media.location" value="Home"> Home<br>
+        </label>
+
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
+            Select From Existing:
+            <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
+        </label>
+
+        <label for="complete_series">Complete Series<br>
+            <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
+        <label for="notes">Notes<br>
+            <textarea name="text" ng-model="media.notes" placeholder="Notes..."></textarea>
+        </label>
+
+        <label for="image">Image<br>
+            <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
+            <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Game Image" />
+        </label>
+
+        <button type="submit">Create</button>
+
+    </form>
+
+
+</main>

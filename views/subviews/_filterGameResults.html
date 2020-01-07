@@ -1,0 +1,57 @@
+<h6 ng-click="toggleFilter()">Filter Results</h6>
+
+<form ng-submit="sortBy(sortVal, filter)"  ng-if="showFilter">
+
+    <section>
+        <label for="title">Title<br>
+            <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
+        </label>
+
+        <label for="platform">Platform<br>
+            <input type="text" name="platform" id="platform" ng-model="filter.platform" placeholder="Platform...">
+        </label>
+    </section>
+
+    <section>
+
+        <label for="esrb_rating">ESRB Rating<br>
+            <select ng-model="filter.esrb_rating">
+                <option value="none">None</option>
+                <option value="RP">RP (Rating Pending)</option>
+                <option value="EC">EC (Early Childhood)</option>
+                <option value="E">E (Everyone)</option>
+                <option value="E10+">E10+ (Everyone 10+)</option>
+                <option value="T">T (Teen)</option>
+                <option value="M">M (Mature)</option>
+                <option value="AO">AO (Adults Only)</option>
+            </select>
+        </label>
+
+    </section>
+
+    <section>
+
+        <label for="location">Location<br>
+            <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+            <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
+        </label>
+
+    </section>
+
+    <section>
+
+        <label for="complete_series">Complete Series<br>
+            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
+        <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
+        <button type="submit">Filter Results</button>
+    </section>
+
+</form>

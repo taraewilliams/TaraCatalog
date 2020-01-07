@@ -1,0 +1,19 @@
+<form ng-submit="sortBy(sortVal, filter)" class="sort-media-form">
+    <section>
+        <label for="sortVal">Sort By:<br>
+            <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
+                <option value="none">None</option>
+                <option value="title">Title</option>
+                <option value="series">Series</option>
+                <option value="author">Author</option>
+                <option value="volume">Volume</option>
+                <option value="isbn">ISBN</option>
+                <option value="cover_type">Cover Type</option>
+                <option value="content_type">Content Type</option>
+                <option value="location">Location</option>
+                <option value="genre">Genre</option>
+                <option value="complete_series">Complete Series</option>
+            </select>
+        </label>
+    </section>
+</form>

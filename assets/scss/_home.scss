@@ -1,0 +1,62 @@
+// Mobile CSS
+@media screen and (max-width: 800px) {
+    .home-section{
+        margin:0;
+    }
+
+    #home-filter{
+        form{
+            input{
+                width: 75%;
+            }
+            button{
+                width: 20%;
+            }
+        }
+    }
+}
+
+// Web CSS
+@media screen and (min-width: 800px) {
+    .home-section{
+        margin:50px;
+    }
+
+    #home-filter{
+        form{
+            input{
+                width: 49%;
+            }
+            button{
+                width:25%;
+            }
+        }
+    }
+}
+
+@media screen{
+    .home-section{
+        h2{
+            text-align:center;
+        }
+    }
+
+    #home-filter{
+        form{
+            section{
+                margin-right:10px;
+                text-align: center;
+                width: 100%;
+            }
+            input{
+                font-size: 15px;
+                height: 25px;
+            }
+            button{
+                min-height:30px;
+                vertical-align:top;
+                margin-top: 0;
+            }
+        }
+    }
+}

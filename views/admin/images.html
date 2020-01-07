@@ -1,0 +1,60 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <!-- Page Heading -->
+    <h1>Admin Panel</h1>
+
+    <button ng-click="deleteImages()" class="basic-button">Delete Unused Images</button>
+
+    <h2>Unused Images</h2>
+
+    <h4>Users</h4>
+
+    <p ng-if="images.users.length <= 0">No images</p>
+
+    <ul ng-show="images.users.length > 0" class="profile-pic-list">
+        <li ng-repeat="image in images.users">
+            <img class="profile-pic" alt="Image" ng-src="backend/public/{{image}}"/>
+        </li>
+    </ul>
+
+
+    <h4>Books</h4>
+
+    <p ng-if="images.books.length <= 0">No images</p>
+
+    <ul ng-show="images.books.length > 0" class="media-list-pic">
+        <li ng-repeat="image in images.books">
+            <img alt="Image" ng-src="backend/public/{{image}}"/>
+        </li>
+    </ul>
+
+
+    <h4>Movies</h4>
+
+    <p ng-if="images.movies.length <= 0">No images</p>
+
+    <ul ng-show="images.movies.length > 0" class="media-list-pic">
+        <li ng-repeat="image in images.movies">
+            <img alt="Image" ng-src="backend/public/{{image}}"/>
+        </li>
+    </ul>
+
+
+    <h4>Games</h4>
+
+    <p ng-if="images.games.length <= 0">No images</p>
+
+    <ul ng-show="images.games.length > 0" class="media-list-pic">
+        <li ng-repeat="image in images.games">
+            <img alt="Image" ng-src="backend/public/{{image}}"/>
+        </li>
+    </ul>
+
+
+</main>

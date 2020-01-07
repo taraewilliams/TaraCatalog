@@ -1,0 +1,118 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <!-- Page Heading -->
+    <h1 ng-if="isActive(['/viewer_list'])">Viewers of Your Catalog</h1>
+    <h1 ng-if="isActive(['/view_list'])">Catalogs you can View</h1>
+
+
+    <!-- Viewers of Your Catalog -->
+    <!-- Show users that can view your catalog -->
+    <section ng-if="isActive(['/viewer_list'])" class="viewer-list">
+
+        <h3>Current Viewers</h3>
+
+        <p ng-if="viewers.length <= 0">No users</p>
+
+        <!-- Approved Users -->
+        <ul class="view-list">
+            <li ng-repeat="viewer in viewers">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.v_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.v_username}}</p>
+                <button class="basic-button negative big-button" ng-click="deleteViewer(viewer.viewer_id, viewer.creator_id)">Remove</button>
+            </li>
+        </ul>
+
+        <!-- Pending users -->
+        <h3>Pending</h3>
+
+        <h5>You Requested</h5>
+
+        <p ng-if="pending_viewers_creator.length <= 0">No users</p>
+
+        <ul class="view-list">
+            <li ng-repeat="viewer in pending_viewers_creator">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.v_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.v_username}}</p>
+                <button class="basic-button negative big-button" ng-click="deleteViewer(viewer.viewer_id, viewer.creator_id)">Remove</button>
+            </li>
+        </ul>
+
+        <h5>Viewer Requested</h5>
+
+        <p ng-if="pending_viewers_viewer.length <= 0">No users</p>
+
+        <ul class="view-list">
+            <li ng-repeat="viewer in pending_viewers_viewer">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.v_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.v_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.v_username}}</p>
+                <button class="basic-button positive" ng-click="updateViewer(viewer.id, viewer.requested_by, 'approved')">Approve</button>
+                <button class="basic-button negative" ng-click="updateViewer(viewer.id, viewer.requested_by, 'rejected')">Reject</button>
+            </li>
+        </ul>
+
+    </section>
+
+
+    <!-- Catalogs You Can View -->
+    <!-- Show users whose catalogs you can view -->
+    <section ng-if="isActive(['/view_list'])">
+
+        <h3>Current Catalogs</h3>
+
+        <p ng-if="viewers.length <= 0">No users</p>
+
+        <!-- Approved Users -->
+        <ul class="view-list">
+            <li ng-repeat="viewer in viewers">
+                <a ng-href="#/view/{{viewer.creator_id}}">
+                    <img class="profile-pic" ng-if="!isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.c_image}}"/>
+                    <img class="profile-pic" ng-if="isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+                    <p>{{viewer.c_username}}</p>
+                </a>
+                <button class="basic-button negative big-button" ng-click="deleteViewer(viewer.viewer_id, viewer.creator_id)">Remove</button>
+            </li>
+        </ul>
+
+        <!-- Pending Users -->
+        <h3>Pending</h3>
+
+        <h5>You Requested</h5>
+
+        <p ng-if="pending_viewers_viewer.length <= 0">No users</p>
+
+        <ul class="view-list">
+            <li ng-repeat="viewer in pending_viewers_viewer">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.c_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.c_username}}</p>
+                <button class="basic-button negative big-button" ng-click="deleteViewer(viewer.viewer_id, viewer.creator_id)">Remove</button>
+            </li>
+        </ul>
+
+        <h5>Creator Requested</h5>
+
+        <p ng-if="pending_viewers_creator.length <= 0">No users</p>
+
+        <ul class="view-list">
+            <li ng-repeat="viewer in pending_viewers_creator">
+                <img class="profile-pic" ng-if="!isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.c_image}}"/>
+                <img class="profile-pic" ng-if="isEmpty(viewer.c_image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+                <p>{{viewer.c_username}}</p>
+                <button class="basic-button positive" ng-click="updateViewer(viewer.id, viewer.requested_by, 'approved')">Approve</button>
+                <button class="basic-button negative" ng-click="updateViewer(viewer.id, viewer.requested_by, 'rejected')">Reject</button>
+            </li>
+        </ul>
+
+
+    </section>
+
+</main>

@@ -1,0 +1,53 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <h1>Play List ( {{ item_length }} )</h1>
+
+    <!-- Go to Add to Play List Page -->
+    <div class="basic-url"><a ng-href="#/games_table/play_add">+ Add to Play List</a></div>
+    <div class="basic-url"><a ng-click="toggleEdit()">- Remove From Play List</a></div>
+
+    <button ng-if="editOn" class="basic-button add-button" ng-click="removeFromToDoList(removedItems)">Remove Games</button>
+
+    <!-- Games Table -->
+    <table ng-show="items.length > 0" class="standard-table">
+        <tr>
+            <th ng-if="editOn" class="select-header">Select</th>
+
+            <th ng-if="!editOn" class="row-number-header"></th>
+            <th class="image-column-header">Image</th>
+            <th>Title</th>
+            <th>Platform</th>
+            <th>ESRB Rating</th>
+            <th class="location-column-header">Location</th>
+            <th>Genre</th>
+            <th>Complete Series</th>
+            <th>Notes</th>
+        </tr>
+        <tr ng-repeat="item in items">
+
+            <th ng-if="item.isHeader" colspan="9">{{ item.title }}</th>
+
+            <td class="table-toggle-box" ng-if="!item.isHeader && editOn"><input ng-click="toggleRemovedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
+
+            <td ng-if="!item.isHeader && !editOn" class="row-number">{{item.row_number}}</td>
+            <td ng-if="!item.isHeader" class="image-column">
+                <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
+            </td>
+            <td ng-if="!item.isHeader">{{item.title}}</td>
+            <td ng-if="!item.isHeader">{{item.platform}}</td>
+            <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
+            <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+            <td ng-if="!item.isHeader">{{item.genre}}</td>
+            <td ng-if="!item.isHeader" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
+            <td ng-if="!item.isHeader">{{item.notes}}</td>
+        </tr>
+    </table>
+
+</main>

@@ -1,0 +1,74 @@
+<h6 ng-click="toggleFilter()">Filter Results</h6>
+
+<form ng-submit="sortBy(sortVal, filter)" ng-if="showFilter">
+
+    <section>
+        <label for="title">Title<br>
+            <input type="text" name="title" id="title" ng-model="filter.title" placeholder="Title..."><br>
+        </label>
+
+        <label for="format">Format<br>
+            <input type="radio" ng-model="filter.format" value="DVD"> DVD<br>
+            <input type="radio" ng-model="filter.format" value="Blu-Ray"> Blu-Ray<br>
+            <input type="radio" ng-model="filter.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
+        </label>
+    </section>
+
+    <section>
+        <label for="edition">Edition<br>
+            <input type="text" name="edition" id="edition" ng-model="filter.edition" placeholder="Edition...">
+        </label>
+
+        <label for="season">Season<br>
+            <input type="text" name="season" id="season" ng-model="filter.season" placeholder="Season...">
+        </label>
+
+        <label for="content_type">Content Type<br>
+            <input type="radio" ng-model="filter.content_type" value="Live Action"> Live Action<br>
+            <input type="radio" ng-model="filter.content_type" value="Anime"> Anime<br>
+            <input type="radio" ng-model="filter.content_type" value="Animated"> Animated<br>
+        </label>
+    </section>
+
+    <section>
+        <label for="mpaa_rating">MPAA/TV Rating<br>
+            <select ng-model="filter.mpaa_rating">
+                <option value="none">None</option>
+                <option value="G">G</option>
+                <option value="PG">PG</option>
+                <option value="PG-13">PG-13</option>
+                <option value="R">R</option>
+                <option value="NC-17">NC-17</option>
+                <option value="Not Rated">Not Rated</option>
+                <option value="Unrated">Unrated</option>
+                <option value="TV-Y">TV-Y</option>
+                <option value="TV-Y7">TV-Y7</option>
+                <option value="TV-G">TV-G</option>
+                <option value="TV-PG">TV-PG</option>
+                <option value="TV-14">TV-14</option>
+                <option value="TV-MA">TV-MA</option>
+            </select>
+        </label>
+
+        <label for="location">Location<br>
+          <input type="radio" ng-model="filter.location" value="Apartment"> Apartment<br>
+          <input type="radio" ng-model="filter.location" value="Home"> Home<br>
+        </label>
+    </section>
+
+    <section>
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="filter.genre" placeholder="Genre..."><br>
+        </label>
+
+        <label for="complete_series">Complete Series<br>
+            <input type="radio" ng-model="filter.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="filter.complete_series" value="Standalone"> Standalone<br>
+        </label>
+
+        <button type="button" ng-click="clearFilter(sortVal, filter)">Clear Results</button>
+        <button type="submit">Filter Results</button>
+    </section>
+
+</form>

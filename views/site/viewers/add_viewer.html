@@ -1,0 +1,41 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <!-- Page Heading -->
+    <h1 ng-if="isActive(['/add_viewers'])">Add Viewers</h1>
+    <h1 ng-if="isActive(['/request_view'])">Request to View a Catalog</h1>
+
+    <p ng-show="users.length <= 0">No users</p>
+
+    <!-- Show users that cannot view your catalog -->
+    <p ng-if="user.role == 'viewer' && isActive(['/add_viewers'])">Your account is view-only. Go to your profile page to become a creator so you can build your own catalog!</p>
+
+    <ul ng-if="user.role == 'creator' && isActive(['/add_viewers'])" class="view-list">
+        <li ng-repeat="viewer in users">
+            <img class="profile-pic" ng-if="!isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.image}}"/>
+            <img class="profile-pic" ng-if="isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+            <p>{{viewer.username}}</p>
+            <input ng-click="toggleAddedUsers(viewer.id)" type="checkbox" name="{{viewer.username}}" value="{{viewer.id}}">
+        </li>
+    </ul>
+
+    <!-- Show users whose catalogs you cannot view -->
+    <ul ng-if="isActive(['/request_view'])" class="view-list">
+        <li ng-repeat="viewer in users">
+            <img class="profile-pic" ng-if="!isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="backend/public/{{viewer.image}}"/>
+            <img class="profile-pic" ng-if="isEmpty(viewer.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+            <p>{{viewer.username}}</p>
+            <input ng-click="toggleAddedUsers(viewer.id)" type="checkbox" name="{{viewer.username}}" value="{{viewer.id}}">
+        </li>
+    </ul>
+
+    <!-- Add Users Button -->
+    <button ng-show="users.length > 0" class="basic-button add-button" ng-click="addToViewers(addedUsers)">Add Users</button>
+
+
+</main>

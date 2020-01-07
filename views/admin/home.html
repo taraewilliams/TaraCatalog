@@ -1,0 +1,90 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme">
+
+    <!-- Page Heading -->
+    <h1>Admin Panel</h1>
+
+    <h2>Active Users</h2>
+
+    <div class="loader" ng-if="!users_resolved"></div>
+
+    <table class="standard-table" ng-show="users.length > 0 && users_resolved">
+        <tr>
+            <th>Image</th>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Admin</th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="user in users">
+            <td>
+                <img ng-if="!isEmpty(user.image)" alt="Profile Picture" ng-src="backend/public/{{user.image}}"/>
+                <img ng-if="isEmpty(user.image)" alt="Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+            </td>
+            <td>{{user.username}}</td>
+            <td>{{user.first_name}}</td>
+            <td>{{user.last_name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.role}}</td>
+            <td ng-if="user.is_admin">Yes</td>
+            <td ng-if="!user.is_admin">No</td>
+            <td>
+                <button ng-if="!user.is_admin" class="basic-button table-button" ng-click="updateUser(user.id,1)">Make Admin</button>
+                <button ng-if="user.is_admin" class="basic-button table-button on-todo-list" ng-click="updateUser(user.id,0)">Remove Admin</button>
+
+                <button class="basic-button table-button" ng-click="deleteUser(user.id)">Delete</button>
+            </td>
+        </tr>
+
+    </table>
+
+    <h2>Inactive Users</h2>
+
+    <div class="loader" ng-if="!inactive_users_resolved"></div>
+
+    <p ng-if="inactive_users.length <= 0">No users</p>
+
+    <table class="standard-table" ng-show="inactive_users.length > 0 && inactive_users_resolved">
+        <tr>
+            <th>Image</th>
+            <th>Username</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Admin</th>
+            <th></th>
+        </tr>
+        <tr ng-repeat="user in inactive_users">
+            <td>
+                <img ng-if="!isEmpty(user.image)" alt="Profile Picture" ng-src="backend/public/{{user.image}}"/>
+                <img ng-if="isEmpty(user.image)" alt="Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
+            </td>
+            <td>{{user.username}}</td>
+            <td>{{user.first_name}}</td>
+            <td>{{user.last_name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.role}}</td>
+            <td ng-if="user.is_admin">Yes</td>
+            <td ng-if="!user.is_admin">No</td>
+            <td>
+                <button ng-if="!user.is_admin" class="basic-button table-button" ng-click="updateUser(user.id,1)">Make Admin</button>
+                <button ng-if="user.is_admin" class="basic-button table-button on-todo-list" ng-click="updateUser(user.id,0)">Remove Admin</button>
+
+                <button class="basic-button table-button" ng-click="deleteUser(user.id)">Delete</button>
+            </td>
+        </tr>
+
+    </table>
+
+
+
+</main>

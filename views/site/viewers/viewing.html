@@ -1,0 +1,84 @@
+<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+
+<div class="loader" ng-if="!user || !color_scheme"></div>
+
+<mc-messages class="message-popup"></mc-messages>
+
+<main ng-if="user && color_scheme && viewer">
+
+    <!-- Page Heading -->
+    <h1 ng-if="isActive(['/view/:id'])">{{viewer.c_username}}'s Catalog</h1>
+    <h1 ng-if="isActive(['/book_view/:id'])">{{viewer.c_username}}'s Books</h1>
+    <h1 ng-if="isActive(['/movie_view/:id'])">{{viewer.c_username}}'s Movies</h1>
+    <h1 ng-if="isActive(['/game_view/:id'])">{{viewer.c_username}}'s Games</h1>
+
+    <!-- Viewer Menu -->
+    <div ng-include="'views/subviews/_viewerMenu.html'"></div>
+
+    <!-- Books -->
+    <p ng-if="isActive(['/book_view/:id'])" ng-show="books.length <= 0">No books</p>
+    <ul ng-if="isActive(['/book_view/:id']) && books" class="media-list-pic">
+        <li ng-repeat="book in books">
+            <img ng-if="!isEmpty(book.image)" alt="Book Cover" ng-src="backend/public/{{book.image}}"/>
+            <img ng-if="isEmpty(book.image)" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
+            <h6 ng-if="!book.volume">{{book.title}}</h6>
+            <h6 ng-if="book.volume">{{book.title}}, Volume {{book.volume}}</h6>
+        </li>
+    </ul>
+
+    <!-- Movies -->
+    <p ng-if="isActive(['/movie_view/:id'])" ng-show="movies.length <= 0">No movies</p>
+    <ul ng-if="isActive(['/movie_view/:id']) && movies" class="media-list-pic">
+        <li ng-repeat="movie in movies">
+            <img ng-if="!isEmpty(movie.image)" alt="Movie Cover" ng-src="backend/public/{{movie.image}}"/>
+            <img ng-if="isEmpty(movie.image)" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+            <h6 ng-if="!isEmpty(movie.season)">{{movie.title}}, {{movie.season}}</h6>
+            <h6 ng-if="isEmpty(movie.season)">{{movie.title}}</h6>
+        </li>
+    </ul>
+
+    <!-- Games -->
+    <p ng-if="isActive(['/game_view/:id'])" ng-show="games.length <= 0">No games</p>
+    <ul ng-if="isActive(['/game_view/:id']) && games" class="media-list-pic">
+        <li ng-repeat="game in games">
+            <img ng-if="!isEmpty(game.image)" alt="Game Cover" ng-src="backend/public/{{game.image}}"/>
+            <img ng-if="isEmpty(game.image)" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
+            <h6>{{game.title}}</h6>
+        </li>
+    </ul>
+
+    <!-- Search another user's catalog -->
+    <section ng-if="isActive(['/view/:id'])" class="home-section">
+        <h2>Search {{viewer.c_username}}'s Catalog</h2>
+
+        <div class="filter-form" id="home-filter" >
+            <form ng-submit="search(searchTerm)">
+                <section>
+                    <input type="text" name="searchTerm" id="searchTerm" ng-model="searchTerm" placeholder="Search...">
+                    <button type="submit">Search</button>
+                </section>
+            </form>
+        </div>
+    </section>
+
+    <p ng-show="items.length <= 0">No matching results</p>
+
+    <p ng-show="items.length > 0">{{items.length}} results</p>
+
+    <ul class="media-list-pic" ng-show="items.length > 0">
+        <li ng-repeat="item in items">
+            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
+            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
+            <img ng-if="!isEmpty(item.image)" alt="Item Cover" ng-src="backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
+            <img ng-if="isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+            <img ng-if="isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
+            <h6 ng-if="!isEmpty(item.season)">{{item.title}}, {{item.season}}</h6>
+            <h6 ng-if="!isEmpty(item.volume)">{{item.title}}, Volume {{item.volume}}</h6>
+            <h6 ng-if="isEmpty(item.season) && isEmpty(item.volume)">{{item.title}}</h6>
+        </li>
+    </ul>
+
+
+</main>

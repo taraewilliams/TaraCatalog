@@ -1,0 +1,23 @@
+$lighter-red: #ffe0b3;
+$light-red: #ffc266;
+$medium-red: #ff9900;
+$dark-red: #995c00;
+$darker-red: #4d2e00;
+
+$font-light:white;
+$font-medium:gray;
+$font-dark:black;
+
+$light-green: #8CEE7D;
+$light-blue: #66b3ff;
+$light-yellow: #ffff99;
+$light-gray: #d9d9d9;
+
+@import "reset";
+@import "menu";
+@import "main";
+@import "stats";
+@import "home";
+@import "media";
+@import "profile";
+@import "messageservice";
