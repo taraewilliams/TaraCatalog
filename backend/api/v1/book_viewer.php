@@ -5,6 +5,7 @@ use TaraCatalog\Model\Media;
 use TaraCatalog\Model\Viewer;
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
@@ -24,10 +25,10 @@ $app->group('/api', function () use ($app) {
 
             /* Check that the viewer has permission to view the creator's books */
             if(!Viewer::exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status)){
-                APIService::response_fail("You don't have permission to view this list.", 401);
+                APIService::response_fail(HttpFailCodes::http_response_fail()->viewer_get_media);
             }
 
-            $books = Media::get_all($creator_id, Config::DBTables()->book, Constants::default_order()->book);
+            $books = Media::get_all($creator_id, Config::DBTables()->book);
             APIService::response_success($books);
         });
 

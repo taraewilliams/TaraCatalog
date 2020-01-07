@@ -4,6 +4,7 @@ namespace TaraCatalog\Service;
 
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Database;
+use TaraCatalog\Config\Constants;
 
 class DatabaseService
 {
@@ -27,15 +28,23 @@ class DatabaseService
     }
 
     /* Get Function */
-    public static function get($table, $where = null, $include_inactive = false)
+    public static function get($table, $where = null, $order = null, $offset = null, $limit = null, $include_inactive = false)
     {
         $database = Database::instance();
 
         $where_sql = self::where_sql_string($where);
-        $inactive_sql = $include_inactive ? "" : ($where_sql == "" ? " WHERE active = 1" : " AND active = 1"); // Nested ternary
-        $sql = "SELECT * FROM " . $table . $where_sql . $inactive_sql;
+        $inactive_sql = $include_inactive ? ($where_sql == "" ? " WHERE active = 0" : " AND active = 0") : ($where_sql == "" ? " WHERE active = 1" : " AND active = 1");
+        $order_by_sql = self::order_sql_string($order, $table);
+        $limit_sql = self::limit_sql_string($offset, $limit);
+
+        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . $table . " JOIN(SELECT @curRow := 0) r". $where_sql . $inactive_sql . $order_by_sql . $limit_sql;
         $sql = str_replace("  ", " ", $sql);
+
         $params = self::build_query_params($where);
+
+        if (!is_null($order) && !($order === "default")){
+            $params = self::add_query_param($order, $params);
+        }
 
         $query = $database->prepare($sql);
         $query->execute($params);
@@ -49,16 +58,23 @@ class DatabaseService
     }
 
     /* Get with where, order, and limit */
-    public static function get_where_order_limit($table, $where = null, $order_by = null, $limit = null){
+    public static function get_for_search($table, $data, $user_id, $enum_keys, $where = null, $order_by = null){
         $database = Database::instance();
         $where_sql = is_null($where) ? "" : " " . $where;
         $order_by_sql = is_null($order_by) ? "" : " " . $order_by;
-        $limit_sql = is_null($limit) ? "" : " " . $limit;
-        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . $table . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql . $limit_sql;
+        $sql = "SELECT *, @curRow := @curRow + 1 AS row_number FROM " . $table . " JOIN(SELECT @curRow := 0) r". $where_sql . $order_by_sql;
+
+        $params = self::build_query_params($data, null, $enum_keys);
+        $params = self::add_query_param($user_id, $params);
+
         $query = $database->prepare($sql);
-        $query->execute();
+        $query->execute($params);
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
+
+        if($result === false) {
+            return false;
+        }
         return $result;
     }
 
@@ -160,21 +176,38 @@ class DatabaseService
         return $where_sql;
     }
 
-    private static function build_query_params($data, $id = null)
+    private static function order_sql_string($order, $table)
+    {
+        return is_null($order) ? "" : (($order === "default") ? Constants::default_order()->{$table} : " ORDER BY ?");
+    }
+
+    private static function limit_sql_string($offset, $limit)
+    {
+        return (is_null($offset) || is_null($limit)) ? "" : " LIMIT " . (int)$offset .  ", " . (int)$limit;
+    }
+
+    private static function build_query_params($data, $id = null, $enum_keys = array())
     {
         $params = array();
         if($data !== null){
             foreach($data as $key => $value) {
-                if($value === null || $value === "null" || $value === NULL || $value === "NULL"){
-                    $value = NULL;
-                }
-                $params[] = $value;
+                $value = (!empty($enum_keys) && !in_array($key, $enum_keys)) ? "%$value%" : $value;
+                $params = self::add_query_param($value, $params);
             }
         }
 
         if ($id !== null){
             $params[] = $id;
         }
+        return $params;
+    }
+
+    private static function add_query_param($value, $params)
+    {
+        if($value === null || $value === "null" || $value === NULL || $value === "NULL"){
+            $value = NULL;
+        }
+        $params[] = $value;
         return $params;
     }
 

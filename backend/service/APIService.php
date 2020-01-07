@@ -3,6 +3,8 @@
 namespace TaraCatalog\Service;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Config\Database;
 
 class APIService
@@ -14,14 +16,15 @@ class APIService
         die(json_encode($data));
     }
 
-    public static function response_fail($message, $code = 400)
-    {
+    public static function response_fail($http_response) {
+
         header('Content-Type: application/json');
-        http_response_code($code);
+        http_response_code($http_response->code);
 
         $response = array(
-            "status" => $code,
-            "message" => $message
+            "code"      => $http_response->code,
+            "message"   => $http_response->message,
+            "type"      => $http_response->type
         );
         die(json_encode( (object) $response ));
     }
@@ -36,9 +39,31 @@ class APIService
         $error = null;
         $result = AuthService::authenticate($params['session_id'], $params['session_token'], $error);
         if($result === false || $result === null) {
-            self::response_fail($error, 401);
+            $response = HttpFailCodes::http_response_fail()->session_fail;
+            $response->message = $error;
+            self::response_fail($response);
         }
         return $result;
+    }
+
+    public static function authenticate_request_admin(&$request_params)
+    {
+        $session = self::authenticate_request($request_params);
+        if ($session->user->is_admin){
+            return $session;
+        } else{
+            APIService::response_fail(HttpFailCodes::http_response_fail()->admin_request);
+        }
+    }
+
+    public static function authenticate_request_creator(&$request_params)
+    {
+        $session = self::authenticate_request($request_params);
+        if ($session->user->role === Constants::user_role()->creator){
+            return $session;
+        } else{
+            APIService::response_fail(HttpFailCodes::http_response_fail()->creator_request);
+        }
     }
 
     public static function build_params($request, $required_param_names = array(), $optional_param_names = array())

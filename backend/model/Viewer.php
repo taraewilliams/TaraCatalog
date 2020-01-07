@@ -4,6 +4,7 @@ namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\FileService;
@@ -67,17 +68,17 @@ class Viewer
 
         /* Check that a viewer can't already view the creator's catalog */
         if(Viewer::exists_for_creator_and_viewer_id($data["creator_id"], $data["viewer_id"])){
-            APIService::response_fail("A viewer already exists for this creator.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->viewer_duplicate);
         }
 
         /* Check that the creator ID belongs to a user that is  a creator */
         if(!User::is_creator($data["creator_id"])){
-            APIService::response_fail("This user is not a creator.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->user_not_creator);
         }
 
         $id = DatabaseService::create(Config::DBTables()->viewer, $data);
         if($id === false || $id === null) {
-            APIService::response_fail("There was a problem creating the viewer.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->create_viewer);
         }
         $viewer->id = $id;
         return $viewer;
@@ -101,7 +102,7 @@ class Viewer
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if ($result === false || $result === null){
-            APIService::response_fail("There was a problem getting the viewers.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_viewers);
         }else{
             return $result;
         }
@@ -121,7 +122,7 @@ class Viewer
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if ($result === false || $result === null){
-            APIService::response_fail("There was a problem getting the viewers.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_viewers);
         }else{
             return $result;
         }
@@ -130,14 +131,13 @@ class Viewer
     /* Get single viewer for creator and viewer IDs */
     public static function get_for_creator_and_viewer_id($creator_id, $viewer_id, $status=null)
     {
-        if ($status !== null){
-            $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id . " AND status = '" . $status . "'";
-        }else{
-            $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id;
+        $where = array("creator_id" => $creator_id, "viewer_id" => $viewer_id);
+        if (!is_null($status)){
+            $where["status"] = $status;
         }
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        $result = DatabaseService::get(CONFIG::DBTables()->viewer, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the viewer.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_single_viewer);
         }
         return new Viewer($result[0]);
     }
@@ -145,9 +145,11 @@ class Viewer
     /* See if a viewer exists for creator and viewer IDs */
     public static function exists_for_creator_and_viewer_id($creator_id, $viewer_id, $status=null)
     {
-        $where = "WHERE active = 1 AND creator_id = " . $creator_id . " AND viewer_id = " . $viewer_id;
-        $where_full = ($status !== null) ? $where . " AND status = '" . $status . "'" : $where;
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where_full);
+        $where = array("creator_id" => $creator_id, "viewer_id" => $viewer_id);
+        if (!is_null($status)){
+            $where["status"] = $status;
+        }
+        $result = DatabaseService::get(CONFIG::DBTables()->viewer, $where);
         return ($result !== false && $result !== null && count($result) !== 0);
     }
 
@@ -161,8 +163,8 @@ class Viewer
         /* Check if a viewer exists with this id, creator id, and was requested by the viewer */
         /* Creator must be the one approving the viewer */
         $is_creator = true;
-        $where = "WHERE active = 1 AND creator_id = " . $user_id . " AND id = " . $id . " AND requested_by = 'viewer'";
-        $creator_result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        $where = array("creator_id" => $user_id, "id" => $id, "requested_by" => Constants::user_role()->viewer);
+        $creator_result = DatabaseService::get(CONFIG::DBTables()->viewer, $where);
         if($creator_result === false || $creator_result === null || count($creator_result) === 0) {
             $is_creator = false;
         }
@@ -170,20 +172,20 @@ class Viewer
         /* Check if a viewer exists with this id, viewer id, and was requested by the creator */
         /* Viewer must be the one approving the creator */
         $is_viewer = true;
-        $where = "WHERE active = 1 AND viewer_id = " . $user_id . " AND id = " . $id . " AND requested_by = 'creator'";
-        $viewer_result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->viewer, $where);
+        $where = array("viewer_id" => $user_id, "id" => $id, "requested_by" => Constants::user_role()->creator);
+        $viewer_result = DatabaseService::get(CONFIG::DBTables()->viewer, $where);
         if($viewer_result === false || $viewer_result === null || count($viewer_result) === 0) {
             $is_viewer = false;
         }
 
         /* If viewer does not exist for creator id or viewer id, then it is invalid */
         if ($is_creator===false && $is_viewer===false){
-            APIService::response_fail("Invalid request.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->invalid_viewer);
         }
 
         $result = DatabaseService::update(Config::DBTables()->viewer, $id, $data);
         if ($result === false || $result === null){
-            APIService::response_fail("Update failed.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->update_viewer);
         }
         return $result;
     }
@@ -197,12 +199,12 @@ class Viewer
     {
         $id = Viewer::get_for_creator_and_viewer_id($creator_id, $viewer_id)->id;
         if ($id === null || $id === false){
-            APIService::response_fail("There was a problem deleting the viewer.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->delete_viewer);
         }
         $where = array("creator_id" => $creator_id, "viewer_id" => $viewer_id);
         $result = DatabaseService::delete(Config::DBTables()->viewer, $where);
         if( $result === false || $result === null) {
-            APIService::response_fail("There was an error deleting that viewer.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->delete_viewer);
         }
         return $result;
     }

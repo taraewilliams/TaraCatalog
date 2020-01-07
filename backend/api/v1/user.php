@@ -7,6 +7,7 @@ use TaraCatalog\Model\Media;
 use TaraCatalog\Model\Viewer;
 use TaraCatalog\Config\Constants;
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\HttpFailCodes;
 
 $app->group('/api', function () use ($app) {
     $app->group('/v1', function () use ($app) {
@@ -23,7 +24,7 @@ $app->group('/api', function () use ($app) {
 
             $id = intval($args['id']);
             if ($session->user->id !== $id){
-                APIService::response_fail("Invalid request.", 401);
+                APIService::response_fail(HttpFailCodes::http_response_fail()->invalid_user);
             }
 
             $user = User::get_from_id($id);
@@ -40,7 +41,7 @@ $app->group('/api', function () use ($app) {
 
             $user = User::get_from_username_and_password($username, $password);
             if ($session->user->id !== $user->id){
-                APIService::response_fail("Invalid request.", 401);
+                APIService::response_fail(HttpFailCodes::http_response_fail()->invalid_user);
             }
             APIService::response_success($user);
         });
@@ -48,7 +49,7 @@ $app->group('/api', function () use ($app) {
         /* Get users that are not viewing a creator's catalog */
         $app->get($resource . '/non/viewers/all', function ($request, $response, $args) use ($app)
         {
-            $session = APIService::authenticate_request($_GET);
+            $session = APIService::authenticate_request_creator($_GET);
             $user_id = $session->user->id;
             $users = User::get_nonviewers($user_id);
             APIService::response_success($users);
@@ -77,7 +78,7 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_REQUEST);
             $id = intval($args['id']);
             if ($session->user->id !== $id){
-                APIService::response_fail("There was a problem updating user.", 500);
+                APIService::response_fail(HttpFailCodes::http_response_fail()->invalid_user);
             }
 
             $params = APIService::build_params($_REQUEST, null, array(
@@ -91,7 +92,9 @@ $app->group('/api', function () use ($app) {
             ));
 
             if(!User::unique_username_and_email($id, $params, $error)) {
-                APIService::response_fail($error, 500);
+                $http_response = HttpFailCodes::http_response_fail()->user_unique_prop;
+                $http_response->message = $error;
+                APIService::response_fail($http_response);
             }
 
             /* Check that enums are set to valid values */
@@ -100,9 +103,7 @@ $app->group('/api', function () use ($app) {
                 array("property" => "role", "enum" => Constants::user_role())
             );
 
-            if(!Media::are_valid_enums($enum_property_list, $params)){
-                APIService::response_fail("There was a problem setting the enums.", 500);
-            }
+            Media::are_valid_enums($enum_property_list, $params);
 
             /* Set image */
             $files = APIService::build_files($_FILES, null, array(
@@ -159,7 +160,7 @@ $app->group('/api', function () use ($app) {
             $session = APIService::authenticate_request($_GET);
             $id = intval($args['id']);
             if ($session->user->id !== $id){
-                APIService::response_fail("Invalid request.", 401);
+                APIService::response_fail(HttpFailCodes::http_response_fail()->invalid_user);
             }
             $username = $session->user->username;
 

@@ -4,6 +4,7 @@ namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;
 use TaraCatalog\Model\Media;
@@ -82,7 +83,7 @@ class Game
 
         $id = DatabaseService::create(Config::DBTables()->game, $data);
         if($id === false || $id === null) {
-            APIService::response_fail("There was a problem creating the game.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->create_media);
         }
         $game->id = $id;
         return $game;

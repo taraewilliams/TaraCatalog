@@ -3,6 +3,8 @@
 namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\FileService;
@@ -25,43 +27,42 @@ class Media
         $where = array("id" => $id, "user_id" => $user_id);
         $result = DatabaseService::get($table, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }
         return Media::build_media_item($table, $result[0]);
     }
 
     /* Get all media items */
-    public static function get_all($user_id, $table, $order_by="")
+    public static function get_all($user_id, $table)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $result = DatabaseService::get_where_order_limit($table, $where, $order_by);
+        $where = array("user_id" => $user_id);
+        $result = DatabaseService::get($table, $where, "default");
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }else{
             return Media::build_media_array($table, $result);
         }
     }
 
     /* Get all media items on the to do list */
-    public static function get_all_on_todo_list($user_id, $todo, $table, $order_by="")
+    public static function get_all_on_todo_list($user_id, $todo, $table)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id . " AND todo_list = " . $todo;
-        $result = DatabaseService::get_where_order_limit($table, $where, $order_by);
+        $where = array("user_id" => $user_id, "todo_list" => $todo);
+        $result = DatabaseService::get($table, $where, "default");
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }else{
             return Media::build_media_array($table, $result);
         }
     }
 
     /* Get a set number of media items */
-    public static function get_all_with_limit($user_id, $table, $order_by="", $offset = 0, $limit = 50)
+    public static function get_all_with_limit($user_id, $table, $offset = 0, $limit = 50)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $limit_sql = "LIMIT " . $offset . ", " . $limit;
-        $result = DatabaseService::get_where_order_limit($table, $where, $order_by, $limit_sql);
+        $where = array("user_id" => $user_id);
+        $result = DatabaseService::get($table, $where, "default", $offset, $limit);
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }else{
             return Media::build_media_array($table, $result);
         }
@@ -70,11 +71,10 @@ class Media
     /* Get all media items ordered by a specific field */
     public static function get_all_with_order($user_id, $table, $order)
     {
-        $where = "WHERE active = 1 AND user_id = " . $user_id;
-        $order_by = "ORDER BY ". $order;
-        $result = DatabaseService::get_where_order_limit($table, $where, $order_by);
+        $where = array("user_id" => $user_id);
+        $result = DatabaseService::get($table, $where, $order);
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }else{
             return Media::build_media_array($table, $result);
         }
@@ -85,19 +85,30 @@ class Media
     /* OR for search all columns */
     public static function get_for_search($user_id, $table, $data, $order_by="", $enum_keys=array(), $conj="AND")
     {
+        // $where = "WHERE (";
+        // $iter = 1;
+        // foreach ($data as $key => $value) {
+        //     $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
+        //     $equality = in_array($key, $enum_keys) ? " = '" . $data[$key] . "'" : " LIKE '%" . $data[$key] . "%'";
+        //     $where = $where . (isset($data[$key]) ? $conj_full . $key . $equality : "");
+        //     $iter += 1;
+        // }
+        //
+        // $where = $where . ") AND active = 1 AND user_id = " . $user_id;
+
         $where = "WHERE (";
         $iter = 1;
         foreach ($data as $key => $value) {
             $conj_full = ($iter == 1) ? "" : " " . $conj . " ";
-            $equality = in_array($key, $enum_keys) ? " = '" . $data[$key] . "'" : " LIKE '%" . $data[$key] . "%'";
+            $equality = in_array($key, $enum_keys) ? " = ?" : " LIKE ?";
             $where = $where . (isset($data[$key]) ? $conj_full . $key . $equality : "");
             $iter += 1;
         }
+        $where = $where . ") AND active = 1 AND user_id = ?";
 
-        $where = $where . ") AND active = 1 AND user_id = " . $user_id;
-        $result = DatabaseService::get_where_order_limit($table, $where, $order_by);
+        $result = DatabaseService::get_for_search($table, $data, $user_id, $enum_keys, $where, $order_by);
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }else{
             return Media::build_media_array($table, $result);
         }
@@ -117,7 +128,7 @@ class Media
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem counting the media.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media);
         }else{
             return $result;
         }
@@ -139,6 +150,22 @@ class Media
         }
     }
 
+    /* Get count of distinct values for a column */
+    public static function get_count_for_distinct_column_values($table, $user_id, $column_name)
+    {
+        $database = Database::instance();
+        $sql = "SELECT COUNT(DISTINCT " . $column_name . ") as num FROM " . $table . " WHERE active = 1 AND " . $column_name . " IS NOT NULL AND " . $column_name . " <> '' AND user_id = " . $user_id;
+        $query = $database->prepare($sql);
+        $query->execute();
+        $result = $query->fetch(\PDO::FETCH_ASSOC);
+        $query->closeCursor();
+        if ($result === false){
+            return false;
+        }else{
+            return $result;
+        }
+    }
+
     /* Count all media locations (grouped by location) */
     public static function get_all_media_location_counts($user_id){
         $column_name = "location";
@@ -153,7 +180,7 @@ class Media
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if ($result === false || $result === null){
-            APIService::response_fail("There was a problem getting the counts.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media_counts);
         }else{
             return array($header => $result);
         }
@@ -173,7 +200,9 @@ class Media
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the " . $column_name . "s.", 500);
+            $http_response = HttpFailCodes::http_response_fail()->get_column_values;
+            $http_response->message = "There was a problem getting the " . $column_name . "s.";
+            APIService::response_fail($http_response);
         }else{
             return $result;
         }
@@ -193,7 +222,9 @@ class Media
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the " . $column_name . ".", 500);
+            $http_response = HttpFailCodes::http_response_fail()->get_single_column_value;
+            $http_response->message = "There was a problem getting the " . $column_name . ".";
+            APIService::response_fail($http_response);
         }else{
             return $result[$column_name];
         }
@@ -224,7 +255,7 @@ class Media
         /* Update media item */
         $result = DatabaseService::update($table, $id, $data);
         if ($result === false || $result === null){
-            APIService::response_fail("Update failed.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->update_media);
         }
         return $result ? (Media::get_from_id($user_id, $id, $table)) : false;
     }
@@ -244,16 +275,19 @@ class Media
     * DELETE
     * ========================================================== */
 
-    /* Delete a media item */
+    /* Set active state of a media item */
     public static function set_active($id, $active, $table)
     {
         $result = DatabaseService::set_active($table, $id, $active);
         if( $result === false || $result === null) {
-            APIService::response_fail("There was an error deleting the " . $table, 500);
+            $http_response = HttpFailCodes::http_response_fail()->delete_media;
+            $http_response->message = "There was an error deleting the " . $table;
+            APIService::response_fail($http_response);
         }
         return $result;
     }
 
+    /* Delete a media item for an ID */
     public static function delete_for_id($id, $user_id, $table)
     {
         $where = array("user_id" => $user_id, "id" => $id);
@@ -266,6 +300,7 @@ class Media
     * Public Functions
     * ===================================================== */
 
+    /* Set media properties */
     public static function set_property($data, $property, $type = "string", $default_value = null){
         return isset($data[$property]) ? (
             $type == "num" ? intval($data[$property])
@@ -274,18 +309,22 @@ class Media
             : $default_value;
     }
 
+    /* Set media enum properties */
     public static function set_enum_property($data, $property, $enum, $default_value = null){
         return (isset($data[$property]) && Media::is_valid_enum($enum, $data[$property]))
             ? $data[$property] : $default_value;
     }
 
+    /* Check if all enums are valid */
     public static function are_valid_enums($enum_property_list, $params){
         foreach ($enum_property_list as $item){
             $property = $item["property"];
             $enum = $item["enum"];
             if(isset($params[$property])){
                 if(!Media::is_valid_enum($enum, $params[$property])){
-                    APIService::response_fail("Must choose a valid value for " . $property . ".", 400);
+                    $http_response = HttpFailCodes::http_response_fail()->valid_enums;
+                    $http_response->message = "Must choose a valid value for " . $property . ".";
+                    APIService::response_fail($http_response);
                 }
             }
         }
@@ -308,7 +347,7 @@ class Media
         $dir = FileService::MAIN_DIR . $directory;
         $file_name = FileService::upload_file($files['image'], $dir, $file_prefix);
         if(!$file_name) {
-            APIService::response_fail("There was an error saving the picture.");
+            APIService::response_fail(HttpFailCodes::http_response_fail()->set_image);
         }
         return $file_name;
     }
@@ -437,7 +476,7 @@ class Media
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if( $result === false || $result === null) {
-            APIService::response_fail("There was an error getting images.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_media_images);
         }
         $media_images = array();
         foreach ($result as $image){
@@ -446,6 +485,7 @@ class Media
         return $media_images;
     }
 
+    /* Add unused images to return array */
     private static function add_unused_images_to_array($images, $media_images, $files, $path){
         foreach( $files as $file ) {
             $full_file = $path . "/" . $file;
@@ -457,6 +497,7 @@ class Media
         return $images;
     }
 
+    /* Add (deleted) unused images to return array */
     private static function add_deleted_images_to_array($deleted_images, $media_images, $files, $path){
         foreach( $files as $file ) {
             $full_file = $path . "/" . $file;
@@ -469,11 +510,13 @@ class Media
         return $deleted_images;
     }
 
+    /* Create a media item by its type */
     private static function build_media_item($table, $result){
         $media = ($table == "book") ? new Book($result) : (($table == "movie") ? new Movie($result) : new Game($result));
         return $media;
     }
 
+    /* Create a list of media items by type */
     private static function build_media_array($table, $result){
         $media = array();
         foreach( $result as $row ) {

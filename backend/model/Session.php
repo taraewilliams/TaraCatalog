@@ -3,6 +3,8 @@
 namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
+use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;
 
@@ -65,7 +67,7 @@ class Session
 
         $id = DatabaseService::create(Config::DBTables()->session, $data);
         if($id === false || $id === null) {
-            APIService::response_fail("There was a problem logging in.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->logging_in);
         }
         $session->id = $id;
         return $session;
@@ -81,7 +83,7 @@ class Session
         $where = array("id" => $id);
         $result = DatabaseService::get(Config::DBTables()->session, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("Authentication failed.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->auth_fail);
         }
         return new Session($result[0]);
     }
@@ -92,7 +94,7 @@ class Session
         $where = array("id" => $session->user_id);
         $result = DatabaseService::get(Config::DBTables()->user, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the user.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_single_user);
         }
         return new User($result[0], false);
     }

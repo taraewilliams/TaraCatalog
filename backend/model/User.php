@@ -4,6 +4,7 @@ namespace TaraCatalog\Model;
 
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\FileService;
@@ -78,7 +79,7 @@ class User
 
         $id = DatabaseService::create(Config::DBTables()->user, $data);
         if($id === false || $id === null) {
-            APIService::response_fail("There was a problem creating the user.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->create_user);
         }
         $user->id = $id;
         return $user;
@@ -92,10 +93,10 @@ class User
     /* Get all users */
     public static function get_all($active = 1)
     {
-        $where = "WHERE active = " . $active;
-        $result = DatabaseService::get_where_order_limit(Config::DBTables()->user, $where);
+        $include_inactive = ($active == 1) ? false : true;
+        $result = DatabaseService::get(Config::DBTables()->user, null, null, null, null, $include_inactive);
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the users.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_users);
         }else{
             $users = array();
             foreach( $result as $row ) {
@@ -109,10 +110,10 @@ class User
     /* Get user from username and password */
     public static function get_from_username_and_password($username, $password)
     {
-        $where = "WHERE active = 1 AND username = '" . $username . "'";
-        $result = DatabaseService::get_where_order_limit(CONFIG::DBTables()->user, $where);
+        $where = array("username" => $username);
+        $result = DatabaseService::get(CONFIG::DBTables()->user, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the user.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_single_user);
         }
 
         $result[0]['hashed_password'] = $result[0]['password'];
@@ -120,7 +121,7 @@ class User
         $user = new User($result[0]);
 
         if( !password_verify($password, $user->hashed_password) ) {
-            APIService::response_fail("Invalid username or password.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->invalid_user_cred);
         }else{
             return $user;
         }
@@ -132,7 +133,7 @@ class User
         $where = array("id" => $id);
         $result = DatabaseService::get(Config::DBTables()->user, $where);
         if($result === false || $result === null || count($result) === 0) {
-            APIService::response_fail("There was a problem getting the user.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_single_user);
         }
         return new User($result[0]);
     }
@@ -147,7 +148,7 @@ class User
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the users.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_users);
         }else{
             return $result;
         }
@@ -164,7 +165,7 @@ class User
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the users.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_users);
         }else{
             return $result;
         }
@@ -189,7 +190,7 @@ class User
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the value.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->get_single_column_value);
         }else{
             return $result[$column_name];
         }
@@ -221,7 +222,7 @@ class User
         }
         $result = DatabaseService::update(Config::DBTables()->user, $id, $data);
         if($result === false || $result === null) {
-            APIService::response_fail("Update failed.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->update_user);
         }
         return $result ? self::get_from_id($id) : false;
     }
@@ -235,7 +236,7 @@ class User
     {
         $result = DatabaseService::set_active(Config::DBTables()->user, $id, $active);
         if( $result === false || $result === null) {
-            APIService::response_fail("There was an error deleting the user.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->delete_user);
         }
         return $result;
     }

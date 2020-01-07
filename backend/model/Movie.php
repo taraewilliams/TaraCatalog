@@ -5,6 +5,7 @@ namespace TaraCatalog\Model;
 use TaraCatalog\Model\Media;
 use TaraCatalog\Config\Config;
 use TaraCatalog\Config\Constants;
+use TaraCatalog\Config\HttpFailCodes;
 use TaraCatalog\Config\Database;
 use TaraCatalog\Service\DatabaseService;
 use TaraCatalog\Service\APIService;
@@ -97,7 +98,7 @@ class Movie
 
         $id = DatabaseService::create(Config::DBTables()->movie, $data);
         if($id === false || $id === null) {
-            APIService::response_fail("There was a problem creating the movie.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->create_media);
         }
         $movie->id = $id;
         return $movie;
@@ -152,7 +153,7 @@ class Movie
         $result = $query->fetch(\PDO::FETCH_ASSOC);
         $query->closeCursor();
         if($result === false || $result === null) {
-            APIService::response_fail("There was a problem getting the running time.", 500);
+            APIService::response_fail(HttpFailCodes::http_response_fail()->running_time);
         }else{
             $total_minutes = intval($result["running_time"]);
             $result["hours"] = Movie::get_running_time_in_hours($total_minutes);
