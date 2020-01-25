@@ -17,10 +17,11 @@ app.controller('CreateController', function(
             return;
         }
 
-        /* Set the variables for the books/movies/games */
+        /* Get the media type from the URL */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
+        /* Set the variables for the books/movies/games */
         variables = {
             media_type:media_type,
             create_url:CONFIG.api + CONFIG.api_routes["create_" + media_type],

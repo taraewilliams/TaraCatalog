@@ -10,17 +10,23 @@
         <label for="title">Title<br>
             <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
             Select From Existing:
-            <select ng-model="media.old_title" ng-options="title.title for title in selectListVariables.title" ng-change="updateForSelectValue(media.old_title.title, 'title')"></select>
+            <select ng-model="media.old_title"
+                ng-options="title.title for title in selectListVariables.title"
+                ng-change="updateForSelectValue(media.old_title.title, 'title')"></select>
         </label>
         <label for="series">Series<br>
             <input type="text" name="series" id="series" ng-model="media.series" placeholder="Series..."><br>
             Select From Existing:
-            <select ng-model="media.old_series" ng-options="single_series.series for single_series in selectListVariables.series" ng-change="updateForSelectValue(media.old_series.series, 'series')"></select>
+            <select ng-model="media.old_series"
+                ng-options="single_series.series for single_series in selectListVariables.series"
+                ng-change="updateForSelectValue(media.old_series.series, 'series')"></select>
         </label>
         <label for="author">Author<br>
             <input type="text" name="author" id="author" ng-model="media.author" placeholder="Author..."><br>
             Select From Existing:
-            <select ng-model="media.old_author" ng-options="author.author for author in selectListVariables.author" ng-change="updateForSelectValue(media.old_author.author, 'author')"></select>
+            <select ng-model="media.old_author"
+                ng-options="author.author for author in selectListVariables.author"
+                ng-change="updateForSelectValue(media.old_author.author, 'author')"></select>
         </label>
         <label for="volume">Volume<br>
             <input type="number" name="volume" id="volume" ng-model="media.volume" placeholder="Volume...">
@@ -44,7 +50,9 @@
         <label for="genre">Genre<br>
             <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
             Select From Existing:
-            <select ng-model="media.old_genre" ng-options="genre.genre for genre in selectListVariables.genre" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
+            <select ng-model="media.old_genre"
+                ng-options="genre.genre for genre in selectListVariables.genre"
+                ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
         </label>
         <label for="complete_series">Complete Series<br>
             <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>

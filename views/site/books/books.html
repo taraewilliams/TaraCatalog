@@ -1,8 +1,6 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user || !color_scheme || !media_resolved"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme || !media_resolved"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user && color_scheme && media_resolved">
 
@@ -10,9 +8,8 @@
 
     <p ng-if="media.length <= 0">No books</p>
 
-    <div ng-show="media.length > 0" class="select-max-form" ng-include="'views/subviews/_selectMaxPerPage.html'"></div>
-
-    <ul ng-show="media.length > 0" class="media-list-pic">
+    <div ng-if="media.length > 0" class="select-max-form" ng-include="'views/subviews/listSubviews/_selectMaxPerPage.html'"></div>
+    <ul ng-if="media.length > 0" class="media-list-pic">
         <li ng-repeat="media_item in media">
             <button name="Edit Book" class="left-button" ng-click="goToPath('/books_update/', media_item.id)">Edit</button>
             <button name="Delete Book" ng-click="deleteMedia(media_item.id)">X</button>
@@ -21,7 +18,5 @@
             <h6>{{getDisplayTitle(media_item)}}</h6>
         </li>
     </ul>
-
-    <div ng-show="media.length > 0" ng-include="'views/subviews/_pagination.html'"></div>
-
+    <div ng-show="media.length > 0" ng-include="'views/subviews/listSubviews/_pagination.html'"></div>
 </main>

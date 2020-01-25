@@ -1,13 +1,9 @@
 <form ng-submit="selectMaxPerPage(currentOffset, maxPerPage)">
-
     <section>
         <label for="maxPerPage">Select Max Per Page<br>
-
         <select ng-change="selectMaxPerPage(currentOffset, maxPerPage)" ng-model="maxPerPage">
             <option ng-repeat="validLimit in validLimits" value="{{validLimit}}">{{validLimit}}</option>
         </select>
-
         </label>
     </section>
-
 </form>

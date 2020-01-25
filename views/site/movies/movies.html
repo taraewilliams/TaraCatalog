@@ -1,28 +1,22 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme || !media_resolved"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
-<div class="loader" ng-if="!user || !color_scheme"></div>
+<main ng-if="user && color_scheme && media_resolved">
 
-<mc-messages class="message-popup"></mc-messages>
+    <h1>Movies</h1>
 
-<main ng-if="user && color_scheme">
+    <p ng-if="media.length <= 0">No movies</p>
 
-  <h1>Movies</h1>
-
-  <p ng-if="media.length <= 0">No movies</p>
-
-  <div ng-show="media.length > 0" class="select-max-form" ng-include="'views/subviews/_selectMaxPerPage.html'"></div>
-
-  <ul ng-show="media.length > 0" class="media-list-pic">
-      <li ng-repeat="media_item in media">
-          <button name="Edit Movie" class="left-button" ng-click="goToPath('/movies_update/', media_item.id)">Edit</button>
-          <button name="Delete Movie" ng-click="deleteMedia(media_item.id)">X</button>
-          <img ng-if="!isEmpty(media_item.image)" alt="Movie Cover" ng-src="backend/public/{{media_item.image}}"/>
-          <img ng-if="isEmpty(media_item.image)" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
-          <h6 ng-if="!isEmpty(media_item.season)">{{media_item.title}}, {{media_item.season}}</h6>
-          <h6 ng-if="isEmpty(media_item.season)">{{media_item.title}}</h6>
-      </li>
-  </ul>
-
-  <div ng-show="media.length > 0" ng-include="'views/subviews/_pagination.html'"></div>
-
+    <div ng-if="media.length > 0" class="select-max-form" ng-include="'views/subviews/listSubviews/_selectMaxPerPage.html'"></div>
+    <ul ng-if="media.length > 0" class="media-list-pic">
+        <li ng-repeat="media_item in media">
+            <button name="Edit Movie" class="left-button" ng-click="goToPath('/movies_update/', media_item.id)">Edit</button>
+            <button name="Delete Movie" ng-click="deleteMedia(media_item.id)">X</button>
+            <img ng-if="!isEmpty(media_item.image)" alt="Movie Cover" ng-src="backend/public/{{media_item.image}}"/>
+            <img ng-if="isEmpty(media_item.image)" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+            <h6>{{getDisplayTitle(media_item)}}</h6>
+        </li>
+    </ul>
+    <div ng-if="media.length > 0" ng-include="'views/subviews/listSubviews/_pagination.html'"></div>
 </main>
