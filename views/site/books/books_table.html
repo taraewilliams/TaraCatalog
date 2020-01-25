@@ -19,6 +19,34 @@
     <!-- Book Table -->
     <p ng-show="items.length <= 0">No matching books</p>
 
+    <!-- <ul class="standard-list">
+        <li ng-repeat="item in items">
+            <section ng-if="!item.isHeader && !item.editOn" class="title-section">
+                <h6>{{item.row_number}}: {{getDisplayTitle(item)}}</h6>
+                <div class="complete_series" ng-class="{
+                    'complete': item.complete_series == 'Complete',
+                    'standalone': item.complete_series == 'Standalone',
+                    'incomplete': item.complete_series == 'Incomplete'}">
+                </div>
+            </section>
+
+            <section ng-if="!item.isHeader && !item.editOn" class="image-section">
+                <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
+            </section>
+
+            <section ng-if="!item.isHeader && !item.editOn" class="detail-section">
+                <p>by {{item.author}}</p>
+                <p>ISBN: {{item.isbn}}</p>
+                <p>{{item.cover_type}}</p>
+                <p>{{item.content_type}}</p>
+                <p>Location: {{item.location}}</p>
+                <p>Genre: {{item.genre}}</p>
+                <p>Notes: {{item.notes}}</p>
+            </section>
+        </li>
+    </ul> -->
+
     <table class="standard-table" ng-show="items.length > 0">
         <tr>
             <th class="row-number-header"></th>

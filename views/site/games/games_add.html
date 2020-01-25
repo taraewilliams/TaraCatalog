@@ -1,48 +1,51 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user || !color_scheme || !items_resolved"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme || !items_resolved"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user && color_scheme && items_resolved">
 
-  <h1>Add Games to Play List</h1>
+    <h1>Add Games to Play List</h1>
 
-  <p ng-show="items.length <= 0">No games</p>
+    <p ng-if="items.length <= 0">No games</p>
 
-  <!-- Games Table -->
-  <table ng-show="items.length > 0" class="standard-table">
-      <tr>
-          <th class="select-header">Select</th>
-          <th class="image-column-header">Image</th>
-          <th>Title</th>
-          <th>Platform</th>
-          <th>ESRB Rating</th>
-          <th class="location-column-header">Location</th>
-          <th>Genre</th>
-          <th>Complete Series</th>
-          <th>Notes</th>
-      </tr>
-      <tr ng-repeat="item in items">
+    <!-- Games Table -->
+    <table ng-if="items.length > 0" class="standard-table">
+        <tr>
+            <th class="select-header">Check All
+                <input type="checkbox" ng-model="areAllChecked" ng-change="toggleAllItems(areAllChecked, items)" ng-true-value="true" ng-false-value="false"/>
+            </th>
+            <th class="image-column-header">Image</th>
+            <th>Title</th>
+            <th>Platform</th>
+            <th>ESRB Rating</th>
+            <th class="location-column-header">Location</th>
+            <th>Genre</th>
+            <th>Complete Series</th>
+            <th>Notes</th>
+        </tr>
+        <tr ng-repeat="item in items">
+            <td class="table-toggle-box">
+                <input ng-click="toggleAddedItems(item.id)" type="checkbox" id="toggle{{item.id}}" name="{{item.title}}" value="{{item.id}}">
+            </td>
+            <td  class="image-column">
+                <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="backend/public/{{item.image}}"/>
+                <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
+            </td>
+            <td>{{item.title}}</td>
+            <td>{{item.platform}}</td>
+            <td>{{item.esrb_rating}}</td>
+            <td class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+            <td>{{item.genre}}</td>
+            <td class="complete-series-column" ng-class="{
+                'incomplete': item.complete_series == 'Incomplete',
+                'complete': item.complete_series == 'Complete',
+                'standalone': item.complete_series == 'Standalone'}">
+                {{item.complete_series}}
+            </td>
+            <td>{{item.notes}}</td>
+        </tr>
+    </table>
 
-          <th ng-if="item.isHeader" colspan="9">{{ item.title }}</th>
-
-          <td class="table-toggle-box" ng-if="!item.isHeader"><input ng-click="toggleAddedItems(item.id)" type="checkbox" name="{{item.title}}" value="{{item.id}}"></td>
-          <td ng-if="!item.isHeader" class="image-column">
-              <img ng-if="!isEmpty(item.image)" alt="Game Cover" ng-src="backend/public/{{item.image}}"/>
-              <img ng-if="isEmpty(item.image)" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
-          </td>
-          <td ng-if="!item.isHeader">{{item.title}}</td>
-          <td ng-if="!item.isHeader">{{item.platform}}</td>
-          <td ng-if="!item.isHeader">{{item.esrb_rating}}</td>
-          <td ng-if="!item.isHeader" class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
-          <td ng-if="!item.isHeader">{{item.genre}}</td>
-          <td ng-if="!item.isHeader" class="complete-series-column" ng-class="{'incomplete': item.complete_series == 'Incomplete', 'complete': item.complete_series == 'Complete', 'standalone': item.complete_series == 'Standalone'}">{{item.complete_series}}</td>
-          <td ng-if="!item.isHeader">{{item.notes}}</td>
-      </tr>
-  </table>
-
-
-  <button ng-show="items.length > 0" class="basic-button add-button" ng-click="addToReadList(addedItems)">Add Games</button>
+    <button ng-if="items.length > 0" class="basic-button add-button" ng-click="addToReadList()">Add Games</button>
 
 </main>

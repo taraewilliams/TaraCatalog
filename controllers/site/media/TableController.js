@@ -49,6 +49,23 @@ app.controller('TableController', function($scope,
         });
     }
 
+    $scope.getDisplayTitle = function(media){
+
+        var displayTitle = "";
+
+        if (!$scope.isEmpty(media.series) && (media.series != media.title)){
+            displayTitle = displayTitle + media.series + ": ";
+        }
+
+        displayTitle = displayTitle + media.title;
+
+        if (!$scope.isEmpty(media.volume)){
+            displayTitle = displayTitle + ", Volume " + media.volume;
+        }
+
+        return displayTitle;
+    };
+
     /* Toggle Read/Watch List of Item */
     $scope.toggleReadList = function(id,toggle){
 
@@ -192,8 +209,9 @@ app.controller('TableController', function($scope,
     };
 
     var getFilter = function(){
-        if ($scope.variables.item_type == "book"){
-            return {
+
+        var filters = {
+            book: {
                 title:"",
                 series:"",
                 author:"",
@@ -205,9 +223,8 @@ app.controller('TableController', function($scope,
                 location:"",
                 genre:"",
                 complete_series:""
-            };
-        }else if ($scope.variables.item_type == "movie"){
-            return {
+            },
+            movie: {
                 title:"",
                 edition:"",
                 season:"",
@@ -218,17 +235,17 @@ app.controller('TableController', function($scope,
                 genre:"",
                 running_time:null,
                 complete_series:""
-            };
-        }else{
-            return {
+            },
+            game: {
                 title:"",
                 platform:"",
                 esrb_rating:"",
                 location:"",
                 genre:"",
                 complete_series:""
-            };
-        }
+            }
+        };
+        return filters[$scope.variables.item_type];
     };
 
     $scope.user.$promise.then(init);

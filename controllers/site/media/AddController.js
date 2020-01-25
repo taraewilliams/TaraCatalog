@@ -7,6 +7,8 @@ app.controller('AddController', function($scope,
     messageCenterService,
     MESSAGE_OPTIONS)
 {
+    var addedItems = [];
+    var variables = {};
 
     function init(){
 
@@ -15,63 +17,105 @@ app.controller('AddController', function($scope,
             return;
         }
 
-        $scope.addedItems = [];
+        $scope.areAllChecked = false;
 
-        /* Set the variables for the books/movies/games */
+        /* Get the media type from the URL */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
-        $scope.variables = {
+        /* Set the variables for the books/movies/games */
+        variables = {
             item_type:media_type,
             get_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_todo"] + "0",
             put_url: CONFIG.api + CONFIG.api_routes["update_" + media_type],
-            redirect_url: '/' + media_type + "s_table/"
+            redirect_url: '/' + media_type + "s_table/" + getRedirectUrl(media_type)
         };
-        $scope.variables.redirect_url += (media_type == "book") ? "read" : ((media_type == "movie") ? "watch" : "play");
 
         /* Get the items to display in the table */
-        $http.get($scope.variables.get_url)
+        $http.get(variables.get_url)
         .then(function(response) {
             $scope.items = response.data;
             $scope.items_resolved = true;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
         });
     }
 
+    /***************************************/
+    /********** Public Functions ***********/
+    /***************************************/
+
+    /* Add or Remove all items from the Read/Watch/Play List */
+    $scope.toggleAllItems = function(checked, items){
+        if (checked){
+            items.forEach(item => {
+                if(!addedItems.includes(item.id)){
+                    addedItems.push(item.id);
+                    document.getElementById("toggle" + item.id).checked = true;
+                }
+            });
+        }else{
+            addedItems = [];
+            items.forEach(item => {
+                document.getElementById("toggle" + item.id).checked = false;
+            });
+        }
+    };
+
     /* Add or Remove items from the Read/Watch/Play List to be Updated */
     $scope.toggleAddedItems = function(id){
-        var index = $scope.addedItems.indexOf(id);
-        if (index > -1){
-            $scope.addedItems.splice(index,1);
+        var nullIndex = -1;
+        var index = addedItems.indexOf(id);
+        if (index > nullIndex){
+            // Remove item
+            addedItems.splice(index,1);
         }else{
-            $scope.addedItems.push(id);
+            // Add item
+            addedItems.push(id);
         }
     };
 
     /* Toggle Read/Watch/Play List of Item */
-    $scope.addToReadList = function(id_list){
+    $scope.addToReadList = function(){
 
-        for (i = 0; i < id_list.length; i++){
-            var id = id_list[i];
+        for (i = 0; i < addedItems.length; i++){
+            var id = addedItems[i];
             var new_item = { todo_list:1 };
-            var url = $scope.variables.put_url + id;
+            var url = variables.put_url + id;
 
             update_num = 0;
+
             /* Add the books/movies/games to the read/watch/play list */
             RequestService.post(url, new_item, function(data) {
-                console.log($scope.variables.item_type + " was updated.");
+                console.log(variables.item_type + " was updated.");
 
                 /* Redirect to the Read/Watch/Play list page once all items are updated */
-                update_num = update_num + 1;
-                if (update_num == id_list.length){
-                    $scope.goToPath($scope.variables.redirect_url);
+                update_num++;
+                if (update_num == addedItems.length){
+                    $scope.goToPath(variables.redirect_url);
                 }
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
             });
         }
     };
+
+    /***************************************/
+    /********** Private Functions **********/
+    /***************************************/
+
+    var getRedirectUrl = function(media_type){
+        var redirects = {
+            book:"read",
+            movie:"watch",
+            game:"play"
+        };
+        return redirects[media_type];
+    };
+
+    /***************************************/
+    /**************** Init *****************/
+    /***************************************/
 
     $scope.user.$promise.then(init);
 
