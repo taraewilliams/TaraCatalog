@@ -1,81 +1,63 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user || !color_scheme"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user && color_scheme">
 
     <h1>Create a Book</h1>
 
-    <form ng-submit="createMedia(media)">
-
+    <form ng-submit="createMedia()">
         <label for="title">Title<br>
             <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
             Select From Existing:
-            <select ng-model="media.old_title" ng-options="title.title for title in titles" ng-change="updateForSelectValue(media.old_title.title, 'title')"></select>
+            <select ng-model="media.old_title" ng-options="title.title for title in selectListVariables.title" ng-change="updateForSelectValue(media.old_title.title, 'title')"></select>
         </label>
-
         <label for="series">Series<br>
             <input type="text" name="series" id="series" ng-model="media.series" placeholder="Series..."><br>
             Select From Existing:
-            <select ng-model="media.old_series" ng-options="single_series.series for single_series in series" ng-change="updateForSelectValue(media.old_series.series, 'series')"></select>
+            <select ng-model="media.old_series" ng-options="single_series.series for single_series in selectListVariables.series" ng-change="updateForSelectValue(media.old_series.series, 'series')"></select>
         </label>
-
         <label for="author">Author<br>
             <input type="text" name="author" id="author" ng-model="media.author" placeholder="Author..."><br>
             Select From Existing:
-            <select ng-model="media.old_author" ng-options="author.author for author in authors" ng-change="updateForSelectValue(media.old_author.author, 'author')"></select>
+            <select ng-model="media.old_author" ng-options="author.author for author in selectListVariables.author" ng-change="updateForSelectValue(media.old_author.author, 'author')"></select>
         </label>
-
         <label for="volume">Volume<br>
             <input type="number" name="volume" id="volume" ng-model="media.volume" placeholder="Volume...">
         </label>
-
         <label for="isbn">ISBN<br>
             <input type="text" name="isbn" id="isbn" ng-model="media.isbn" placeholder="ISBN...">
         </label>
-
         <label for="cover_type">Cover Type<br>
             <input type="radio" ng-model="media.cover_type" value="Paperback"> Paperback<br>
             <input type="radio" ng-model="media.cover_type" value="Hardcover"> Hardcover<br>
         </label>
-
         <label for="content_type">Content Type<br>
             <input type="radio" ng-model="media.content_type" value="Novel"> Novel<br>
             <input type="radio" ng-model="media.content_type" value="Manga"> Manga<br>
             <input type="radio" ng-model="media.content_type" value="Comic Book"> Comic Book<br>
         </label>
-
         <label for="location">Location<br>
             <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
             <input type="radio" ng-model="media.location" value="Home"> Home<br>
         </label>
-
         <label for="genre">Genre<br>
             <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
             Select From Existing:
-            <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
+            <select ng-model="media.old_genre" ng-options="genre.genre for genre in selectListVariables.genre" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
         </label>
-
         <label for="complete_series">Complete Series<br>
             <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
             <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
             <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
         </label>
-
         <label for="notes">Notes<br>
             <textarea name="text" ng-model="media.notes" placeholder="Notes..."></textarea>
         </label>
-
         <label for="image">Image<br>
             <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
             <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Book Image" />
         </label>
-
         <button type="submit">Create</button>
-
     </form>
-
-
 </main>

@@ -1,91 +1,73 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user || !color_scheme"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user && color_scheme">
 
-  <h1>Create a Movie</h1>
+    <h1>Create a Movie</h1>
 
-  <form ng-submit="createMedia(media)">
-
-    <label for="title">Title<br>
-        <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
-    </label>
-
-    <label for="format">Format<br>
-        <input required type="radio" name="format" ng-model="media.format" value="DVD"> DVD<br>
-        <input type="radio" name="format" ng-model="media.format" value="Blu-Ray"> Blu-Ray<br>
-        <input type="radio" name="format" ng-model="media.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
-    </label>
-
-    <label for="edition">Edition<br>
-        <input type="text" name="edition" id="edition" ng-model="media.edition" placeholder="Edition...">
-    </label>
-
-    <label for="season">Season<br>
-        <input type="text" name="season" id="season" ng-model="media.season" placeholder="Season...">
-    </label>
-
-    <label for="content_type">Content Type<br>
-        <input type="radio" ng-model="media.content_type" value="Live Action"> Live Action<br>
-        <input type="radio" ng-model="media.content_type" value="Anime"> Anime<br>
-        <input type="radio" ng-model="media.content_type" value="Animated"> Animated<br>
-    </label>
-
-    <label for="running_time">Running Time (in minutes)<br>
-        <input type="number" name="running_time" id="running_time" ng-model="media.running_time" placeholder="Running Time...">
-    </label>
-
-    <label for="mpaa_rating">MPAA/TV Rating<br>
-        <select ng-model="media.mpaa_rating">
-            <option value="none">None</option>
-            <option value="G">G</option>
-            <option value="PG">PG</option>
-            <option value="PG-13">PG-13</option>
-            <option value="R">R</option>
-            <option value="NC-17">NC-17</option>
-            <option value="Not Rated">Not Rated</option>
-            <option value="Unrated">Unrated</option>
-            <option value="TV-Y">TV-Y</option>
-            <option value="TV-Y7">TV-Y7</option>
-            <option value="TV-G">TV-G</option>
-            <option value="TV-PG">TV-PG</option>
-            <option value="TV-14">TV-14</option>
-            <option value="TV-MA">TV-MA</option>
-        </select>
-    </label>
-
-    <label for="location">Location<br>
-      <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
-      <input type="radio" ng-model="media.location" value="Home"> Home<br>
-    </label>
-
-    <label for="genre">Genre<br>
-        <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
-        Select From Existing:
-        <select ng-model="media.old_genre" ng-options="genre.genre for genre in genres" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
-    </label>
-
-    <label for="complete_series">Complete Series<br>
-        <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
-        <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
-        <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
-    </label>
-
-    <label for="notes">Notes<br>
-        <textarea name="text" ng-model="media.notes" placeholder="Notes..."></textarea>
-    </label>
-
-    <label for="image">Image<br>
-        <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
-        <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Movie Image" />
-    </label>
-
-    <button type="submit">Create</button>
-
-  </form>
-
-
+    <form ng-submit="createMedia()">
+        <label for="title">Title<br>
+            <input required type="text" name="title" id="title" ng-model="media.title" placeholder="Title..."><br>
+        </label>
+        <label for="format">Format<br>
+            <input required type="radio" name="format" ng-model="media.format" value="DVD"> DVD<br>
+            <input type="radio" name="format" ng-model="media.format" value="Blu-Ray"> Blu-Ray<br>
+            <input type="radio" name="format" ng-model="media.format" value="DVD/Blu-Ray Combo"> DVD/Blu-Ray Combo<br>
+        </label>
+        <label for="edition">Edition<br>
+            <input type="text" name="edition" id="edition" ng-model="media.edition" placeholder="Edition...">
+        </label>
+        <label for="season">Season<br>
+            <input type="text" name="season" id="season" ng-model="media.season" placeholder="Season...">
+        </label>
+        <label for="content_type">Content Type<br>
+            <input type="radio" ng-model="media.content_type" value="Live Action"> Live Action<br>
+            <input type="radio" ng-model="media.content_type" value="Anime"> Anime<br>
+            <input type="radio" ng-model="media.content_type" value="Animated"> Animated<br>
+        </label>
+        <label for="running_time">Running Time (in minutes)<br>
+            <input type="number" name="running_time" id="running_time" ng-model="media.running_time" placeholder="Running Time...">
+        </label>
+        <label for="mpaa_rating">MPAA/TV Rating<br>
+            <select ng-model="media.mpaa_rating">
+                <option value="none">None</option>
+                <option value="G">G</option>
+                <option value="PG">PG</option>
+                <option value="PG-13">PG-13</option>
+                <option value="R">R</option>
+                <option value="NC-17">NC-17</option>
+                <option value="Not Rated">Not Rated</option>
+                <option value="Unrated">Unrated</option>
+                <option value="TV-Y">TV-Y</option>
+                <option value="TV-Y7">TV-Y7</option>
+                <option value="TV-G">TV-G</option>
+                <option value="TV-PG">TV-PG</option>
+                <option value="TV-14">TV-14</option>
+                <option value="TV-MA">TV-MA</option>
+            </select>
+        </label>
+        <label for="location">Location<br>
+            <input type="radio" ng-model="media.location" value="Apartment"> Apartment<br>
+            <input type="radio" ng-model="media.location" value="Home"> Home<br>
+        </label>
+        <label for="genre">Genre<br>
+            <input type="text" name="genre" id="genre" ng-model="media.genre" placeholder="Genre..."><br>
+            Select From Existing:
+            <select ng-model="media.old_genre" ng-options="genre.genre for genre in selectListVariables.genre" ng-change="updateForSelectValue(media.old_genre.genre, 'genre')"></select>
+        </label>
+        <label for="complete_series">Complete Series<br>
+            <input type="radio" ng-model="media.complete_series" value="Complete"> Complete<br>
+            <input type="radio" ng-model="media.complete_series" value="Incomplete"> Incomplete<br>
+            <input type="radio" ng-model="media.complete_series" value="Standalone"> Standalone<br>
+        </label>
+        <label for="notes">Notes<br>
+            <textarea name="text" ng-model="media.notes" placeholder="Notes..."></textarea>
+        </label>
+        <label for="image">Image<br>
+            <input type="file" name="image" file-display file-model="media.image" placeholder="Image...">
+            <img ng-if="!isEmpty(media.image)" id="image" alt="Preview Movie Image" />
+        </label>
+        <button type="submit">Create</button>
+    </form>
 </main>

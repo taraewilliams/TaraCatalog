@@ -8,6 +8,7 @@ app.controller('CreateController', function(
     messageCenterService,
     MESSAGE_OPTIONS)
 {
+    var variables = {};
 
     function init(){
 
@@ -20,86 +21,91 @@ app.controller('CreateController', function(
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
-        $scope.variables = {
+        variables = {
             media_type:media_type,
             create_url:CONFIG.api + CONFIG.api_routes["create_" + media_type],
-            get_genre_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "_column_values"] + 'genre'
+            get_column_list_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "_column_values"]
         };
 
+        /* Get the select list variables */
+        $scope.selectListVariables = getSelectListVariables(media_type);
+
         /* Get the select lists for specific columns */
-        if($scope.variables.media_type == "book"){
-
-            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'author')
+        var columns = getSelectListColumns(media_type);
+        columns.forEach(column => {
+            $http.get(variables.get_column_list_url + column)
             .then(function(response) {
-                $scope.authors = response.data;
+                $scope.selectListVariables[column] = response.data;
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
             });
-
-            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'title')
-            .then(function(response) {
-                $scope.titles = response.data;
-            }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
-            });
-
-            $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_values + 'series')
-            .then(function(response) {
-                $scope.series = response.data;
-            }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
-            });
-
-        }else if ($scope.variables.media_type == "game"){
-            $http.get(CONFIG.api + CONFIG.api_routes.get_game_column_values + 'platform')
-            .then(function(response) {
-                $scope.platforms = response.data;
-            }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
-            });
-        }
-
-        $http.get($scope.variables.get_genre_url)
-        .then(function(response) {
-            $scope.genres = response.data;
-        }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
         });
 
         $scope.media = getEmptyMedia();
-
     }
+
+    /***************************************/
+    /********** Public Functions ***********/
+    /***************************************/
 
     $scope.createMedia = function(){
 
-        var url = $scope.variables.create_url;
+        deleteSelectListPlaceholders();
 
-        if ($scope.variables.media_type == "book"){
-            delete $scope.media.old_author;
-            delete $scope.media.old_title;
-            delete $scope.media.old_series;
-        }else if ($scope.variables.media_type == "game"){
-            delete $scope.media.old_platform;
-        }
-        delete $scope.media.old_genre;
-
-        RequestService.post(url, $scope.media, function(data) {
-            messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.media_type + " was created.", { timeout: CONFIG.messageTimeout });
+        RequestService.post(variables.create_url, $scope.media, function(data) {
+            messageCenterService.add(MESSAGE_OPTIONS.success, variables.media_type + " was created.", { timeout: CONFIG.messageTimeout });
             $scope.media = getEmptyMedia();
             window.scrollTo(0,0);
         }, function(response) {
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
         });
-
     };
 
     $scope.updateForSelectValue = function(old_item, field){
         $scope.media[field] = old_item;
     };
 
+    /***************************************/
+    /********** Private Functions **********/
+    /***************************************/
+
+    var deleteSelectListPlaceholders = function(){
+        if (variables.media_type == "book"){
+            delete $scope.media.old_author;
+            delete $scope.media.old_title;
+            delete $scope.media.old_series;
+        }else if (variables.media_type == "game"){
+            delete $scope.media.old_platform;
+        }
+        delete $scope.media.old_genre;
+    };
+
+    var getSelectListColumns = function(mediaType){
+        var selectColumns = {
+            book:['author', 'title', 'series', 'genre'],
+            movie:['genre'],
+            game:['platform', 'genre']
+        };
+        return selectColumns[mediaType];
+    };
+
+    var getSelectListVariables = function(mediaType){
+        var selectVariables = {
+            book:{
+                author:[],
+                title:[],
+                series:[]
+            },
+            game:{
+                platform:[]
+            }
+        };
+        return selectVariables[mediaType];
+    };
+
     var getEmptyMedia = function(){
-        if ($scope.variables.media_type == "book"){
-            return {
+        var emptyMedia = {
+            book:{
                 title:"",
                 old_title:"",
                 series:"",
@@ -116,9 +122,8 @@ app.controller('CreateController', function(
                 genre:"",
                 old_genre:"",
                 complete_series:""
-            };
-        }else if ($scope.variables.media_type == "movie"){
-            return {
+            },
+            movie:{
                 title:"",
                 edition:"",
                 season:"",
@@ -132,9 +137,8 @@ app.controller('CreateController', function(
                 old_genre:"",
                 complete_series:"",
                 running_time:null
-            };
-        }else{
-            return {
+            },
+            game:{
                 title:"",
                 platform:"",
                 old_platform:"",
@@ -145,9 +149,14 @@ app.controller('CreateController', function(
                 genre:"",
                 old_genre:"",
                 complete_series:""
-            };
-        }
+            }
+        };
+        return emptyMedia[variables.media_type];
     };
+
+    /***************************************/
+    /**************** Init *****************/
+    /***************************************/
 
     $scope.user.$promise.then(init);
 
