@@ -1,0 +1,124 @@
+<table class="standard-table" ng-show="items.length > 0 && items_resolved">
+    <tr>
+        <th class="row-number-header"></th>
+        <th class="image-column-header">Image</th>
+        <th>Title</th>
+        <th>Series</th>
+        <th>Author</th>
+        <th>Volume</th>
+        <th>ISBN</th>
+        <th>Cover Type</th>
+        <th>Content Type</th>
+        <th class="location-column-header">Location</th>
+        <th>Genre</th>
+        <th>Complete Series</th>
+        <th>Notes</th>
+        <th class="button-column-header"></th>
+    </tr>
+    <tr ng-repeat="item in items">
+
+        <th ng-if="item.isHeader" colspan="14">{{ item.title }}</th>
+
+        <!-- Regular Table -->
+        <td ng-if-start="!item.isHeader && !item.editOn" class="row-number">{{item.row_number}}</td>
+        <td class="image-column">
+            <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
+        </td>
+        <td>{{item.title}}</td>
+        <td>{{item.series}}</td>
+        <td>{{item.author}}</td>
+        <td ng-if="item.volume">{{item.volume}}</td>
+        <td ng-if="!item.volume"></td>
+        <td>{{item.isbn}}</td>
+        <td>{{item.cover_type}}</td>
+        <td>{{item.content_type}}</td>
+        <td class="location-dot location-column" ng-class="{'location-dot-away': item.location != 'Apartment'}">{{item.location}}</td>
+        <td>{{item.genre}}</td>
+        <td class="complete-series-column" ng-class="{
+            'incomplete': item.complete_series == 'Incomplete',
+            'complete': item.complete_series == 'Complete',
+            'standalone': item.complete_series == 'Standalone'}">
+            {{item.complete_series}}
+        </td>
+        <td>{{item.notes}}</td>
+        <td ng-if-end class="button-column">
+            <button class="basic-button table-button" ng-click="toggleEdit(item)">Edit</button>
+            <button class="basic-button table-button" ng-click="deleteMedia(item.id)">Delete</button>
+            <button ng-if="item.todo_list" class="basic-button table-button-2 on-todo-list" ng-click="toggleReadList(item.id,0)">Remove from Read List</button>
+            <button ng-if="!item.todo_list" class="basic-button table-button-2" ng-click="toggleReadList(item.id,1)">Add to Read List</button>
+        </td>
+
+        <!-- Edit Table -->
+        <td ng-if-start="!item.isHeader && item.editOn" class="row-number">{{item.row_number}}</td>
+        <td class="image-column">
+            <img ng-if="!isEmpty(item.image)" alt="Book Cover" ng-src="backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image)" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
+        </td>
+        <td>
+            <label for="title">
+                <input type="text" name="title" id="title" ng-model="item.title" placeholder="Title...">
+            </label>
+        </td>
+        <td>
+            <label for="series">
+                <input type="text" name="series" id="series" ng-model="item.series" placeholder="Series...">
+            </label>
+        </td>
+        <td>
+            <label for="author">
+                <input type="text" name="author" id="author" ng-model="item.author" placeholder="Author...">
+            </label>
+        </td>
+        <td>
+            <label for="volume">
+                <input type="number" name="volume" id="volume" ng-model="item.volume" placeholder="Volume...">
+            </label>
+        </td>
+        <td>
+            <label for="isbn">
+                <input type="text" name="isbn" id="isbn" ng-model="item.isbn" placeholder="ISBN...">
+            </label>
+        </td>
+        <td>
+            <label for="cover_type">
+                <input type="radio" ng-model="item.cover_type" value="Paperback"> Paperback<br>
+                <input type="radio" ng-model="item.cover_type" value="Hardcover"> Hardcover<br>
+            </label>
+        </td>
+        <td>
+            <label for="content_type">
+                <input type="radio" ng-model="item.content_type" value="Novel"> Novel<br>
+                <input type="radio" ng-model="item.content_type" value="Manga"> Manga<br>
+                <input type="radio" ng-model="item.content_type" value="Comic Book"> Comic Book<br>
+            </label>
+        </td>
+        <td class="location-column">
+            <label for="location">
+                <input type="radio" ng-model="item.location" value="Apartment"> Apartment<br>
+                <input type="radio" ng-model="item.location" value="Home"> Home<br>
+            </label>
+        </td>
+        <td>
+            <label for="genre">
+                <input type="text" name="genre" id="genre" ng-model="item.genre" placeholder="Genre...">
+            </label>
+        </td>
+        <td>
+            <label for="complete_series">
+                <input type="radio" ng-model="item.complete_series" value="Complete"> Complete<br>
+                <input type="radio" ng-model="item.complete_series" value="Incomplete"> Incomplete<br>
+                <input type="radio" ng-model="item.complete_series" value="Standalone"> Standalone<br>
+            </label>
+        </td>
+        <td>
+            <label for="notes">
+                <textarea name="text" ng-model="item.notes" placeholder="Notes..."></textarea>
+            </label>
+        </td>
+        <td ng-if-end class="button-column">
+            <button class="basic-button table-button" ng-click="updateMedia(item)">Update</button>
+            <button class="basic-button table-button" ng-click="toggleEdit(item)">Cancel</button>
+        </td>
+    </tr>
+</table>

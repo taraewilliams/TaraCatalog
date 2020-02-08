@@ -1,11 +1,15 @@
-<form ng-submit="sortBy(sortVal, filter)" class="sort-media-form">
+<form class="sort-media-form">
     <section>
         <label for="sortVal">Sort By:<br>
             <select ng-change="sortBy(sortVal, filter)" ng-model="sortVal">
                 <option value="none">None</option>
                 <option value="title">Title</option>
-                <option value="platform">Platform</option>
-                <option value="esrb_rating">ESRB Rating</option>
+                <option value="format">Format</option>
+                <option value="edition">Edition</option>
+                <option value="season">Season</option>
+                <option value="content_type">Content Type</option>
+                <option value="running_time">Running Time</option>
+                <option value="mpaa_rating">MPAA/TV Rating</option>
                 <option value="location">Location</option>
                 <option value="genre">Genre</option>
                 <option value="complete_series">Complete Series</option>

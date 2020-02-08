@@ -28,17 +28,15 @@ app.controller('CreateController', function(
             get_column_list_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "_column_values"]
         };
 
-        /* Get the select list variables */
-        $scope.selectListVariables = getSelectListVariables(media_type);
-
         /* Get the select lists for specific columns */
+        $scope.selectListVariables = [];
         var columns = getSelectListColumns(media_type);
         columns.forEach(column => {
             $http.get(variables.get_column_list_url + column)
             .then(function(response) {
                 $scope.selectListVariables[column] = response.data;
             }, function(response){
-                messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         });
 
@@ -54,11 +52,11 @@ app.controller('CreateController', function(
         deleteSelectListPlaceholders();
 
         RequestService.post(variables.create_url, $scope.media, function(data) {
-            messageCenterService.add(MESSAGE_OPTIONS.success, variables.media_type + " was created.", { timeout: CONFIG.messageTimeout });
+            $scope.successMessage(variables.media_type + " was created.");
             $scope.media = getEmptyMedia();
             window.scrollTo(0,0);
         }, function(response) {
-            messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     };
 
@@ -90,23 +88,9 @@ app.controller('CreateController', function(
         return selectColumns[mediaType];
     };
 
-    var getSelectListVariables = function(mediaType){
-        var selectVariables = {
-            book:{
-                author:[],
-                title:[],
-                series:[]
-            },
-            game:{
-                platform:[]
-            }
-        };
-        return selectVariables[mediaType];
-    };
-
     var getEmptyMedia = function(){
-        var emptyMedia = {
-            book:{
+        if (variables.media_type === 'book'){
+            return {
                 title:"",
                 old_title:"",
                 series:"",
@@ -123,8 +107,9 @@ app.controller('CreateController', function(
                 genre:"",
                 old_genre:"",
                 complete_series:""
-            },
-            movie:{
+            };
+        } else if (variables.media_type === 'movie'){
+            return {
                 title:"",
                 edition:"",
                 season:"",
@@ -138,8 +123,9 @@ app.controller('CreateController', function(
                 old_genre:"",
                 complete_series:"",
                 running_time:null
-            },
-            game:{
+            };
+        } else {
+            return {
                 title:"",
                 platform:"",
                 old_platform:"",
@@ -150,9 +136,8 @@ app.controller('CreateController', function(
                 genre:"",
                 old_genre:"",
                 complete_series:""
-            }
-        };
-        return emptyMedia[variables.media_type];
+            };
+        }
     };
 
     /***************************************/

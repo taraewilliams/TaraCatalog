@@ -1,11 +1,8 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
-<div class="loader" ng-if="!user_clone || !user || !color_scheme"></div>
-
-<mc-messages class="message-popup"></mc-messages>
-
-<main ng-if="user_clone && user && color_scheme" class="profile">
-
+<main ng-if="user && color_scheme" class="profile">
     <h1 ng-if="user.first_name">Hi, {{user.first_name}} {{user.last_name}}</h1>
     <h1 ng-if="user.username && !user.first_name">Hi, {{user.username}}</h1>
 
@@ -13,19 +10,15 @@
         <img class="profile-pic" ng-if="!isEmpty(user.image)" alt="Preview Profile Picture" ng-src="backend/public/{{user.image}}"/>
         <img class="profile-pic" ng-if="isEmpty(user.image)" alt="Preview Profile Picture" ng-src="/TaraCatalog/assets/images/profile_saver.jpg"/>
     </section>
-
     <section>
         <h2>{{user.username}}</h2>
-
         <p>First Name: {{user.first_name}}</p>
         <p>Last Name: {{user.last_name}}</p>
         <p>E-mail: {{user.email}}</p>
     </section>
-
     <section>
         <button class="basic-button" ng-click="goToPath('/user_update')">Update Profile</button>
         <button class="basic-button" ng-click="goToPath('/reset_password')">Reset Password</button>
         <button class="basic-button" ng-click="deleteUser(user.id)">Delete Profile</button>
     </section>
-
 </main>

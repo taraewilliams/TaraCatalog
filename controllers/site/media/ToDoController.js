@@ -8,6 +8,9 @@ app.controller('ToDoController', function($scope,
     MESSAGE_OPTIONS)
 {
 
+    var variables = {};
+    var removedItems = [];
+
     function init(){
 
         /* Redirect if not logged in or if user is a viewer only */
@@ -15,39 +18,66 @@ app.controller('ToDoController', function($scope,
             return;
         }
 
-        $scope.removedItems = [];
         $scope.editOn = false;
+        $scope.areAllChecked = false;
 
-        /* Set the variables for the books/movies/games */
+        /* Get the media type from the URL */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
-        $scope.variables = {
+        /* Set the variables for the books/movies/games */
+        variables = {
             item_type:media_type,
             get_url:CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_todo"] + '1',
             put_url: CONFIG.api + CONFIG.api_routes["update_" + media_type]
         };
 
         /* Get the items to display in the table */
-        $http.get($scope.variables.get_url)
+        $http.get(variables.get_url)
         .then(function(response) {
             $scope.items = response.data;
-            items_clone = $scope.clone($scope.items);
-            $scope.item_length = items_clone.length;
+            $scope.items_length = $scope.items.length;
             $scope.items = $scope.addLettersToTitles($scope.items, "none");
             $scope.items_resolved = true;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     }
 
+    /***************************************/
+    /********** Public Functions ***********/
+    /***************************************/
+
+    /* Add or Remove all items from the Read/Watch/Play List */
+    $scope.toggleAllItems = function(checked, items){
+        if (checked){
+            items.forEach(item => {
+                if (!item.isHeader){
+                    if(!removedItems.includes(item.id)){
+                        removedItems.push(item.id);
+                        document.getElementById("toggle" + item.id).checked = true;
+                    }
+                }
+            });
+        }else{
+            removedItems = [];
+            items.forEach(item => {
+                if (!item.isHeader){
+                    document.getElementById("toggle" + item.id).checked = false;
+                }
+            });
+        }
+    };
+
     /* Add or Remove items from the Read/Watch/Play List to be Updated */
     $scope.toggleRemovedItems = function(id){
-        var index = $scope.removedItems.indexOf(id);
+        var index = removedItems.indexOf(id);
         if (index > -1){
-            $scope.removedItems.splice(index,1);
+            // Remove item
+            removedItems.splice(index,1);
         }else{
-            $scope.removedItems.push(id);
+            // Add item
+            removedItems.push(id);
         }
     };
 
@@ -57,20 +87,18 @@ app.controller('ToDoController', function($scope,
         for (i = 0; i < id_list.length; i++){
             var id = id_list[i];
             var new_item = { todo_list:0 };
-            var url = $scope.variables.put_url + id;
+            var url = variables.put_url + id;
 
             update_num = 0;
             /* Add the books/movies/games to the read/watch/play list */
             RequestService.post(url, new_item, function(data) {
-                console.log($scope.variables.item_type + " was updated.");
-
                 /* Redirect to the Read/Watch/Play list page once all items are updated */
                 update_num = update_num + 1;
                 if (update_num == id_list.length){
                     location.reload();
                 }
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };
@@ -78,6 +106,10 @@ app.controller('ToDoController', function($scope,
     $scope.toggleEdit = function(){
         $scope.editOn = !$scope.editOn;
     };
+
+    /***************************************/
+    /**************** Init *****************/
+    /***************************************/
 
     $scope.user.$promise.then(init);
 

@@ -32,6 +32,15 @@ class Constants
         );
     }
 
+    public static function order_columns()
+    {
+        return (object) array(
+            "book" => array("title", "series", "author", "volume", "isbn", "cover_type", "content_type", "location", "genre", "complete_series"),
+            "game" => array("title", "platform", "location", "genre", "esrb_rating", "complete_series"),
+            "movie" => array("title", "format", "edition", "content_type", "location", "season", "genre", "mpaa_rating", "running_time", "complete_series")
+        );
+    }
+
     /* Book Enums */
 
     public static function book_cover_type(){

@@ -54,7 +54,7 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   }).
   /* Book read list add page */
   when('/books_table/read_add', {
-    controller: 'AddController',
+    controller: 'ToDoAddController',
     templateUrl: 'views/site/books/books_add.html'
   }).
   /* Books table with order */
@@ -93,7 +93,7 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   }).
   /* Movie watch list add page */
   when('/movies_table/watch_add', {
-    controller: 'AddController',
+    controller: 'ToDoAddController',
     templateUrl: 'views/site/movies/movies_add.html'
   }).
   /* Movies table with order */
@@ -132,7 +132,7 @@ app.config(function($routeProvider, $locationProvider, CONFIG) {
   }).
   /* Games play list add page */
   when('/games_table/play_add', {
-    controller: 'AddController',
+    controller: 'ToDoAddController',
     templateUrl: 'views/site/games/games_add.html'
   }).
   /* Games table with order */

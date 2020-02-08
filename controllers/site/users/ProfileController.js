@@ -12,8 +12,6 @@ app.controller('ProfileController', function($scope,
         if( AuthService.redirectOnUnauthorized() ) {
             return;
         }
-
-        $scope.user_clone = angular.copy($scope.user);
     }
 
     /* Delete item */
@@ -24,11 +22,11 @@ app.controller('ProfileController', function($scope,
 
             $http.delete(url)
             .then(function(response) {
-                messageCenterService.add(MESSAGE_OPTIONS.success, "The user was deleted.", { timeout: CONFIG.messageTimeout });
+                $scope.successMessage("The user was deleted.");
                 Session.destroy();
                 $scope.goToPath("/login");
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };

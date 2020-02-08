@@ -1,38 +1,30 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user_clone || !user_orig || !user || !color_scheme"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user_clone || !user_orig || !user || !color_scheme"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user_clone && user_orig && user && color_scheme">
 
     <h1>Update Profile</h1>
 
     <form ng-submit="updateUser(user_clone)">
-
         <label for="username">Username<br>
             <input type="text" name="username" id="username" ng-model="user_clone.username" placeholder="Username..."><br>
         </label>
-
         <label for="email">E-mail<br>
             <input type="email" name="email" id="email" ng-model="user_clone.email" placeholder="Email..."><br>
         </label>
-
         <label for="first_name">First Name<br>
             <input type="text" name="first_name" id="first_name" ng-model="user_clone.first_name" placeholder="First Name...">
         </label>
-
         <label for="last_name">Last Name<br>
             <input type="text" name="last_name" id="last_name" ng-model="user_clone.last_name" placeholder="Last Name...">
         </label>
-
         <label for="role">Role<br>
             <select ng-model="user_clone.role">
                 <option value="viewer">Viewer</option>
                 <option value="creator">Creator</option>
             </select>
         </label>
-
         <label for="color">Select Color Scheme<br>
             <select ng-change="changeStyle(user_clone.color_scheme)" ng-model="user_clone.color_scheme">
                 <option value="blue">Blue</option>
@@ -45,15 +37,11 @@
                 <option value="yellow">Yellow</option>
             </select>
         </label>
-
         <label for="image">Profile Picture<br>
             <input type="file" name="image" file-display file-model="user_clone.image" placeholder="Image...">
-            <img ng-if="hasChanged(user_clone.image)" id="image" alt="Preview Profile Picture" />
-            <img ng-if="!isEmpty(user_clone.image) && !hasChanged(user_clone.image)" ng-src="backend/public/{{user_clone.image}}" alt="Preview Profile Picture" />
+            <img ng-if="hasImageChanged(user_clone.image)" id="image" alt="Preview Profile Picture" />
+            <img ng-if="!isEmpty(user_clone.image) && !hasImageChanged(user_clone.image)" ng-src="backend/public/{{user_clone.image}}" alt="Preview Profile Picture" />
         </label>
-
         <button type="submit">Update</button>
-
     </form>
-
 </main>

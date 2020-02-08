@@ -19,7 +19,8 @@ app.controller('ApplicationController', function ($scope,
 
         Session.destroy();
         $location.path('/login');
-        messageCenterService.add(MESSAGE_OPTIONS.danger, "Your session either does not exist or has expired. Please login again.", { timeout: CONFIG.messageTimeout });
+        $scope.errorMessage("Your session either does not exist or has expired. Please login again.",
+            MESSAGE_OPTIONS.danger);
     });
 
     $scope.menuOpen = false;
@@ -106,12 +107,17 @@ app.controller('ApplicationController', function ($scope,
         return items_clone;
     };
 
+    $scope.successMessage = function(message){
+        messageCenterService.add(MESSAGE_OPTIONS.success, message, { timeout: CONFIG.messageTimeout });
+    };
+
+    $scope.errorMessage = function(message, type){
+        messageCenterService.add(type, message, { timeout: CONFIG.messageTimeout });
+    };
 
     /* Mobile function to toggle the hamburger menu */
-
     $scope.toggleMenu = function(){
         $scope.menuOpen = !$scope.menuOpen;
-
     };
 
 });

@@ -9,7 +9,7 @@ app.directive('fileDisplay', ['$parse', function($parse){
 
                         reader.onload = function(e){
                             $("#" + attrs.name).attr('src', e.target.result);
-                        }
+                        };
 
                         reader.readAsDataURL(element[0].files[0]);
                     }

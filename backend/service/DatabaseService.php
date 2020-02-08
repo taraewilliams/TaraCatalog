@@ -42,10 +42,6 @@ class DatabaseService
 
         $params = self::build_query_params($where);
 
-        if (!is_null($order) && !($order === "default")){
-            $params = self::add_query_param($order, $params);
-        }
-
         $query = $database->prepare($sql);
         $query->execute($params);
         $result = $query->fetchAll(\PDO::FETCH_ASSOC);
@@ -178,7 +174,13 @@ class DatabaseService
 
     private static function order_sql_string($order, $table)
     {
-        return is_null($order) ? "" : (($order === "default") ? Constants::default_order()->{$table} : " ORDER BY ?");
+        if ($table === "book" || $table === "movie" || $table === "game"){
+            return ($order === "default") ? Constants::default_order()->{$table}
+                : ( (!in_array($order, Constants::order_columns()->{$table}) || is_null($order)) ? ""
+                : " ORDER BY " . $order );
+        }else{
+            return "";
+        }
     }
 
     private static function limit_sql_string($offset, $limit)

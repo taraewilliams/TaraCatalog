@@ -13,7 +13,6 @@ app.controller('StatsController', function($scope,
             return;
         }
 
-
         /* Get total media counts */
         $scope.counts = {
             books:0,
@@ -25,42 +24,42 @@ app.controller('StatsController', function($scope,
         .then(function(response) {
             $scope.counts.books = response.data.num;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_movie_count)
         .then(function(response) {
             $scope.counts.movies = response.data.num;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_game_count)
         .then(function(response) {
             $scope.counts.games = response.data.num;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_movie_running_time_total)
         .then(function(response) {
             $scope.total_running_time = response.data;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_value_count + 'series')
         .then(function(response) {
             $scope.total_series = response.data.num;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         $http.get(CONFIG.api + CONFIG.api_routes.get_book_column_value_count + 'title')
         .then(function(response) {
             $scope.total_titles = response.data.num;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         /* Make Pie Charts */
@@ -70,7 +69,7 @@ app.controller('StatsController', function($scope,
             .then(function(response) {
                 makePieChartForData(response.data);
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
 
@@ -84,12 +83,11 @@ app.controller('StatsController', function($scope,
             for (var key in counts) {
                 dataArray.push(counts[key]);
             }
-
             var title = 'Location (Percentage)';
             var html_element = 'LocationBarChart';
             makeBarChart(dataArray, html_element, title);
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     }
 
@@ -106,13 +104,10 @@ app.controller('StatsController', function($scope,
         google.charts.setOnLoadCallback(drawChart);
 
         function drawChart() {
-
             for (i = 0; i < items.length; i++){
                 dataArray.push([items[i].type, parseInt(items[i].num)]);
             }
-
             var data = google.visualization.arrayToDataTable(dataArray);
-
             var options = {
                 'title': title,
                 'height':400,
@@ -121,7 +116,6 @@ app.controller('StatsController', function($scope,
                     fontSize: 20
                 }
             };
-
             var chart = new google.visualization.PieChart(document.getElementById(html_element));
             chart.draw(data, options);
         }
@@ -132,9 +126,7 @@ app.controller('StatsController', function($scope,
         google.charts.setOnLoadCallback(drawBarChart);
 
         function drawBarChart() {
-
             var data = google.visualization.arrayToDataTable(dataArray);
-
             var options = {
                 'title': title,
                 'height':400,
@@ -143,7 +135,6 @@ app.controller('StatsController', function($scope,
                     fontSize: 20
                 }
             };
-
             var chart = new google.visualization.ColumnChart(document.getElementById(html_element));
             chart.draw(data, options);
         }

@@ -1,6 +1,5 @@
 app.controller('LoginController', function($scope, $rootScope, AuthService, AUTH_EVENTS, $location)
 {
-
     function init() {
 
         if( AuthService.redirectOnAuthorized() ) {

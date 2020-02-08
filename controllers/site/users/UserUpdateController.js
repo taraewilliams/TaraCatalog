@@ -19,7 +19,7 @@ app.controller('UserUpdateController', function($scope,
             $scope.user_orig = response.data;
             $scope.user_clone = $scope.clone($scope.user_orig);
         }, function(error){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     }
 
@@ -30,33 +30,27 @@ app.controller('UserUpdateController', function($scope,
 
         if (!$scope.isEmptyObj(new_user)){
             RequestService.post(url, new_user, function(data) {
-                messageCenterService.add(MESSAGE_OPTIONS.success, "User was updated.", { timeout: CONFIG.messageTimeout });
+                $scope.successMessage("User was updated.");
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }else{
-            messageCenterService.add(MESSAGE_OPTIONS.info, "No changes made.", { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage("No changes made.", MESSAGE_OPTIONS.info);
         }
     };
 
-    $scope.hasChanged = function(image){
+    $scope.hasImageChanged = function(image){
         return ($scope.user_orig.image != image);
     };
 
-    /* Private Functions */
     var removeNotUpdatedFields = function(user_clone, user){
-
         var new_user = {};
-
         for (var prop in user_clone) {
-
             if(!user_clone.hasOwnProperty(prop)) continue;
-
             if(user_clone[prop] != user[prop]){
                 new_user[prop] = user_clone[prop];
             }
         }
-
         return new_user;
     };
 

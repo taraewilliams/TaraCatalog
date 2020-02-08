@@ -23,38 +23,38 @@ app.controller('HomeController', function($scope,
         RequestService.post(CONFIG.api + CONFIG.api_routes.get_media_search, search, function(response) {
             $scope.items = response.data;
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
-
     };
 
-    $scope.getDisplayTitle = function(media){
-
+    $scope.getDisplayTitle = function(media)
+    {
         var displayTitle = "";
-
-        if (media.type == 'book'){
-            if (!$scope.isEmpty(media.series) && (media.series != media.title)){
-                displayTitle = displayTitle + media.series + ": ";
-            }
-
-            displayTitle = displayTitle + media.title;
-
-            if (!$scope.isEmpty(media.volume)){
-                displayTitle = displayTitle + ", Volume " + media.volume;
-            }
-        }else if (media.type == 'movie'){
-            if (!$scope.isEmpty(media.season)){
-                displayTitle = displayTitle + media.title + ", " + media.season;
-            }else{
-                displayTitle = displayTitle + media.title;
-            }
-        }else{
-            displayTitle = displayTitle + media.title;
-        }
-
+        displayTitle += (!$scope.isEmpty(media.series) && (media.series != media.title))
+            ? (media.series + ": ") : "";
+        displayTitle += media.title;
+        displayTitle += !$scope.isEmpty(media.volume) ? (", Volume " + media.volume) : "";
+        displayTitle += !$scope.isEmpty(media.season) ? (", " + media.season) : "";
         return displayTitle;
     };
 
-    init();
+    $scope.getImageAlt = function(itemType){
+        var alts = {
+            book:"Book Cover",
+            movie:"Movie Cover",
+            game:"Game Cover"
+        };
+        return alts[itemType];
+    };
 
+    $scope.getImageLink = function(itemType){
+        var srcs = {
+            book: '/TaraCatalog/assets/images/book_saver.jpg',
+            movie: '/TaraCatalog/assets/images/movie_saver.jpg',
+            game: '/TaraCatalog/assets/images/game_saver.jpg'
+        };
+        return srcs[itemType];
+    };
+
+    $scope.user.$promise.then(init);
 });

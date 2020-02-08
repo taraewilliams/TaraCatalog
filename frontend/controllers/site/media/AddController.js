@@ -1,4 +1,4 @@
-app.controller('AddController', function($scope,
+app.controller('ToDoAddController', function($scope,
     CONFIG,
     $http,
     RequestService,

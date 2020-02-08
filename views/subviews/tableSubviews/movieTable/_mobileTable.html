@@ -1,0 +1,35 @@
+<ul class="standard-table-mobile">
+    <li ng-repeat="item in items">
+        <!-- Header -->
+        <section ng-if="item.isHeader" class="title-section">
+            <h6>{{item.title}}</h6>
+        </section>
+
+        <!-- Media Item -->
+        <section ng-if="!item.isHeader && !item.editOn" class="title-section">
+            <h6>{{item.row_number}}: {{getDisplayTitle(item)}}</h6>
+            <div class="complete_series" title="{{item.complete_series}}" ng-class="{
+                'complete': item.complete_series == 'Complete',
+                'standalone': item.complete_series == 'Standalone',
+                'incomplete': item.complete_series == 'Incomplete'}">
+            </div>
+            <div class="location" title="{{item.location}}" ng-class="{
+                'apartment': item.location == 'Apartment',
+                'home': item.location == 'Home'}">
+            </div>
+        </section>
+        <section ng-if="!item.isHeader && !item.editOn" class="image-section">
+            <img ng-if="!isEmpty(item.image)" title="{{item.title}}" alt="Movie Cover" ng-src="backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image)" title="Movie Cover" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
+        </section>
+        <section ng-if="!item.isHeader && !item.editOn" class="detail-section">
+            <p>{{item.running_time}} minutes, {{item.rt_hours}}</p>
+            <p>{{item.format}}</p>
+            <p ng-if="!isEmpty(item.edition)">Edition: {{item.edition}}</p>
+            <p>{{item.content_type}}</p>
+            <p>MPAA/TV Rating: {{item.mpaa_rating}}</p>
+            <p>Genre: {{item.genre}}</p>
+            <p ng-if="!isEmpty(item.notes)">Notes: {{item.notes}}</p>
+        </section>
+    </li>
+</ul>

@@ -9,6 +9,9 @@ app.controller('TableController', function($scope,
     MESSAGE_OPTIONS)
 {
 
+    var variables = {};
+    var addLetterColumns = ["none", "title"];
+
     function init(){
 
         /* Redirect if not logged in or if user is a viewer only */
@@ -16,14 +19,16 @@ app.controller('TableController', function($scope,
             return;
         }
 
-        $scope.is_todo_list = false;
         $scope.sortVal = "none";
+        $scope.filter = getFilter();
+        $scope.showFilter = false;
 
-        /* Set the variables for the books/movies/games */
+        /* Get the media type from the URL */
         var media_string = $route.current.originalPath.split("_")[0];
         var media_type = media_string.substring(1, media_string.length - 1);
 
-        $scope.variables = {
+        /* Set the variables for the books/movies/games */
+        variables = {
             item_type:media_type,
             path: "/" + media_type + "s_table/",
             get_url: CONFIG.api + CONFIG.api_routes["get_" + media_type + "s"],
@@ -33,90 +38,69 @@ app.controller('TableController', function($scope,
             delete_text: "Delete this " + media_type + "?"
         };
 
-        $scope.filter = getFilter();
-        $scope.showFilter = false;
-
         /* Get the items to display in the table */
-        $http.get($scope.variables.get_url)
+        $http.get(variables.get_url)
         .then(function(response) {
-            $scope.items = response.data;
-            items_clone = $scope.clone($scope.items);
-            $scope.item_length = items_clone.length;
-            $scope.items = $scope.addLettersToTitles($scope.items, "none");
-            $scope.items_resolved = true;
+            handleGetMedia(response, $scope.sortVal);
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     }
 
-    $scope.getDisplayTitle = function(media){
+    /***************************************/
+    /********** Public Functions ***********/
+    /***************************************/
 
+    $scope.getDisplayTitle = function(media)
+    {
         var displayTitle = "";
-
-        if (!$scope.isEmpty(media.series) && (media.series != media.title)){
-            displayTitle = displayTitle + media.series + ": ";
-        }
-
-        displayTitle = displayTitle + media.title;
-
-        if (!$scope.isEmpty(media.volume)){
-            displayTitle = displayTitle + ", Volume " + media.volume;
-        }
-
+        displayTitle += (!$scope.isEmpty(media.series) && (media.series != media.title))
+            ? (media.series + ": ") : "";
+        displayTitle += media.title;
+        displayTitle += !$scope.isEmpty(media.volume) ? (", Volume " + media.volume) : "";
+        displayTitle += !$scope.isEmpty(media.season) ? (", " + media.season) : "";
         return displayTitle;
     };
 
     /* Toggle Read/Watch List of Item */
-    $scope.toggleReadList = function(id,toggle){
-
+    $scope.toggleReadList = function(id, toggle){
         var new_item = { todo_list:toggle };
-        var url = $scope.variables.put_url + id;
+        var url = variables.put_url + id;
 
         RequestService.post(url, new_item, function(data) {
-            messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.item_type + " was updated.", { timeout: CONFIG.messageTimeout });
+            $scope.successMessage(variables.item_type + " was updated.");
         }, function(response){
-            messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     };
 
     /* Delete item */
-    $scope.deleteItem = function(bookID){
-
-        if (confirm($scope.variables.delete_text)){
-            var url = $scope.variables.put_url + bookID;
+    $scope.deleteMedia = function(itemID){
+        if (confirm(variables.delete_text)){
+            var url = variables.put_url + itemID;
 
             $http.delete(url)
             .then(function(response) {
-                messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.item_type + " was deleted.", { timeout: CONFIG.messageTimeout });
+                $scope.successMessage(variables.item_type + " was deleted.");
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };
 
     $scope.updateMedia = function(item){
-
         delete item.editOn;
         var new_media = removeNotUpdatedFields(item, item.orig);
-        var url = $scope.variables.put_url + item.id;
-        delete new_media.orig;
+        var url = variables.put_url + item.id;
 
         if (!$scope.isEmptyObj(new_media)){
             RequestService.post(url, new_media, function(data) {
-                messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.item_type + " was updated.", { timeout: CONFIG.messageTimeout });
+                $scope.successMessage(variables.item_type + " was updated.");
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };
-
-    $scope.updateForSelectValue = function(old_item, field){
-        $scope.media_clone[field] = old_item;
-    };
-
-    $scope.hasChanged = function(image){
-        return ($scope.media.image != image);
-    }
 
     $scope.printPage = function(){
         window.print();
@@ -132,41 +116,31 @@ app.controller('TableController', function($scope,
     /* Sort table items by a specific field */
     $scope.sortBy = function(sortVal, filter){
 
+        $scope.items_resolved = false;
         $scope.sortVal = sortVal;
+        $scope.filter = filter;
+
         var filter_items = removeEmptyFields(filter);
 
         if($scope.isEmptyObj(filter_items)){
-            if (sortVal == "none"){
-                var get_url = $scope.variables.get_url;
-            }else{
-                var get_url = $scope.variables.get_url_order + sortVal;
-            }
+
+            var get_url = ($scope.sortVal === "none") ? variables.get_url :
+                variables.get_url_order + $scope.sortVal;
+
             $http.get(get_url)
             .then(function(response) {
-                $scope.items = response.data;
-                items_clone = $scope.clone($scope.items);
-                $scope.item_length = items_clone.length;
-                if(sortVal=="none" || sortVal == "title"){
-                    $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
-                }
+                handleGetMedia(response, $scope.sortVal);
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }else{
-            if (sortVal == "none"){
-                var get_url = $scope.variables.get_url_filter;
-            }else{
-                var get_url = $scope.variables.get_url_filter + "/" + sortVal;
-            }
+            var get_url = ($scope.sortVal === "none") ? variables.get_url_filter :
+                variables.get_url_filter + "/" + $scope.sortVal;
+
             RequestService.post(get_url, filter_items, function(response) {
-                $scope.items = response.data;
-                items_clone = $scope.clone($scope.items);
-                $scope.item_length = items_clone.length;
-                if(sortVal=="none" || sortVal == "title"){
-                    $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
-                }
+                handleGetMedia(response, $scope.sortVal);
             }, function(response){
-                messageCenterService.add(MESSAGE_OPTIONS.danger, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };
@@ -181,21 +155,30 @@ app.controller('TableController', function($scope,
         $scope.showFilter = !$scope.showFilter;
     };
 
-    //* Private Functions *//
+    /***************************************/
+    /********** Private Functions **********/
+    /***************************************/
+
+    var handleGetMedia = function(response, sortVal){
+        $scope.items = response.data;
+        $scope.items_length = $scope.items.length;
+        if (addLetterColumns.includes(sortVal)){
+            $scope.items = $scope.addLettersToTitles($scope.items, sortVal);
+        }
+        $scope.items_resolved = true;
+    };
 
     var removeNotUpdatedFields = function(media_clone, media){
-
         var new_media = {};
+        delete media_clone.orig;
 
         for (var prop in media_clone) {
-
             if(!media_clone.hasOwnProperty(prop)) continue;
 
             if(media_clone[prop] != media[prop]){
                 new_media[prop] = media_clone[prop];
             }
         }
-
         return new_media;
     };
 
@@ -209,13 +192,11 @@ app.controller('TableController', function($scope,
     };
 
     var getFilter = function(){
-
-        var filters = {
-            book: {
+        if (variables.item_type === 'book'){
+            return {
                 title:"",
                 series:"",
                 author:"",
-                old_author:"",
                 volume:null,
                 isbn:"",
                 cover_type:"",
@@ -223,8 +204,9 @@ app.controller('TableController', function($scope,
                 location:"",
                 genre:"",
                 complete_series:""
-            },
-            movie: {
+            };
+        }else if (variables.item_type === 'movie'){
+            return {
                 title:"",
                 edition:"",
                 season:"",
@@ -235,18 +217,22 @@ app.controller('TableController', function($scope,
                 genre:"",
                 running_time:null,
                 complete_series:""
-            },
-            game: {
+            };
+        }else{
+            return {
                 title:"",
                 platform:"",
                 esrb_rating:"",
                 location:"",
                 genre:"",
                 complete_series:""
-            }
-        };
-        return filters[$scope.variables.item_type];
+            };
+        }
     };
+
+    /***************************************/
+    /**************** Init *****************/
+    /***************************************/
 
     $scope.user.$promise.then(init);
 

@@ -1,8 +1,6 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user || !color_scheme"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user && color_scheme">
 
@@ -13,9 +11,7 @@
 
         <h4>General</h4>
         <p>Total Number of Books: {{counts.books}}</p>
-
         <p>Number of Series: {{total_series}}</p>
-
         <p>Number of Titles: {{total_titles}}</p>
 
         <h4>Pie Charts</h4>
@@ -30,7 +26,6 @@
 
         <h4>General</h4>
         <p>Total Number of Movies: {{counts.movies}}</p>
-
         <p>Running Time: {{total_running_time.running_time}} minutes ( {{total_running_time.hours}} ) </p>
 
         <h4>Pie Charts</h4>
@@ -59,5 +54,4 @@
         <h2>All</h2>
         <div id="LocationBarChart" class="chart"></div>
     </section>
-
 </main>

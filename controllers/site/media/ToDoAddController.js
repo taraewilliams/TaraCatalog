@@ -1,4 +1,4 @@
-app.controller('AddController', function($scope,
+app.controller('ToDoAddController', function($scope,
     CONFIG,
     $http,
     RequestService,
@@ -37,7 +37,7 @@ app.controller('AddController', function($scope,
             $scope.items = response.data;
             $scope.items_resolved = true;
         }, function(response){
-            messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
     }
 
@@ -95,7 +95,7 @@ app.controller('AddController', function($scope,
                     $scope.goToPath(variables.redirect_url);
                 }
             }, function(response){
-                messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };

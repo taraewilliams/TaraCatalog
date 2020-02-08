@@ -1,8 +1,6 @@
-<div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
-
-<div class="loader" ng-if="!user || !color_scheme"></div>
-
-<mc-messages class="message-popup"></mc-messages>
+<!-- Menu --> <div ng-include="'views/subviews/mainMenu/_mainMenu.html'"></div>
+<!-- Loading Wheel --> <div class="loader" ng-if="!user || !color_scheme"></div>
+<!-- Message Popups --> <mc-messages class="message-popup"></mc-messages>
 
 <main ng-if="user && color_scheme">
 
@@ -11,14 +9,11 @@
     <h1 ng-if="user.first_name">Welcome to Your Media Catalog, {{user.first_name}}!</h1>
     <h1 ng-if="user.username && !user.first_name">Welcome to Your Media Catalog, {{user.username}}!</h1>
 
-
     <!-- Search your catalog -->
-    <p ng-if="user.role == 'viewer' && isActive(['/'])">Your account is view-only. Go to your profile page to become a creator so you can build your own catalog!</p>
+    <p ng-if="user.role === 'viewer' && isActive(['/'])">Your account is view-only. Go to your profile page to become a creator so you can build your own catalog!</p>
 
-    <section class="home-section" ng-if="user.role == 'creator'">
-
+    <section class="home-section" ng-if="user.role === 'creator'">
         <h2>Search Catalog</h2>
-
         <div class="filter-form" id="home-filter" >
             <form ng-submit="search(searchTerm)">
                 <section>
@@ -27,25 +22,18 @@
                 </section>
             </form>
         </div>
-
     </section>
 
     <p ng-show="items.length <= 0">No matching results</p>
-
     <p ng-show="items.length > 0">{{items.length}} results</p>
 
     <ul class="media-list-pic" ng-show="items.length > 0">
         <li ng-repeat="item in items">
-
-            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
-            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
-            <img class="corner-img" ng-if="!isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
-            <img ng-if="!isEmpty(item.image)" alt="Item Cover" ng-src="backend/public/{{item.image}}"/>
-            <img ng-if="isEmpty(item.image) && item.type=='book'" alt="Book Cover" ng-src="/TaraCatalog/assets/images/book_saver.jpg"/>
-            <img ng-if="isEmpty(item.image) && item.type=='movie'" alt="Movie Cover" ng-src="/TaraCatalog/assets/images/movie_saver.jpg"/>
-            <img ng-if="isEmpty(item.image) && item.type=='game'" alt="Game Cover" ng-src="/TaraCatalog/assets/images/game_saver.jpg"/>
+            <img class="corner-img" ng-if="!isEmpty(item.image)"
+                alt="{{getImageAlt(item.type)}}" ng-src="{{getImageLink(item.type)}}"/>
+            <img ng-if="!isEmpty(item.image)" alt="{{getImageAlt(item.type)}}" ng-src="backend/public/{{item.image}}"/>
+            <img ng-if="isEmpty(item.image)" alt="{{getImageAlt(item.type)}}" ng-src="{{getImageLink(item.type)}}"/>
             <h6>{{getDisplayTitle(item)}}</h6>
         </li>
     </ul>
-
 </main>

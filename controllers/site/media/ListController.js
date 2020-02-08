@@ -12,7 +12,10 @@ app.controller('ListController', function($scope,
     var currentPage = 0;
 
     /* The valid limits for number of items per page */
-    $scope.validLimits = [28, 56, 84, 112, "All"];
+    var limitStart = 28;
+    $scope.validLimits = [limitStart, limitStart * 2, limitStart * 3, limitStart * 4, "All"];
+
+    var variables = {};
 
     function init(){
 
@@ -31,7 +34,9 @@ app.controller('ListController', function($scope,
         var media_type = media_string.substring(0, media_string.length - 1);
 
         /* Set the variables for the books/movies/games */
-        $scope.variables = {
+        $scope.path = "/" + media_type + "s/";
+
+        var variables = {
             media_type:media_type,
             path: "/" + media_type + "s/",
             get_url: CONFIG.api + CONFIG.api_routes["get_" + media_type + "s_limit"] + offset + "/" + limit,
@@ -41,30 +46,30 @@ app.controller('ListController', function($scope,
         };
 
         if (limit == all_limit){
-            $scope.variables.get_url = CONFIG.api + CONFIG.api_routes["get_" + media_type + "s"];
+            variables.get_url = CONFIG.api + CONFIG.api_routes["get_" + media_type + "s"];
         }
 
         $scope.maxPerPage = setMaxPerPage(offset, limit, all_limit);
         $scope.currentOffset = offset;
 
         /* Get the media items to display on the page */
-        $http.get($scope.variables.get_url)
+        $http.get(variables.get_url)
         .then(function(response) {
             $scope.media = response.data;
             $scope.media_resolved = true;
         }, function(response){
-            messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+            $scope.errorMessage(response.data.message, response.data.type);
         });
 
         if ($scope.maxPerPage != "All" && $scope.maxPerPage != "invalid")
         {
             /* Count all the media items */
-            $http.get($scope.variables.get_count_url)
+            $http.get(variables.get_count_url)
             .then(function(response) {
                 var num_pages = Math.ceil(parseInt(response.data.num)/limit);
                 $scope.pages = makePages(num_pages, offset, limit);
             }, function(response){
-                messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     }
@@ -87,14 +92,14 @@ app.controller('ListController', function($scope,
     /* Delete a media item for its ID */
     $scope.deleteMedia = function(mediaID)
     {
-        if (confirm($scope.variables.delete_text)){
-            var url = $scope.variables.delete_url + mediaID;
+        if (confirm(variables.delete_text)){
+            var url = variables.delete_url + mediaID;
 
             $http.delete(url)
             .then(function(response) {
-                messageCenterService.add(MESSAGE_OPTIONS.success, $scope.variables.media_type + " was deleted.", { timeout: CONFIG.messageTimeout });
+                $scope.successMessage(variables.media_type + " was deleted.");
             }, function(response){
-                messageCenterService.add(response.data.type, response.data.message, { timeout: CONFIG.messageTimeout });
+                $scope.errorMessage(response.data.message, response.data.type);
             });
         }
     };
@@ -113,10 +118,10 @@ app.controller('ListController', function($scope,
 
     $scope.selectMaxPerPage = function(offset, max){
         if (max === "All"){
-            $scope.goToPath($scope.variables.path + 0 + "/" + 0);
+            $scope.goToPath($scope.path + 0 + "/" + 0);
         }else{
             var new_offset = Math.floor(offset/max) * max;
-            $scope.goToPath($scope.variables.path + new_offset + "/" + max);
+            $scope.goToPath($scope.path + new_offset + "/" + max);
         }
     };
 
@@ -173,15 +178,17 @@ app.controller('ListController', function($scope,
     /* Ex: Limit 5, Offset 10, current page = 10/5 + 1 = 3 */
     var getCurrentPage = function(offset, limit){
         return (offset/limit) + 1;
-    }
+    };
 
+    /* Set the limit per page */
+    /* If the limit or offset is invalid, set them to valid values */
     var setMaxPerPage = function(offset, limit, all_limit){
         if (isValidLimit(limit) && isValidOffset(offset, limit)){
             return ((limit === all_limit) ? "All" : limit);
         }else{
             var new_limit = isValidLimit(limit) ? limit : $scope.validLimits[0];
             var new_offset = Math.floor(offset/new_limit) * new_limit;
-            $scope.goToPath($scope.variables.path + new_offset + "/" + new_limit);
+            $scope.goToPath($scope.path + new_offset + "/" + new_limit);
             return "invalid";
         }
     };
