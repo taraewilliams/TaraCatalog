@@ -1,0 +1,130 @@
+
+/* Web CSS */
+
+@media screen and (min-width: 800px) {
+    .mobile{
+        display:none;
+    }
+}
+
+
+/* Mobile CSS */
+
+@media screen and (max-width: 800px) {
+    .web{
+        display:none;
+    }
+
+    .basic-dot{
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+    .basic-dot-green{
+        background-color: $light-green;
+    }
+    .basic-dot-red{
+        background-color: red;
+    }
+    .basic-dot-yellow{
+        background-color: $light-yellow;
+    }
+    .basic-dot-blue{
+        background-color: $light-blue;
+    }
+    .basic-dot-gray{
+        background-color: $light-gray;
+    }
+
+    .symbol-key{
+        border: 1px solid black;
+        margin-bottom:20px;
+
+        .key-item{
+            margin:10px;
+            display:inline-block;
+
+            p{
+                display:inline-block;
+                vertical-align:top;
+                padding:0;
+            }
+        }
+    }
+
+    .standard-table-mobile{
+        li{
+            margin-bottom: 15px;
+            border: 2px solid $lighter-red;
+
+            section{
+                display: inline-block;
+            }
+
+            .title-section{
+                width: 100%;
+                box-sizing: border-box;
+                background-color: $lighter-red;
+
+                h6{
+                    display: inline-block;
+                    vertical-align: top;
+                    width: 80%;
+                }
+
+                .location{
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    margin: 10px;
+                    display: inline-block;
+                    position: absolute;
+                    right: 40px;
+                }
+                .apartment{
+                    background-color: $light-green;
+                }
+                .home{
+                    background-color: red;
+                }
+
+                .complete_series{
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    margin: 10px;
+                    display: inline-block;
+                    position: absolute;
+                    right: 10px;
+                }
+                .complete{
+                    background-color: $light-yellow;
+                }
+                .incomplete{
+                    background-color: $light-gray;
+                }
+                .standalone{
+                    background-color: $light-blue;
+                }
+            }
+
+            .image-section{
+                display: inline-block;
+                vertical-align: middle;
+                width: 100px;
+
+                img{
+                    width:100px;
+                    height:auto;
+                }
+            }
+
+            .detail-section{
+                width: calc(100% - 105px);
+                vertical-align: middle;
+                display: inline-block;
+            }
+        }
+    }
+}
